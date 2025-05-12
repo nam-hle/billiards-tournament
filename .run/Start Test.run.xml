@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start Test" type="CompoundRunConfigurationType">
+    <toRun name="Start Playwright" type="js.build_tools.npm" />
+    <toRun name="Start Test App" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>
