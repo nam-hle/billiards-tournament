@@ -3,11 +3,12 @@ import { notFound } from "next/navigation";
 import { PlayerRepository } from "@/repositories/player.repository";
 
 interface Props {
-	params: { id: string };
+	params: Promise<{ id: string }>;
 }
 
 export default async function PlayerProfilePage({ params }: Props) {
-	const player = await new PlayerRepository().findById(params.id);
+	const { id } = await params;
+	const player = await new PlayerRepository().findById(id);
 
 	if (!player) {
 		return notFound();

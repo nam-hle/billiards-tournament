@@ -7,18 +7,9 @@
 		"dev": "next dev",
 		"build": "next build --no-lint",
 		"start": "next start --port 4000",
-		"start:qr-server": "tsx src/qr-server.ts",
-		"start:server": "supabase start --ignore-health-check --exclude realtime,vector,edge-runtime",
-		"generate:env": "tsx src/test/cli/generate-env.ts",
 		"watch": "tsc -watch",
 		"lint": "next lint --quiet && prettier --check .",
-		"lint:fix": "next lint --fix && prettier --write .",
-		"generate-types": "supabase gen types typescript --local > src/database.types.ts",
-		"postgenerate-types": "pnpm lint:fix",
-		"preplaywright": "pnpm exec playwright install chromium",
-		"playwright": "pnpm exec playwright test --workers=1",
-		"playwright:ui": "pnpm playwright --ui",
-		"knip": "knip"
+		"lint:fix": "next lint --fix && prettier --write ."
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.10.0",
