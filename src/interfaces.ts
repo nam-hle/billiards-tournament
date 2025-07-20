@@ -5,7 +5,7 @@ export interface Player {
 }
 
 export interface Tournament {
-	year: number;
+	year: string;
 	endDate: string;
 	startDate: string;
 	description?: string;

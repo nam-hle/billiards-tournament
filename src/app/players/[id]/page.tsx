@@ -1,15 +1,13 @@
 import { notFound } from "next/navigation";
 
-import { DataSource } from "@/utils/data-source";
+import { PlayerRepository } from "@/repositories/player.repository";
 
 interface Props {
 	params: { id: string };
 }
 
 export default async function PlayerProfilePage({ params }: Props) {
-	const { id } = params;
-	const players = await DataSource.getPlayers();
-	const player = players.find((p) => p.id === id);
+	const player = await new PlayerRepository().findById(params.id);
 
 	if (!player) {
 		return notFound();

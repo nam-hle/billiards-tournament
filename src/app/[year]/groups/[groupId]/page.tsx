@@ -1,21 +1,23 @@
 import { notFound } from "next/navigation";
 
-import { DataSource } from "@/utils/data-source";
+import { GroupRepository } from "@/repositories/group.repository";
+import { MatchRepository } from "@/repositories/match.repository";
+import { PlayerRepository } from "@/repositories/player.repository";
 
 interface Props {
-	params: { year: string; groupId: string };
+	params: Promise<{ year: string; groupId: string }>;
 }
 
 export default async function GroupPage({ params }: Props) {
-	const { year, groupId } = params;
-	const group = await DataSource.getGroupById(year, groupId);
+	const { year, groupId } = await params;
+	const group = await new GroupRepository().get({ year, groupId });
 
 	if (!group) {
 		return notFound();
 	}
 
-	const players = await DataSource.getPlayers();
-	const matches = await DataSource.getMatchesForGroup(year, groupId);
+	const players = await new PlayerRepository().getAll();
+	const matches = await new MatchRepository().getAllMatchGroup({ year, groupId });
 
 	// Standings: count wins, draws, losses, points
 	const standings = group.players.map((pid) => {
