@@ -1,19 +1,19 @@
-interface Player {
+export interface Player {
 	id: string;
 	name: string;
 	nickname?: string;
 }
 
-interface Tournament {
+export interface Tournament {
 	year: number;
 	endDate: string;
 	startDate: string;
 	description?: string;
 }
 
-type RoundType = "group" | "quarter-final" | "semi-final" | "final";
+export type RoundType = "group" | "quarter-final" | "semi-final" | "final";
 
-interface Match {
+export interface Match {
 	id: string;
 
 	round: RoundType;
@@ -28,7 +28,7 @@ interface Match {
 	winnerId?: string;
 }
 
-interface Group {
+export interface Group {
 	id: string;
 	name: string;
 	players: string[];
