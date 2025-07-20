@@ -1,0 +1,10 @@
+{
+    "$schema": "../schemas/players.schema.json",
+    "data": [
+        {
+            "id": "p001",
+            "name": "Nam",
+            "nickname": "The Breaker"
+        }
+    ]
+}
