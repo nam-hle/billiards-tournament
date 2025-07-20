@@ -26,6 +26,21 @@ export interface Match {
 	player1Id: string;
 	player2Id: string;
 }
+export namespace Match {
+	export function getWinnerId(match: Match): string | undefined {
+		if (match.score1 == null || match.score2 == null) {
+			return undefined;
+		}
+
+		if (match.score1 > match.score2) {
+			return match.player1Id;
+		} else if (match.score2 > match.score1) {
+			return match.player2Id;
+		}
+
+		return undefined;
+	}
+}
 
 export interface Group {
 	id: string;
