@@ -25,7 +25,6 @@ export interface Match {
 	score2?: number;
 	player1Id: string;
 	player2Id: string;
-	winnerId?: string;
 }
 
 export interface Group {
@@ -33,4 +32,15 @@ export interface Group {
 	name: string;
 	players: string[];
 	matches: string[];
+}
+
+export interface Standing {
+	wins: number;
+	losses: number;
+	points: number;
+	played: number;
+	playerId: string;
+
+	matchesWins: number;
+	matchesLosses: number;
 }
