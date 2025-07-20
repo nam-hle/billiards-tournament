@@ -1,0 +1,18 @@
+{
+    "$schema": "../../schemas/matches.schema.json",
+    "data": [
+        { "id": "m1", "round": "group", "groupId": "A", "player1Id": "p1", "player2Id": "p2" },
+        { "id": "m2", "round": "group", "groupId": "A", "player1Id": "p1", "player2Id": "p3" },
+        { "id": "m3", "round": "group", "groupId": "A", "player1Id": "p1", "player2Id": "p4" },
+        { "id": "m4", "round": "group", "groupId": "A", "player1Id": "p2", "player2Id": "p3" },
+        { "id": "m5", "round": "group", "groupId": "A", "player1Id": "p2", "player2Id": "p4" },
+        { "id": "m6", "round": "group", "groupId": "A", "player1Id": "p3", "player2Id": "p4" },
+
+        { "id": "m7", "round": "group", "groupId": "B", "player1Id": "p5", "player2Id": "p6" },
+        { "id": "m8", "round": "group", "groupId": "B", "player1Id": "p5", "player2Id": "p7" },
+        { "id": "m9", "round": "group", "groupId": "B", "player1Id": "p5", "player2Id": "p8" },
+        { "id": "m10", "round": "group", "groupId": "B", "player1Id": "p6", "player2Id": "p7" },
+        { "id": "m11", "round": "group", "groupId": "B", "player1Id": "p6", "player2Id": "p8" },
+        { "id": "m12", "round": "group", "groupId": "B", "player1Id": "p7", "player2Id": "p8" }
+    ]
+}
