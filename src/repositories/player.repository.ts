@@ -17,8 +17,8 @@ export class PlayerRepository extends BaseRepository {
 		return players.find((player) => player.id === id);
 	}
 
-	public async getById(id: string) {
-		const player = this.findById(id);
+	public async getById(id: string): Promise<Player> {
+		const player = await this.findById(id);
 
 		assert(player, `Player with ID ${id} not found`);
 

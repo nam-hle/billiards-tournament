@@ -5,10 +5,17 @@ export interface Player {
 }
 
 export interface Tournament {
+	name: string;
 	year: string;
+	description?: string;
+
 	endDate: string;
 	startDate: string;
-	description?: string;
+}
+
+export interface TournamentSummary extends Tournament {
+	totalGroups: number;
+	totalPlayers: number;
 }
 
 export type RoundType = "group" | "quarter-final" | "semi-final" | "final";
@@ -27,6 +34,10 @@ export interface Match {
 	player2Id: string;
 }
 export namespace Match {
+	export function isCompleted(match: Match): boolean {
+		return match.score1 != null && match.score2 != null;
+	}
+
 	export function getWinnerId(match: Match): string | undefined {
 		if (match.score1 == null || match.score2 == null) {
 			return undefined;
@@ -47,6 +58,15 @@ export interface Group {
 	name: string;
 	players: string[];
 	matches: string[];
+}
+
+export interface GroupSummary extends Group {
+	completedMatches: number;
+	status: "active" | "completed" | "upcoming";
+	leader: {
+		name: string;
+		points: number;
+	} | null;
 }
 
 export interface Standing {

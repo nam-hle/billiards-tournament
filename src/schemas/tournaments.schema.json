@@ -7,12 +7,12 @@
 			"type": "array",
 			"items": {
 				"type": "object",
-				"required": ["year", "startDate", "endDate"],
+				"required": ["year", "startDate", "endDate", "name"],
 				"properties": {
-					"year": { "type": "integer" },
+					"year": { "type": "string" },
 					"startDate": { "type": "string", "format": "date" },
 					"endDate": { "type": "string", "format": "date" },
-					"description": { "type": "string" }
+					"name": { "type": "string" }
 				}
 			}
 		}

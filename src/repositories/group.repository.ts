@@ -1,8 +1,9 @@
 import { assert } from "@/utils";
 import { combineComparators } from "@/utils/comparator";
-import { Match, type Group, type Standing } from "@/interfaces";
 import { BaseRepository } from "@/repositories/base.repository";
 import { MatchRepository } from "@/repositories/match.repository";
+import { PlayerRepository } from "@/repositories/player.repository";
+import { Match, type Group, type Standing, type GroupSummary } from "@/interfaces";
 
 export class GroupRepository extends BaseRepository {
 	async getByYear(params: { year: string }): Promise<Group[]> {
@@ -23,9 +24,31 @@ export class GroupRepository extends BaseRepository {
 		return group;
 	}
 
+	async getSummary(params: { year: string; groupId: string }): Promise<GroupSummary> {
+		const group = await this.get(params);
+		const matches = await new MatchRepository().getAllMatchesByGroup(params);
+		const playerRepository = new PlayerRepository();
+
+		const completedMatches = matches.filter(Match.isCompleted);
+		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < group.matches.length ? "active" : "completed";
+
+		const [topPlayer] = await this.getStandings(params);
+		const leader = status === "upcoming" ? null : { points: topPlayer.points, name: (await playerRepository.getById(topPlayer.playerId)).name };
+
+		return {
+			leader,
+			status,
+			id: group.id,
+			name: group.name,
+			players: group.players,
+			matches: group.matches,
+			completedMatches: completedMatches.length
+		};
+	}
+
 	async getStandings(params: { year: string; groupId: string }): Promise<Standing[]> {
 		const group = await this.get(params);
-		const matches = await new MatchRepository().getAllMatchGroup(params);
+		const matches = await new MatchRepository().getAllMatchesByGroup(params);
 
 		const findHeadMatch = (player1Id: string, player2Id: string) => {
 			return matches.find(

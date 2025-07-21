@@ -18,14 +18,16 @@ interface Tab {
 function useTabs(): Tab[] {
 	const pathname = usePathname();
 
-	if (/^\/tournaments\/\d+$/.test(pathname)) {
+	if (/^\/tournaments\/\d+($|\/)/.test(pathname)) {
+		const basePath = pathname.split("/").slice(0, 3).join("/");
+
 		return [
 			{ href: pathname, label: "Overview", match: (path) => path === pathname },
-			{ label: "Groups", href: `${pathname}/groups`, match: (path) => path === `${pathname}/groups` },
-			{ label: "Bracket", href: `${pathname}/bracket`, match: (path) => path === `${pathname}/bracket` },
-			{ label: "Schedule", href: `${pathname}/schedule`, match: (path) => path === `${pathname}/schedule` },
-			{ label: "Players", href: `${pathname}/players`, match: (path) => path === `${pathname}/players` },
-			{ label: "Results", href: `${pathname}/results`, match: (path) => path === `${pathname}/results` }
+			{ label: "Groups", href: `${basePath}/groups`, match: (path) => path === `${pathname}/groups` },
+			{ label: "Bracket", href: `${basePath}/bracket`, match: (path) => path === `${pathname}/bracket` },
+			{ label: "Schedule", href: `${basePath}/schedule`, match: (path) => path === `${pathname}/schedule` },
+			{ label: "Players", href: `${basePath}/players`, match: (path) => path === `${pathname}/players` },
+			{ label: "Results", href: `${basePath}/results`, match: (path) => path === `${pathname}/results` }
 		];
 	}
 

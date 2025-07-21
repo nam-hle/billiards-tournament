@@ -38,7 +38,7 @@ export default async function GroupPage({ params }: Props) {
 		return "scheduled";
 	};
 
-	const matches = await new MatchRepository().getAllMatchGroup({ year, groupId });
+	const matches = await new MatchRepository().getAllMatchesByGroup({ year, groupId });
 
 	const standings = await new GroupRepository().getStandings({ year, groupId });
 

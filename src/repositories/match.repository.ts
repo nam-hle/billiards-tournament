@@ -6,7 +6,7 @@ export class MatchRepository extends BaseRepository {
 		return this.dataSource.getMatches(params);
 	}
 
-	async getAllMatchGroup(params: { year: string; groupId: string }): Promise<Match[]> {
+	async getAllMatchesByGroup(params: { year: string; groupId: string }): Promise<Match[]> {
 		const matches = await this.getAllByYear(params);
 
 		return matches.filter((match) => match.groupId === params.groupId);
