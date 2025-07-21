@@ -6,30 +6,89 @@
 		"data": {
 			"type": "array",
 			"items": {
-				"type": "object",
-				"required": ["id", "round", "player1Id", "player2Id"],
-				"properties": {
-					"id": { "type": "string" },
-					"round": {
-						"type": "string",
-						"enum": ["group", "quarter-final", "semi-final", "final"]
-					},
-
-					"groupId": { "type": "string" },
-					"scheduledAt": {
+				"oneOf": [
+					{
 						"type": "object",
+						"required": ["id", "type", "groupId", "player1Id", "player2Id"],
 						"properties": {
-							"date": { "type": "string" },
-							"time": { "type": "string" }
+							"id": {
+								"type": "string"
+							},
+							"type": {
+								"const": "group"
+							},
+							"groupId": {
+								"type": "string"
+							},
+							"scheduledAt": {
+								"type": "object",
+								"required": ["date", "time"],
+								"properties": {
+									"date": {
+										"type": "string",
+										"format": "date"
+									},
+									"time": {
+										"type": "string",
+										"pattern": "^\\d{2}:\\d{2}$"
+									}
+								}
+							},
+							"score1": {
+								"type": "number"
+							},
+							"score2": {
+								"type": "number"
+							},
+							"player1Id": {
+								"type": "string"
+							},
+							"player2Id": {
+								"type": "string"
+							}
 						},
-						"required": ["date", "time"]
+						"additionalProperties": false
 					},
-					"score1": { "type": "number" },
-					"score2": { "type": "number" },
-					"player1Id": { "type": "string" },
-					"player2Id": { "type": "string" },
-					"winnerId": { "type": "string" }
-				}
+					{
+						"type": "object",
+						"required": ["id", "type", "player1Id", "player2Id"],
+						"properties": {
+							"id": {
+								"type": "string"
+							},
+							"type": {
+								"enum": ["quarter-final", "semi-final", "final"]
+							},
+							"scheduledAt": {
+								"type": "object",
+								"required": ["date", "time"],
+								"properties": {
+									"date": {
+										"type": "string",
+										"format": "date"
+									},
+									"time": {
+										"type": "string",
+										"pattern": "^\\d{2}:\\d{2}$"
+									}
+								}
+							},
+							"score1": {
+								"type": "number"
+							},
+							"score2": {
+								"type": "number"
+							},
+							"player1Id": {
+								"type": "string"
+							},
+							"player2Id": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false
+					}
+				]
 			}
 		}
 	}

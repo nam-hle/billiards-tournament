@@ -54,16 +54,11 @@ export class TournamentRepository extends BaseRepository {
 
 		const scheduleMatches = await Promise.all(
 			matches.map<Promise<ScheduleMatch>>(async (match) => {
-				const group = groups.find((g) => g.id === match.groupId);
-
-				assert(group, `Group with ID ${match.groupId} not found for match ${match.id}`);
-
 				const player1 = await playerRepo.getById(match.player1Id);
 				const player2 = await playerRepo.getById(match.player1Id);
 
 				return {
 					...match,
-					groupName: group.name,
 					player1: { id: player1.id, name: player1?.name },
 					player2: { id: player2.id, name: player2?.name },
 					status: Match.isCompleted(match) ? "completed" : "scheduled"

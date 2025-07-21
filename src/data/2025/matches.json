@@ -3,7 +3,7 @@
 	"data": [
 		{
 			"id": "A-1",
-			"round": "group",
+			"type": "group",
 			"groupId": "A",
 			"player1Id": "p1",
 			"player2Id": "p2",
@@ -13,7 +13,7 @@
 		},
 		{
 			"id": "A-2",
-			"round": "group",
+			"type": "group",
 			"groupId": "A",
 			"player1Id": "p1",
 			"player2Id": "p3",
@@ -23,7 +23,7 @@
 		},
 		{
 			"id": "A-3",
-			"round": "group",
+			"type": "group",
 			"groupId": "A",
 			"player1Id": "p1",
 			"player2Id": "p4",
@@ -33,7 +33,7 @@
 		},
 		{
 			"id": "A-4",
-			"round": "group",
+			"type": "group",
 			"groupId": "A",
 			"player1Id": "p2",
 			"player2Id": "p3",
@@ -43,7 +43,7 @@
 		},
 		{
 			"id": "A-5",
-			"round": "group",
+			"type": "group",
 			"groupId": "A",
 			"player1Id": "p2",
 			"player2Id": "p4",
@@ -53,7 +53,7 @@
 		},
 		{
 			"id": "A-6",
-			"round": "group",
+			"type": "group",
 			"groupId": "A",
 			"player1Id": "p3",
 			"player2Id": "p4",
@@ -63,7 +63,7 @@
 		},
 		{
 			"id": "B-1",
-			"round": "group",
+			"type": "group",
 			"groupId": "B",
 			"player1Id": "p5",
 			"player2Id": "p6",
@@ -73,7 +73,7 @@
 		},
 		{
 			"id": "B-2",
-			"round": "group",
+			"type": "group",
 			"groupId": "B",
 			"player1Id": "p5",
 			"player2Id": "p7",
@@ -83,7 +83,7 @@
 		},
 		{
 			"id": "B-3",
-			"round": "group",
+			"type": "group",
 			"groupId": "B",
 			"player1Id": "p5",
 			"player2Id": "p8",
@@ -93,7 +93,7 @@
 		},
 		{
 			"id": "B-4",
-			"round": "group",
+			"type": "group",
 			"groupId": "B",
 			"player1Id": "p6",
 			"player2Id": "p7",
@@ -103,7 +103,7 @@
 		},
 		{
 			"id": "B-5",
-			"round": "group",
+			"type": "group",
 			"groupId": "B",
 			"player1Id": "p6",
 			"player2Id": "p8",
@@ -113,7 +113,7 @@
 		},
 		{
 			"id": "B-6",
-			"round": "group",
+			"type": "group",
 			"groupId": "B",
 			"player1Id": "p7",
 			"player2Id": "p8",

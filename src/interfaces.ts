@@ -18,30 +18,26 @@ export interface TournamentSchedule extends Tournament {
 	matches: ScheduleMatch[];
 }
 
-export interface ScheduleMatch extends Match {
+export type ScheduleMatch = Match & {
 	player1: { id: string; name: string };
 	player2: { id: string; name: string };
 	status: "scheduled" | "in-progress" | "completed" | "postponed";
-}
+};
 
 export interface TournamentSummary extends Tournament {
 	totalGroups: number;
 	totalPlayers: number;
 }
 
-export type RoundType = "group" | "quarter-final" | "semi-final" | "final";
-
 interface DateTime {
 	readonly date: string;
 	readonly time: string;
 }
 
-export interface Match {
+export interface BaseMatch {
 	id: string;
 
-	round: RoundType;
-	groupId?: string;
-	completedAt?: string;
+	type: string;
 	scheduledAt?: DateTime;
 
 	score1?: number;
@@ -49,6 +45,24 @@ export interface Match {
 	player1Id: string;
 	player2Id: string;
 }
+export interface GroupMatch extends BaseMatch {
+	type: "group";
+	groupId: string;
+}
+export namespace GroupMatch {
+	export function isInstance(match: BaseMatch): match is GroupMatch {
+		return match.type === "group";
+	}
+}
+export interface KnockoutMatch extends BaseMatch {
+	type: "quarter-final" | "semi-final" | "final";
+}
+export namespace KnockoutMatch {
+	export function isInstance(match: BaseMatch): match is KnockoutMatch {
+		return !GroupMatch.isInstance(match);
+	}
+}
+export type Match = GroupMatch | KnockoutMatch;
 export namespace Match {
 	export function isCompleted(match: Match): boolean {
 		return match.score1 != null && match.score2 != null;

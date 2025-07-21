@@ -1,4 +1,4 @@
-import { type Match } from "@/interfaces";
+import { GroupMatch, type Match } from "@/interfaces";
 import { BaseRepository } from "@/repositories/base.repository";
 
 export class MatchRepository extends BaseRepository {
@@ -6,9 +6,9 @@ export class MatchRepository extends BaseRepository {
 		return this.dataSource.getMatches(params);
 	}
 
-	async getAllMatchesByGroup(params: { year: string; groupId: string }): Promise<Match[]> {
+	async getAllMatchesByGroup(params: { year: string; groupId: string }): Promise<GroupMatch[]> {
 		const matches = await this.getAllByYear(params);
 
-		return matches.filter((match) => match.groupId === params.groupId);
+		return matches.filter((match): match is GroupMatch => GroupMatch.isInstance(match) && match.groupId === params.groupId);
 	}
 }

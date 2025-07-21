@@ -6,7 +6,7 @@ import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { Match } from "@/interfaces";
+import { Match, type GroupMatch } from "@/interfaces";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
@@ -177,7 +177,7 @@ export default async function GroupPage({ params }: Props) {
 	);
 }
 
-const getWinnerBadge = (match: Match, isPlayer1: boolean) => {
+const getWinnerBadge = (match: GroupMatch, isPlayer1: boolean) => {
 	const winnerId = Match.getWinnerId(match);
 
 	if (winnerId === undefined) {

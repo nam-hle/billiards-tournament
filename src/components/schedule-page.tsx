@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/ta
 import { DaySchedule } from "@/components/day-schedule";
 import { ScheduleFilters } from "@/components/schedule-filters";
 
-import { type ScheduleMatch, type TournamentSchedule } from "@/interfaces";
+import { GroupMatch, type ScheduleMatch, type TournamentSchedule } from "@/interfaces";
 
 export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule }) {
 	const [selectedGroup, setSelectedGroup] = useState("all");
@@ -20,7 +20,7 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 
 	// Filter matches
 	const filteredMatches = schedule.matches.filter((match) => {
-		const groupMatch = selectedGroup === "all" || match.groupId === selectedGroup;
+		const groupMatch = selectedGroup === "all" || (GroupMatch.isInstance(match) && match.groupId === selectedGroup);
 		const statusMatch = selectedStatus === "all" || match.status === selectedStatus;
 
 		return groupMatch && statusMatch;

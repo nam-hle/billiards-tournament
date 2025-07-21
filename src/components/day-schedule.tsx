@@ -5,7 +5,7 @@ import { Badge } from "@/components/shadcn/badge";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import type { ScheduleMatch } from "@/interfaces";
+import { GroupMatch, type ScheduleMatch } from "@/interfaces";
 
 export function DaySchedule({ date, matches }: { date: string; matches: ScheduleMatch[] }) {
 	if (matches.length === 0) {
@@ -33,11 +33,10 @@ export function DaySchedule({ date, matches }: { date: string; matches: Schedule
 						<TableHeader>
 							<TableRow>
 								<TableHead className="w-[100px]">Time</TableHead>
-								<TableHead className="w-[120px]">Group</TableHead>
+								<TableHead className="w-[120px]">Type</TableHead>
 								<TableHead>Player 1</TableHead>
 								<TableHead className="w-[100px] text-center">Score</TableHead>
 								<TableHead>Player 2</TableHead>
-								<TableHead className="w-[100px]">Venue</TableHead>
 								<TableHead className="w-[120px]">Status</TableHead>
 							</TableRow>
 						</TableHeader>
@@ -53,13 +52,8 @@ export function DaySchedule({ date, matches }: { date: string; matches: Schedule
 											<TableCell>
 												<div className="space-y-1">
 													<Badge variant="outline" className="text-xs">
-														{match.groupId}
+														{GroupMatch.isInstance(match) ? "Group" : "Knockout"}
 													</Badge>
-													{match.round && (
-														<Badge variant="secondary" className="block w-fit text-xs">
-															{match.round}
-														</Badge>
-													)}
 												</div>
 											</TableCell>
 											<TableCell>
@@ -91,7 +85,6 @@ export function DaySchedule({ date, matches }: { date: string; matches: Schedule
 													)}
 												</div>
 											</TableCell>
-											<TableCell className="text-sm text-muted-foreground">Chosen Club</TableCell>
 											<TableCell>
 												<Badge className={getStatusColor(match.status)}>{getStatusText(match.status)}</Badge>
 											</TableCell>
