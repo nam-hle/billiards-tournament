@@ -14,13 +14,13 @@ import { ScheduleFilters } from "@/components/schedule-filters";
 import { GroupMatch, type ScheduleMatch, type TournamentSchedule } from "@/interfaces";
 
 export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule }) {
-	const [selectedGroup, setSelectedGroup] = useState("all");
+	const [selectedGroupId, setSelectedGroupId] = useState("all");
 	const [selectedStatus, setSelectedStatus] = useState("all");
 	const [currentDate, setCurrentDate] = useState(new Date().toISOString().split("T")[0]);
 
 	// Filter matches
 	const filteredMatches = schedule.matches.filter((match) => {
-		const groupMatch = selectedGroup === "all" || (GroupMatch.isInstance(match) && match.groupId === selectedGroup);
+		const groupMatch = selectedGroupId === "all" || (GroupMatch.isInstance(match) && match.groupId === selectedGroupId);
 		const statusMatch = selectedStatus === "all" || match.status === selectedStatus;
 
 		return groupMatch && statusMatch;
@@ -43,6 +43,8 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 		},
 		{} as Record<string, ScheduleMatch[]>
 	);
+
+	const unscheduledMatches = filteredMatches.filter((match) => !match.scheduledAt);
 
 	const dates = Object.keys(matchesByDate).sort();
 	const currentDateIndex = dates.indexOf(currentDate);
@@ -128,9 +130,9 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 				<CardContent className="pt-6">
 					<ScheduleFilters
 						groups={schedule.groups}
-						selectedGroup={selectedGroup}
+						selectedGroup={selectedGroupId}
 						selectedStatus={selectedStatus}
-						onGroupChange={setSelectedGroup}
+						onGroupChange={setSelectedGroupId}
 						onStatusChange={setSelectedStatus}
 					/>
 				</CardContent>
@@ -169,20 +171,21 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 						</Button>
 					</div>
 
-					<DaySchedule date={currentDate} matches={todayMatches} />
+					<DaySchedule date={currentDate} matches={todayMatches} groups={schedule.groups} />
 				</TabsContent>
 
 				<TabsContent value="upcoming" className="space-y-6">
-					<DaySchedule date="upcoming" matches={upcomingMatches} />
+					<DaySchedule date="upcoming" groups={schedule.groups} matches={upcomingMatches} />
 				</TabsContent>
 
 				<TabsContent value="all" className="space-y-6">
 					{dates.map((date) => (
 						<div key={date}>
-							<DaySchedule date={date} matches={matchesByDate[date]} />
+							<DaySchedule date={date} groups={schedule.groups} matches={matchesByDate[date]} />
 							{date !== dates[dates.length - 1] && <Separator className="my-8" />}
 						</div>
 					))}
+					{unscheduledMatches.length > 0 && <DaySchedule date={undefined} groups={schedule.groups} matches={unscheduledMatches} />}
 				</TabsContent>
 			</Tabs>
 		</div>

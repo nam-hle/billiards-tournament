@@ -107,19 +107,14 @@
 			"groupId": "B",
 			"player1Id": "p6",
 			"player2Id": "p8",
-			"scheduledAt": { "date": "2025-07-26", "time": "12:00" },
-			"score1": 5,
-			"score2": 0
+			"scheduledAt": { "date": "2025-07-26", "time": "12:00" }
 		},
 		{
 			"id": "B-6",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "p7",
-			"player2Id": "p8",
-			"scheduledAt": { "date": "2025-07-26", "time": "14:00" },
-			"score1": 3,
-			"score2": 5
+			"player2Id": "p8"
 		}
 	]
 }

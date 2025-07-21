@@ -5,9 +5,9 @@ import { Badge } from "@/components/shadcn/badge";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { GroupMatch, type ScheduleMatch } from "@/interfaces";
+import { type Group, GroupMatch, type ScheduleMatch } from "@/interfaces";
 
-export function DaySchedule({ date, matches }: { date: string; matches: ScheduleMatch[] }) {
+export function DaySchedule({ date, groups, matches }: { date: string | undefined; matches: ScheduleMatch[]; groups: Pick<Group, "id" | "name">[] }) {
 	if (matches.length === 0) {
 		return (
 			<div className="py-8 text-center text-muted-foreground">
@@ -21,7 +21,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Schedule
 		<div className="space-y-4">
 			<div className="mb-6 flex items-center gap-2">
 				<Calendar className="h-5 w-5 text-primary" />
-				<h3 className="text-lg font-semibold">{date === "upcoming" ? "Upcoming Matches" : formatDate(date)}</h3>
+				<h3 className="text-lg font-semibold">{date === undefined ? "Unscheduled" : date === "upcoming" ? "Upcoming Matches" : formatDate(date)}</h3>
 				<Badge className="ml-2" variant="secondary">
 					{matches.length} {matches.length === 1 ? "match" : "matches"}
 				</Badge>
@@ -32,6 +32,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Schedule
 					<Table>
 						<TableHeader>
 							<TableRow>
+								{date === "upcoming" ? <TableHead className="w-[140px]">Date</TableHead> : null}
 								<TableHead className="w-[100px]">Time</TableHead>
 								<TableHead className="w-[120px]">Type</TableHead>
 								<TableHead>Player 1</TableHead>
@@ -48,11 +49,20 @@ export function DaySchedule({ date, matches }: { date: string; matches: Schedule
 
 									return (
 										<TableRow key={match.id}>
-											<TableCell className="font-mono text-sm">{match.scheduledAt ? formatTime(match.scheduledAt.time) : "Unscheduled"}</TableCell>
+											{date === "upcoming" ? (
+												<TableCell className="font-mono text-sm">
+													{match.scheduledAt
+														? formatDate(match.scheduledAt.date, { month: "short", day: "numeric", weekday: "short" })
+														: "Unscheduled"}
+												</TableCell>
+											) : null}
+											<TableCell className="font-mono text-sm">{match.scheduledAt ? formatTime(match.scheduledAt.time) : "-"}</TableCell>
 											<TableCell>
 												<div className="space-y-1">
 													<Badge variant="outline" className="text-xs">
-														{GroupMatch.isInstance(match) ? "Group" : "Knockout"}
+														{GroupMatch.isInstance(match)
+															? (groups.find((group) => group.id === match.groupId)?.name ?? "Unknown group")
+															: "Knockout"}
 													</Badge>
 												</div>
 											</TableCell>
@@ -99,13 +109,8 @@ export function DaySchedule({ date, matches }: { date: string; matches: Schedule
 	);
 }
 
-const formatDate = (dateString: string) => {
-	return new Date(dateString).toLocaleDateString("en-US", {
-		month: "long",
-		day: "numeric",
-		weekday: "long",
-		year: "numeric"
-	});
+const formatDate = (dateString: string, options?: Intl.DateTimeFormatOptions) => {
+	return new Date(dateString).toLocaleDateString("en-US", options ?? { month: "long", day: "numeric", weekday: "long", year: "numeric" });
 };
 
 const getStatusColor = (status: string) => {

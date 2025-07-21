@@ -14,8 +14,8 @@ export interface Tournament {
 }
 
 export interface TournamentSchedule extends Tournament {
-	groups: string[];
 	matches: ScheduleMatch[];
+	groups: Pick<Group, "id" | "name">[];
 }
 
 export type ScheduleMatch = Match & {

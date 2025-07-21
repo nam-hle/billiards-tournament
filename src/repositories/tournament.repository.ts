@@ -66,6 +66,6 @@ export class TournamentRepository extends BaseRepository {
 			})
 		);
 
-		return { ...tournament, matches: scheduleMatches, groups: groups.map((g) => g.id) };
+		return { ...tournament, matches: scheduleMatches, groups: groups.map(({ id, name }) => ({ id, name })) };
 	}
 }

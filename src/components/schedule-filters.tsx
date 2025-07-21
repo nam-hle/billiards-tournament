@@ -2,6 +2,8 @@ import { Filter } from "lucide-react";
 
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
+import { type Group } from "@/interfaces";
+
 export function ScheduleFilters({
 	groups,
 	selectedGroup,
@@ -9,9 +11,9 @@ export function ScheduleFilters({
 	selectedStatus,
 	onStatusChange
 }: {
-	groups: string[];
 	selectedGroup: string;
 	selectedStatus: string;
+	groups: Pick<Group, "id" | "name">[];
 	onGroupChange: (value: string) => void;
 	onStatusChange: (value: string) => void;
 }) {
@@ -29,8 +31,8 @@ export function ScheduleFilters({
 				<SelectContent>
 					<SelectItem value="all">All Groups</SelectItem>
 					{groups.map((group) => (
-						<SelectItem key={group} value={group}>
-							{group}
+						<SelectItem key={group.id} value={group.id}>
+							{group.name}
 						</SelectItem>
 					))}
 				</SelectContent>
