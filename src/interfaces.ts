@@ -13,6 +13,17 @@ export interface Tournament {
 	startDate: string;
 }
 
+export interface TournamentSchedule extends Tournament {
+	groups: string[];
+	matches: ScheduleMatch[];
+}
+
+export interface ScheduleMatch extends Match {
+	player1: { id: string; name: string };
+	player2: { id: string; name: string };
+	status: "scheduled" | "in-progress" | "completed" | "postponed";
+}
+
 export interface TournamentSummary extends Tournament {
 	totalGroups: number;
 	totalPlayers: number;
@@ -20,13 +31,18 @@ export interface TournamentSummary extends Tournament {
 
 export type RoundType = "group" | "quarter-final" | "semi-final" | "final";
 
+interface DateTime {
+	readonly date: string;
+	readonly time: string;
+}
+
 export interface Match {
 	id: string;
 
 	round: RoundType;
 	groupId?: string;
-	scheduledAt?: string;
 	completedAt?: string;
+	scheduledAt?: DateTime;
 
 	score1?: number;
 	score2?: number;

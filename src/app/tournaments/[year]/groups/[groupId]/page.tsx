@@ -136,12 +136,7 @@ export default async function GroupPage({ params }: Props) {
 								return (
 									<TableRow key={match.id}>
 										<TableCell className="font-mono text-sm">
-											{match.scheduledAt
-												? new Date(match.scheduledAt).toLocaleDateString("en-US", {
-														month: "short",
-														day: "numeric"
-													})
-												: "-"}
+											{match.scheduledAt ? new Date(match.scheduledAt.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "-"}
 										</TableCell>
 										<TableCell>
 											<div className="flex items-center">

@@ -1,7 +1,9 @@
 import { assert } from "@/utils";
 import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
-import { type Tournament, type GroupSummary, type TournamentSummary } from "@/interfaces";
+import { MatchRepository } from "@/repositories/match.repository";
+import { PlayerRepository } from "@/repositories/player.repository";
+import { Match, type Tournament, type GroupSummary, type ScheduleMatch, type TournamentSummary, type TournamentSchedule } from "@/interfaces";
 
 export class TournamentRepository extends BaseRepository {
 	public getAll(): Promise<Tournament[]> {
@@ -40,5 +42,35 @@ export class TournamentRepository extends BaseRepository {
 		}
 
 		return groupSummaries;
+	}
+
+	public async getSchedule(year: string): Promise<TournamentSchedule> {
+		const tournament = await this.getByYear(year);
+		const groups = await new GroupRepository().getByYear({ year });
+
+		const matches = await new MatchRepository().getAllByYear({ year });
+
+		const playerRepo = new PlayerRepository();
+
+		const scheduleMatches = await Promise.all(
+			matches.map<Promise<ScheduleMatch>>(async (match) => {
+				const group = groups.find((g) => g.id === match.groupId);
+
+				assert(group, `Group with ID ${match.groupId} not found for match ${match.id}`);
+
+				const player1 = await playerRepo.getById(match.player1Id);
+				const player2 = await playerRepo.getById(match.player1Id);
+
+				return {
+					...match,
+					groupName: group.name,
+					player1: { id: player1.id, name: player1?.name },
+					player2: { id: player2.id, name: player2?.name },
+					status: Match.isCompleted(match) ? "completed" : "scheduled"
+				};
+			})
+		);
+
+		return { ...tournament, matches: scheduleMatches, groups: groups.map((g) => g.id) };
 	}
 }

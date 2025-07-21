@@ -14,9 +14,16 @@
 						"type": "string",
 						"enum": ["group", "quarter-final", "semi-final", "final"]
 					},
+
 					"groupId": { "type": "string" },
-					"scheduledAt": { "type": "string", "format": "date-time" },
-					"completedAt": { "type": "string", "format": "date-time" },
+					"scheduledAt": {
+						"type": "object",
+						"properties": {
+							"date": { "type": "string" },
+							"time": { "type": "string" }
+						},
+						"required": ["date", "time"]
+					},
 					"score1": { "type": "number" },
 					"score2": { "type": "number" },
 					"player1Id": { "type": "string" },
