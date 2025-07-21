@@ -24,7 +24,7 @@ function useTabs(): Tab[] {
 		return [
 			{ href: pathname, label: "Overview", match: (path) => path === pathname },
 			{ label: "Groups", href: `${basePath}/groups`, match: (path) => path === `${pathname}/groups` },
-			{ label: "Bracket", href: `${basePath}/bracket`, match: (path) => path === `${pathname}/bracket` },
+			// { label: "Bracket", href: `${basePath}/bracket`, match: (path) => path === `${pathname}/bracket` },
 			{ label: "Schedule", href: `${basePath}/schedule`, match: (path) => path === `${pathname}/schedule` },
 			{ label: "Players", href: `${basePath}/players`, match: (path) => path === `${pathname}/players` },
 			{ label: "Results", href: `${basePath}/results`, match: (path) => path === `${pathname}/results` }

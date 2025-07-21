@@ -72,6 +72,9 @@ export default async function GroupPage({ params }: Props) {
 								<TableHead className="text-center">Played</TableHead>
 								<TableHead className="text-center">Wins</TableHead>
 								<TableHead className="text-center">Losses</TableHead>
+								<TableHead className="text-center">Racks Won</TableHead>
+								<TableHead className="text-center">Racks Lost</TableHead>
+								<TableHead className="text-center">Racks Diff</TableHead>
 								<TableHead className="text-center font-semibold">Points</TableHead>
 							</TableRow>
 						</TableHeader>
@@ -95,6 +98,27 @@ export default async function GroupPage({ params }: Props) {
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-red-100 text-red-800">
 											{standing.losses}
+										</Badge>
+									</TableCell>
+									<TableCell className="text-center">
+										<Badge variant="secondary" className="bg-green-100 text-green-800">
+											{standing.matchesWins}
+										</Badge>
+									</TableCell>
+									<TableCell className="text-center">
+										<Badge variant="secondary" className="bg-red-100 text-red-800">
+											{standing.matchesLosses}
+										</Badge>
+									</TableCell>
+									<TableCell className="text-center">
+										<Badge
+											variant="secondary"
+											className={
+												{ "0": "", "-1": "bg-red-100 text-red-800", "1": "bg-green-100 text-green-800" }[
+													Math.sign(standing.matchesWins - standing.matchesLosses)
+												]
+											}>
+											{standing.matchesWins - standing.matchesLosses}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
