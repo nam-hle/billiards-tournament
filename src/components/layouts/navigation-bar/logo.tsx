@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Split } from "lucide-react";
+import Image from "next/image";
 
 import { useHomePage } from "@/hooks";
 
@@ -12,7 +12,7 @@ export const Logo = () => {
 	return (
 		<Link href="/">
 			<div data-testid="logo" className="flex items-center">
-				<Split className="h-6 w-6" />
+				<Image width={24} height={24} src="/logo.svg" alt="Application Logo" />
 				{homePage && <span className="ml-2 text-xl font-bold">BillPilot</span>}
 			</div>
 		</Link>

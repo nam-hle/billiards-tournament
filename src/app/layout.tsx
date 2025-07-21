@@ -13,10 +13,10 @@ const interSans = Inter({
 });
 
 export const metadata: Metadata = {
-	description: "Nam Le",
+	description: "Nam Hoang Le",
 	title: {
-		default: "Bill Management",
-		template: "%s | Bill Management"
+		default: "mgm Billiards Club",
+		template: "%s | mgm Billiards Club"
 	}
 };
 
@@ -27,6 +27,10 @@ export default async function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
+			<head>
+				<link rel="icon" sizes="any" href="/favicon.ico" />
+				<title>mgm Billiards Club</title>
+			</head>
 			<body suppressHydrationWarning className={interSans.variable}>
 				<Application>{children}</Application>
 			</body>

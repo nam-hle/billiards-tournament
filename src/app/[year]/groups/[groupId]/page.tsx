@@ -17,7 +17,7 @@ interface Props {
 
 export default async function GroupPage({ params }: Props) {
 	const { year, groupId } = await params;
-	const group = await new GroupRepository().get({ year, groupId });
+	const group = await new GroupRepository().find({ year, groupId });
 
 	if (!group) {
 		return notFound();

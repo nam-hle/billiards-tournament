@@ -5,8 +5,12 @@ import { BaseRepository } from "@/repositories/base.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 
 export class GroupRepository extends BaseRepository {
+	async getByYear(params: { year: string }): Promise<Group[]> {
+		return this.dataSource.getGroups(params);
+	}
+
 	async find(params: { year: string; groupId: string }): Promise<Group | undefined> {
-		const groups = await this.dataSource.getGroups({ year: params.year });
+		const groups = await this.getByYear(params);
 
 		return groups.find((group) => group.id === params.groupId);
 	}
