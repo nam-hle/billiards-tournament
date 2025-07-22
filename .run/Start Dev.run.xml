@@ -1,7 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Start Dev" type="CompoundRunConfigurationType">
-    <toRun name="Start Dev App" type="js.build_tools.npm" />
-    <toRun name="Start QR Server" type="js.build_tools.npm" />
+    <toRun name="Start" type="js.build_tools.npm" />
     <toRun name="Watch TS" type="js.build_tools.npm" />
     <method v="2" />
   </configuration>

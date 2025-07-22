@@ -3,6 +3,16 @@ export interface Player {
 	name: string;
 	nickname?: string;
 }
+export interface PlayerTournamentStat extends Player {
+	group: Group;
+
+	wins: number;
+	losses: number;
+	playedMatches: number;
+
+	winRate: number;
+	status: "active" | "eliminated" | "qualified";
+}
 
 export interface Tournament {
 	name: string;
