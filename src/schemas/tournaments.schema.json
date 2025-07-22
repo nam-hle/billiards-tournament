@@ -12,7 +12,8 @@
 					"year": { "type": "string" },
 					"startDate": { "type": "string", "format": "date" },
 					"endDate": { "type": "string", "format": "date" },
-					"name": { "type": "string" }
+					"name": { "type": "string" },
+					"venue": { "type": "string" }
 				}
 			}
 		}

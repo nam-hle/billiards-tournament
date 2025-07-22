@@ -5,13 +5,15 @@
 			"year": "2025",
 			"startDate": "2025-08-03",
 			"endDate": "2025-08-28",
-			"name": "2nd mgm Billiards Tournament"
+			"name": "2nd mgm Billiards Tournament 2025",
+			"venue": "Billiards Club - 37 Pasteur, Danang"
 		},
 		{
 			"year": "2024",
 			"startDate": "2024-06-01",
 			"endDate": "2024-06-10",
-			"name": "1st mgm Billiards Tournament"
+			"name": "1st mgm Billiards Tournament 2024",
+			"venue": "Billiards Club - 37 Pasteur, Danang"
 		}
 	]
 }
