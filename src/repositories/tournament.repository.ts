@@ -2,8 +2,18 @@ import { assert } from "@/utils";
 import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
+import { type TournamentData } from "@/app/tournaments/[year]/page";
 import { PlayerRepository } from "@/repositories/player.repository";
-import { Match, type Tournament, type GroupSummary, type ScheduleMatch, type TournamentSummary, type TournamentSchedule } from "@/interfaces";
+import {
+	DateTime,
+	CompletedMatch,
+	type Tournament,
+	type GroupSummary,
+	type ScheduleMatch,
+	type TournamentSummary,
+	type TournamentOverview,
+	type TournamentSchedule
+} from "@/interfaces";
 
 export class TournamentRepository extends BaseRepository {
 	public getAll(): Promise<Tournament[]> {
@@ -61,11 +71,63 @@ export class TournamentRepository extends BaseRepository {
 					...match,
 					player1: { id: player1.id, name: player1?.name },
 					player2: { id: player2.id, name: player2?.name },
-					status: Match.isCompleted(match) ? "completed" : "scheduled"
+					status: CompletedMatch.isInstance(match) ? "completed" : "scheduled"
 				};
 			})
 		);
 
 		return { ...tournament, matches: scheduleMatches, groups: groups.map(({ id, name }) => ({ id, name })) };
+	}
+
+	public async getOverview(year: string): Promise<TournamentData> {
+		const tournament = await this.getByYear(year);
+		const groups = await this.getGroupSummaries(year);
+		const matches = await new MatchRepository().getAllByYear({ year });
+
+		const players = groups.map((group) => group.players).flat();
+
+		const upcomingMatches = matches.filter(
+			(match) => !CompletedMatch.isInstance(match) && match.scheduledAt && new Date(match.scheduledAt.date) > new Date()
+		);
+
+		const completedMatches = matches.filter(CompletedMatch.isInstance);
+
+		const comparator = DateTime.createComparator("desc");
+		const recentMatches = completedMatches.sort((a, b) => comparator(a.scheduledAt, b.scheduledAt)).slice(0, 5);
+
+		const playersRepo = new PlayerRepository();
+
+		const topPlayers = (
+			await Promise.all(
+				groups.map(async (group) => {
+					const standings = await new GroupRepository().getStandings({ year, groupId: group.id });
+
+					return Promise.all(
+						standings.map(async (standing) => {
+							const player = await playersRepo.getById(standing.playerId);
+
+							return { ...standing, name: player.name };
+						})
+					);
+				})
+			)
+		)
+			.flat()
+			.sort((a, b) => b.points - a.points || b.wins - a.wins)
+			.slice(0, 5)
+			.map((player) => {
+				return { name: player.name, wins: player.wins, points: player.points };
+			});
+
+		const overview: TournamentOverview = {
+			totalGroups: groups.length,
+			totalPlayers: players.length,
+			totalMatches: matches.length,
+			completedMatches: completedMatches.length,
+			status: completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "active" : "completed",
+			...tournament
+		};
+
+		return { groups, overview, topPlayers, recentMatches, upcomingMatches };
 	}
 }

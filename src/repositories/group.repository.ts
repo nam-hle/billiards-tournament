@@ -3,7 +3,7 @@ import { combineComparators } from "@/utils/comparator";
 import { BaseRepository } from "@/repositories/base.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
-import { Match, type Group, type Standing, type GroupSummary } from "@/interfaces";
+import { type Group, type Standing, CompletedMatch, type GroupMatch, type GroupSummary, type WithCompleteness } from "@/interfaces";
 
 export class GroupRepository extends BaseRepository {
 	async getByYear(params: { year: string }): Promise<Group[]> {
@@ -29,7 +29,7 @@ export class GroupRepository extends BaseRepository {
 		const matches = await new MatchRepository().getAllMatchesByGroup(params);
 		const playerRepository = new PlayerRepository();
 
-		const completedMatches = matches.filter(Match.isCompleted);
+		const completedMatches = matches.filter(CompletedMatch.isInstance);
 		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < group.matches.length ? "active" : "completed";
 
 		const [topPlayer] = await this.getStandings(params);
@@ -48,7 +48,9 @@ export class GroupRepository extends BaseRepository {
 
 	async getStandings(params: { year: string; groupId: string }): Promise<Standing[]> {
 		const group = await this.get(params);
-		const matches = await new MatchRepository().getAllMatchesByGroup(params);
+		const matches = (await new MatchRepository().getAllMatchesByGroup(params)).filter((match): match is WithCompleteness<GroupMatch> => {
+			return CompletedMatch.isInstance(match);
+		});
 
 		const findHeadMatch = (player1Id: string, player2Id: string) => {
 			return matches.find(
@@ -68,11 +70,11 @@ export class GroupRepository extends BaseRepository {
 					return 0;
 				}
 
-				if (Match.getWinnerId(match) === a.playerId) {
+				if (CompletedMatch.getWinnerId(match) === a.playerId) {
 					return -1;
 				}
 
-				if (Match.getWinnerId(match) === b.playerId) {
+				if (CompletedMatch.getWinnerId(match) === b.playerId) {
 					return 1;
 				}
 
@@ -103,7 +105,7 @@ export class GroupRepository extends BaseRepository {
 					matchesWins += match.score1;
 					matchesLosses += match.score2;
 
-					if (playerId === Match.getWinnerId(match)) {
+					if (playerId === CompletedMatch.getWinnerId(match)) {
 						points += 3;
 						wins++;
 					} else {

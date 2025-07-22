@@ -109,7 +109,7 @@ export function DaySchedule({ date, groups, matches }: { date: string | undefine
 	);
 }
 
-const formatDate = (dateString: string, options?: Intl.DateTimeFormatOptions) => {
+export const formatDate = (dateString: string, options?: Intl.DateTimeFormatOptions) => {
 	return new Date(dateString).toLocaleDateString("en-US", options ?? { month: "long", day: "numeric", weekday: "long", year: "numeric" });
 };
 
@@ -128,7 +128,7 @@ const getStatusColor = (status: string) => {
 	}
 };
 
-const formatTime = (timeString: string) => {
+export const formatTime = (timeString: string) => {
 	const parsed = parse(timeString, "HH:mm", new Date());
 
 	return format(parsed, "hh:mm a");
