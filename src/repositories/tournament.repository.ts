@@ -2,7 +2,6 @@ import { assert } from "@/utils";
 import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
-import { type TournamentData } from "@/app/tournaments/[year]/page";
 import { PlayerRepository } from "@/repositories/player.repository";
 import {
 	DateTime,
@@ -10,6 +9,7 @@ import {
 	type Tournament,
 	type GroupSummary,
 	type ScheduleMatch,
+	type TournamentData,
 	type TournamentSummary,
 	type TournamentOverview,
 	type TournamentSchedule
@@ -79,7 +79,7 @@ export class TournamentRepository extends BaseRepository {
 		return { ...tournament, matches: scheduleMatches, groups: groups.map(({ id, name }) => ({ id, name })) };
 	}
 
-	public async getOverview(year: string): Promise<TournamentData> {
+	public async getData(year: string): Promise<TournamentData> {
 		const tournament = await this.getByYear(year);
 		const groups = await this.getGroupSummaries(year);
 		const matches = await new MatchRepository().getAllByYear({ year });
@@ -124,7 +124,7 @@ export class TournamentRepository extends BaseRepository {
 			totalPlayers: players.length,
 			totalMatches: matches.length,
 			completedMatches: completedMatches.length,
-			status: completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "active" : "completed",
+			status: completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "ongoing" : "completed",
 			...tournament
 		};
 

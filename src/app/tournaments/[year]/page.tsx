@@ -11,19 +11,11 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { formatDate, formatTime } from "@/components/day-schedule";
 
 import { assert } from "@/utils";
+import { type TournamentOverview } from "@/interfaces";
 import { TournamentRepository } from "@/repositories/tournament.repository";
-import { type Match, type GroupSummary, type CompletedMatch, type TournamentOverview } from "@/interfaces";
 
 interface Props {
 	params: Promise<{ year: string }>;
-}
-
-export interface TournamentData {
-	groups: GroupSummary[];
-	upcomingMatches: Match[];
-	overview: TournamentOverview;
-	recentMatches: CompletedMatch[];
-	topPlayers: Array<{ name: string; wins: number; points: number }>;
 }
 
 function NavigationCards({ year }: { year: string }) {
@@ -140,7 +132,7 @@ function TournamentStats({ overview }: { overview: TournamentOverview }) {
 
 export default async function TournamentOverviewPage({ params }: Props) {
 	const { year } = await params;
-	const data = await new TournamentRepository().getOverview(year);
+	const data = await new TournamentRepository().getData(year);
 
 	const { groups, overview, topPlayers, recentMatches, upcomingMatches } = data;
 

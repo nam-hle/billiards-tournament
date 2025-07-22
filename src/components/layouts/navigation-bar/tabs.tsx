@@ -45,6 +45,10 @@ export const Tabs = () => {
 	const tabRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
 	useEffect(() => {
+		if (!tabs.length) {
+			return;
+		}
+
 		if (!tabs.some((tab) => tab.match(pathname))) {
 			setActiveIndex(() => -1);
 			setActiveStyle(() => ({ left: "0px", width: "0px" }));

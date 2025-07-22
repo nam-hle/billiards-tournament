@@ -15,6 +15,7 @@ export interface PlayerTournamentStat extends Player {
 }
 
 export interface Tournament {
+	id: string;
 	name: string;
 	year: string;
 	venue: string;
@@ -28,7 +29,15 @@ export interface TournamentOverview extends Tournament {
 	totalPlayers: number;
 	totalMatches: number;
 	completedMatches: number;
-	status: "upcoming" | "active" | "completed";
+	status: "upcoming" | "ongoing" | "completed";
+}
+
+export interface TournamentData {
+	groups: GroupSummary[];
+	upcomingMatches: Match[];
+	overview: TournamentOverview;
+	recentMatches: CompletedMatch[];
+	topPlayers: Array<{ name: string; wins: number; points: number }>;
 }
 
 export interface TournamentSchedule extends Tournament {
