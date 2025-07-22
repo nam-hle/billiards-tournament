@@ -1,4 +1,6 @@
+"use client";
 import React from "react";
+import { usePathname } from "next/navigation";
 
 import { Toaster } from "@/components/shadcn/sonner";
 
@@ -9,6 +11,16 @@ import { NavigationBar } from "@/components/layouts/navigation-bar/navigation-ba
 import { type Container } from "@/types";
 
 export const Application: React.FC<Container> = ({ children }) => {
+	const pathname = usePathname();
+
+	if (pathname === "/") {
+		return (
+			<ThemeProvider enableSystem attribute="class" defaultTheme="system" disableTransitionOnChange>
+				{children}
+			</ThemeProvider>
+		);
+	}
+
 	return (
 		<ThemeProvider enableSystem attribute="class" defaultTheme="system" disableTransitionOnChange>
 			<div className="mx-auto flex min-h-screen max-w-screen-2xl flex-col px-8">
