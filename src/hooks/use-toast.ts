@@ -15,12 +15,13 @@ type ToasterToast = ToastProps & {
 	description?: React.ReactNode;
 };
 
-// const actionTypes = {
-// 	ADD_TOAST: "ADD_TOAST",
-// 	UPDATE_TOAST: "UPDATE_TOAST",
-// 	REMOVE_TOAST: "REMOVE_TOAST",
-// 	DISMISS_TOAST: "DISMISS_TOAST"
-// } as const;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const actionTypes = {
+	ADD_TOAST: "ADD_TOAST",
+	UPDATE_TOAST: "UPDATE_TOAST",
+	REMOVE_TOAST: "REMOVE_TOAST",
+	DISMISS_TOAST: "DISMISS_TOAST"
+} as const;
 
 let count = 0;
 
