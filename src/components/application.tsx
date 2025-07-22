@@ -13,7 +13,7 @@ import { type Container } from "@/types";
 export const Application: React.FC<Container> = ({ children }) => {
 	const pathname = usePathname();
 
-	if (pathname === "/") {
+	if (pathname === "/" || pathname === "/auth") {
 		return (
 			<ThemeProvider enableSystem attribute="class" defaultTheme="system" disableTransitionOnChange>
 				{children}
