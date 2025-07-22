@@ -1,52 +1,52 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { Users, Medal, Trophy, Search, Filter, Target, ArrowRight } from "lucide-react"
+import Link from "next/link";
+import { useState } from "react";
+import { Users, Medal, Trophy, Search, Filter, Target, ArrowRight } from "lucide-react";
 
-import { Badge } from "@/components/shadcn/badge"
-import { Input } from "@/components/shadcn/input"
-import { Button } from "@/components/shadcn/button"
-import { Separator } from "@/components/shadcn/separator"
-import { Card, CardContent } from "@/components/shadcn/card"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar"
-import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/tabs"
-import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table"
-import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select"
+import { Badge } from "@/components/shadcn/badge";
+import { Input } from "@/components/shadcn/input";
+import { Button } from "@/components/shadcn/button";
+import { Separator } from "@/components/shadcn/separator";
+import { Card, CardContent } from "@/components/shadcn/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/tabs";
+import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
+import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
 interface Props {
-	params: Promise<{ year: string }>
+	params: Promise<{ year: string }>;
 }
 
 interface Player {
-	id: string
-	name: string
-	wins: number
-	email: string
-	losses: number
-	points: number
-	avatar?: string
-	groupId: string
-	winRate: number
-	groupName: string
-	joinedDate: string
-	matchesPlayed: number
-	status: "active" | "eliminated" | "qualified"
+	id: string;
+	name: string;
+	wins: number;
+	email: string;
+	losses: number;
+	points: number;
+	avatar?: string;
+	groupId: string;
+	winRate: number;
+	groupName: string;
+	joinedDate: string;
+	matchesPlayed: number;
+	status: "active" | "eliminated" | "qualified";
 	recentMatches: Array<{
-		id: string
-		date: string
-		score: string
-		opponent: string
-		result: "win" | "loss"
-	}>
+		id: string;
+		date: string;
+		score: string;
+		opponent: string;
+		result: "win" | "loss";
+	}>;
 }
 
 interface TournamentPlayers {
-	year: string
-	name: string
-	players: Player[]
-	totalMatches: number
-	groups: Array<{ id: string; name: string }>
+	year: string;
+	name: string;
+	players: Player[];
+	totalMatches: number;
+	groups: Array<{ id: string; name: string }>;
 }
 
 // Mock repository - replace with your actual implementation
@@ -60,7 +60,7 @@ class PlayersRepository {
 				{ id: "A", name: "Group A" },
 				{ id: "B", name: "Group B" },
 				{ id: "C", name: "Group C" },
-				{ id: "D", name: "Group D" },
+				{ id: "D", name: "Group D" }
 			],
 			players: [
 				{
@@ -80,8 +80,8 @@ class PlayersRepository {
 					recentMatches: [
 						{ id: "1", score: "3-1", result: "win", date: "2024-01-15", opponent: "Sarah Johnson" },
 						{ id: "2", score: "3-0", result: "win", date: "2024-01-12", opponent: "Mike Davis" },
-						{ id: "3", score: "3-2", result: "win", date: "2024-01-10", opponent: "Emma Wilson" },
-					],
+						{ id: "3", score: "3-2", result: "win", date: "2024-01-10", opponent: "Emma Wilson" }
+					]
 				},
 				{
 					id: "2",
@@ -100,8 +100,8 @@ class PlayersRepository {
 					recentMatches: [
 						{ id: "4", score: "3-0", result: "win", date: "2024-01-16", opponent: "Alex Brown" },
 						{ id: "5", score: "3-1", result: "win", date: "2024-01-14", opponent: "Lisa Garcia" },
-						{ id: "6", score: "3-2", result: "win", date: "2024-01-11", opponent: "David Lee" },
-					],
+						{ id: "6", score: "3-2", result: "win", date: "2024-01-11", opponent: "David Lee" }
+					]
 				},
 				{
 					id: "3",
@@ -119,8 +119,8 @@ class PlayersRepository {
 					avatar: "/placeholder.svg?height=40&width=40",
 					recentMatches: [
 						{ id: "7", score: "3-1", result: "win", date: "2024-01-13", opponent: "James Wilson" },
-						{ id: "8", score: "3-0", result: "win", date: "2024-01-11", opponent: "Anna Taylor" },
-					],
+						{ id: "8", score: "3-0", result: "win", date: "2024-01-11", opponent: "Anna Taylor" }
+					]
 				},
 				{
 					id: "4",
@@ -139,8 +139,8 @@ class PlayersRepository {
 					recentMatches: [
 						{ id: "9", score: "2-3", result: "loss", date: "2024-01-15", opponent: "John Smith" },
 						{ id: "10", score: "3-1", result: "win", date: "2024-01-13", opponent: "Alex Brown" },
-						{ id: "11", score: "3-0", result: "win", date: "2024-01-10", opponent: "Lisa Garcia" },
-					],
+						{ id: "11", score: "3-0", result: "win", date: "2024-01-10", opponent: "Lisa Garcia" }
+					]
 				},
 				{
 					id: "5",
@@ -159,8 +159,8 @@ class PlayersRepository {
 					recentMatches: [
 						{ id: "12", score: "0-3", result: "loss", date: "2024-01-16", opponent: "Sarah Johnson" },
 						{ id: "13", score: "1-3", result: "loss", date: "2024-01-13", opponent: "Emma Wilson" },
-						{ id: "14", score: "3-2", result: "win", date: "2024-01-10", opponent: "David Lee" },
-					],
+						{ id: "14", score: "3-2", result: "win", date: "2024-01-10", opponent: "David Lee" }
+					]
 				},
 				{
 					id: "6",
@@ -178,8 +178,8 @@ class PlayersRepository {
 					avatar: "/placeholder.svg?height=40&width=40",
 					recentMatches: [
 						{ id: "15", score: "1-3", result: "loss", date: "2024-01-14", opponent: "Sarah Johnson" },
-						{ id: "16", score: "3-1", result: "win", date: "2024-01-11", opponent: "James Wilson" },
-					],
+						{ id: "16", score: "3-1", result: "win", date: "2024-01-11", opponent: "James Wilson" }
+					]
 				},
 				{
 					id: "7",
@@ -195,7 +195,7 @@ class PlayersRepository {
 					joinedDate: "2024-01-04",
 					email: "david.lee@email.com",
 					avatar: "/placeholder.svg?height=40&width=40",
-					recentMatches: [{ id: "17", score: "2-3", result: "loss", date: "2024-01-10", opponent: "Alex Brown" }],
+					recentMatches: [{ id: "17", score: "2-3", result: "loss", date: "2024-01-10", opponent: "Alex Brown" }]
 				},
 				{
 					id: "8",
@@ -211,44 +211,44 @@ class PlayersRepository {
 					name: "Maria Rodriguez",
 					joinedDate: "2024-01-03",
 					email: "maria.rodriguez@email.com",
-					avatar: "/placeholder.svg?height=40&width=40",
-				},
-			],
-		}
+					avatar: "/placeholder.svg?height=40&width=40"
+				}
+			]
+		};
 	}
 }
 
-function PlayerCard({ year, player }: { year: string; player: Player; }) {
+function PlayerCard({ year, player }: { year: string; player: Player }) {
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case "qualified":
-				return "bg-green-100 text-green-800"
+				return "bg-green-100 text-green-800";
 			case "active":
-				return "bg-blue-100 text-blue-800"
+				return "bg-blue-100 text-blue-800";
 			case "eliminated":
-				return "bg-red-100 text-red-800"
+				return "bg-red-100 text-red-800";
 			default:
-				return "bg-gray-100 text-gray-800"
+				return "bg-gray-100 text-gray-800";
 		}
-	}
+	};
 
 	const getStatusText = (status: string) => {
 		switch (status) {
 			case "qualified":
-				return "Qualified"
+				return "Qualified";
 			case "active":
-				return "Active"
+				return "Active";
 			case "eliminated":
-				return "Eliminated"
+				return "Eliminated";
 			default:
-				return "Unknown"
+				return "Unknown";
 		}
-	}
+	};
 
 	return (
-		<Card className="hover:shadow-lg transition-shadow">
+		<Card className="transition-shadow hover:shadow-lg">
 			<CardContent className="p-6">
-				<div className="flex items-start justify-between mb-4">
+				<div className="mb-4 flex items-start justify-between">
 					<div className="flex items-center gap-3">
 						<Avatar className="h-12 w-12">
 							<AvatarImage alt={player.name} src={player.avatar || "/placeholder.svg"} />
@@ -260,7 +260,7 @@ function PlayerCard({ year, player }: { year: string; player: Player; }) {
 							</AvatarFallback>
 						</Avatar>
 						<div>
-							<h3 className="font-semibold text-lg">{player.name}</h3>
+							<h3 className="text-lg font-semibold">{player.name}</h3>
 							<p className="text-sm text-muted-foreground">{player.email}</p>
 						</div>
 					</div>
@@ -292,12 +292,12 @@ function PlayerCard({ year, player }: { year: string; player: Player; }) {
 					</div>
 
 					<div className="pt-2">
-						<div className="flex justify-between text-sm mb-1">
+						<div className="mb-1 flex justify-between text-sm">
 							<span>Win Rate</span>
 							<span>{player.winRate.toFixed(1)}%</span>
 						</div>
-						<div className="w-full bg-gray-200 rounded-full h-2">
-							<div style={{ width: `${player.winRate}%` }} className="bg-green-500 h-2 rounded-full transition-all" />
+						<div className="h-2 w-full rounded-full bg-gray-200">
+							<div style={{ width: `${player.winRate}%` }} className="h-2 rounded-full bg-green-500 transition-all" />
 						</div>
 					</div>
 
@@ -310,35 +310,35 @@ function PlayerCard({ year, player }: { year: string; player: Player; }) {
 				</div>
 			</CardContent>
 		</Card>
-	)
+	);
 }
 
-function PlayersTable({ year, players }: { year: string; players: Player[]; }) {
+function PlayersTable({ year, players }: { year: string; players: Player[] }) {
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case "qualified":
-				return "bg-green-100 text-green-800"
+				return "bg-green-100 text-green-800";
 			case "active":
-				return "bg-blue-100 text-blue-800"
+				return "bg-blue-100 text-blue-800";
 			case "eliminated":
-				return "bg-red-100 text-red-800"
+				return "bg-red-100 text-red-800";
 			default:
-				return "bg-gray-100 text-gray-800"
+				return "bg-gray-100 text-gray-800";
 		}
-	}
+	};
 
 	const getStatusText = (status: string) => {
 		switch (status) {
 			case "qualified":
-				return "Qualified"
+				return "Qualified";
 			case "active":
-				return "Active"
+				return "Active";
 			case "eliminated":
-				return "Eliminated"
+				return "Eliminated";
 			default:
-				return "Unknown"
+				return "Unknown";
 		}
-	}
+	};
 
 	return (
 		<Card>
@@ -364,10 +364,7 @@ function PlayersTable({ year, players }: { year: string; players: Player[]; }) {
 							.map((player, index) => (
 								<TableRow key={player.id}>
 									<TableCell>
-										<Badge
-											variant={index < 3 ? "default" : "outline"}
-											className="w-6 h-6 p-0 flex items-center justify-center text-xs"
-										>
+										<Badge variant={index < 3 ? "default" : "outline"} className="flex h-6 w-6 items-center justify-center p-0 text-xs">
 											{index + 1}
 										</Badge>
 									</TableCell>
@@ -422,58 +419,57 @@ function PlayersTable({ year, players }: { year: string; players: Player[]; }) {
 				</Table>
 			</CardContent>
 		</Card>
-	)
+	);
 }
 
 export default async function TournamentPlayersPage({ params }: Props) {
-	const { year } = await params
-	const repo = new PlayersRepository()
-	const data = await repo.getTournamentPlayers(year)
+	const { year } = await params;
+	const repo = new PlayersRepository();
+	const data = await repo.getTournamentPlayers(year);
 
-	return <PlayersPageClient data={data} year={year} />
+	return <PlayersPageClient data={data} year={year} />;
 }
 
-function PlayersPageClient({ data, year }: { year: string; data: TournamentPlayers; }) {
-	const [searchTerm, setSearchTerm] = useState("")
-	const [selectedGroup, setSelectedGroup] = useState("all")
-	const [selectedStatus, setSelectedStatus] = useState("all")
-	const [sortBy, setSortBy] = useState("points")
+function PlayersPageClient({ data, year }: { year: string; data: TournamentPlayers }) {
+	const [searchTerm, setSearchTerm] = useState("");
+	const [selectedGroup, setSelectedGroup] = useState("all");
+	const [selectedStatus, setSelectedStatus] = useState("all");
+	const [sortBy, setSortBy] = useState("points");
 
 	// Filter and sort players
 	const filteredPlayers = data.players
 		.filter((player) => {
 			const matchesSearch =
-				player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				player.email.toLowerCase().includes(searchTerm.toLowerCase())
-			const matchesGroup = selectedGroup === "all" || player.groupId === selectedGroup
-			const matchesStatus = selectedStatus === "all" || player.status === selectedStatus
+				player.name.toLowerCase().includes(searchTerm.toLowerCase()) || player.email.toLowerCase().includes(searchTerm.toLowerCase());
+			const matchesGroup = selectedGroup === "all" || player.groupId === selectedGroup;
+			const matchesStatus = selectedStatus === "all" || player.status === selectedStatus;
 
-			return matchesSearch && matchesGroup && matchesStatus
+			return matchesSearch && matchesGroup && matchesStatus;
 		})
 		.sort((a, b) => {
 			switch (sortBy) {
 				case "points":
-					return b.points - a.points || b.winRate - a.winRate
+					return b.points - a.points || b.winRate - a.winRate;
 				case "wins":
-					return b.wins - a.wins
+					return b.wins - a.wins;
 				case "winRate":
-					return b.winRate - a.winRate
+					return b.winRate - a.winRate;
 				case "name":
-					return a.name.localeCompare(b.name)
+					return a.name.localeCompare(b.name);
 				default:
-					return 0
+					return 0;
 			}
-		})
+		});
 
-	const totalPlayers = data.players.length
-	const activePlayers = data.players.filter((p) => p.status === "active").length
-	const qualifiedPlayers = data.players.filter((p) => p.status === "qualified").length
-	const eliminatedPlayers = data.players.filter((p) => p.status === "eliminated").length
+	const totalPlayers = data.players.length;
+	const activePlayers = data.players.filter((p) => p.status === "active").length;
+	const qualifiedPlayers = data.players.filter((p) => p.status === "qualified").length;
+	const eliminatedPlayers = data.players.filter((p) => p.status === "eliminated").length;
 
 	return (
-		<div className="container mx-auto py-8 space-y-8">
+		<div className="container mx-auto space-y-8 py-8">
 			{/* Header */}
-			<div className="text-center space-y-4">
+			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
 					<Users className="h-8 w-8 text-primary" />
 					<div>
@@ -488,11 +484,11 @@ function PlayersPageClient({ data, year }: { year: string; data: TournamentPlaye
 			<Separator />
 
 			{/* Player Stats */}
-			<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+			<div className="grid grid-cols-1 gap-4 md:grid-cols-4">
 				<Card>
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-2">
-							<div className="p-2 bg-blue-100 rounded-lg">
+							<div className="rounded-lg bg-blue-100 p-2">
 								<Users className="h-4 w-4 text-blue-600" />
 							</div>
 							<div>
@@ -506,7 +502,7 @@ function PlayersPageClient({ data, year }: { year: string; data: TournamentPlaye
 				<Card>
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-2">
-							<div className="p-2 bg-green-100 rounded-lg">
+							<div className="rounded-lg bg-green-100 p-2">
 								<Trophy className="h-4 w-4 text-green-600" />
 							</div>
 							<div>
@@ -520,7 +516,7 @@ function PlayersPageClient({ data, year }: { year: string; data: TournamentPlaye
 				<Card>
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-2">
-							<div className="p-2 bg-yellow-100 rounded-lg">
+							<div className="rounded-lg bg-yellow-100 p-2">
 								<Target className="h-4 w-4 text-yellow-600" />
 							</div>
 							<div>
@@ -534,7 +530,7 @@ function PlayersPageClient({ data, year }: { year: string; data: TournamentPlaye
 				<Card>
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-2">
-							<div className="p-2 bg-red-100 rounded-lg">
+							<div className="rounded-lg bg-red-100 p-2">
 								<Medal className="h-4 w-4 text-red-600" />
 							</div>
 							<div>
@@ -549,15 +545,10 @@ function PlayersPageClient({ data, year }: { year: string; data: TournamentPlaye
 			{/* Filters and Search */}
 			<Card>
 				<CardContent className="pt-6">
-					<div className="flex flex-wrap gap-4 items-center">
+					<div className="flex flex-wrap items-center gap-4">
 						<div className="flex items-center gap-2">
 							<Search className="h-4 w-4 text-muted-foreground" />
-							<Input
-								value={searchTerm}
-								className="w-[250px]"
-								placeholder="Search players..."
-								onChange={(e) => setSearchTerm(e.target.value)}
-							/>
+							<Input value={searchTerm} className="w-[250px]" placeholder="Search players..." onChange={(e) => setSearchTerm(e.target.value)} />
 						</div>
 
 						<div className="flex items-center gap-2">
@@ -618,7 +609,7 @@ function PlayersPageClient({ data, year }: { year: string; data: TournamentPlaye
 				</TabsContent>
 
 				<TabsContent value="cards">
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 						{filteredPlayers.map((player) => (
 							<PlayerCard year={year} key={player.id} player={player} />
 						))}
@@ -627,12 +618,12 @@ function PlayersPageClient({ data, year }: { year: string; data: TournamentPlaye
 			</Tabs>
 
 			{filteredPlayers.length === 0 && (
-				<div className="text-center py-12">
-					<Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-					<h3 className="text-lg font-semibold mb-2">No players found</h3>
+				<div className="py-12 text-center">
+					<Users className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+					<h3 className="mb-2 text-lg font-semibold">No players found</h3>
 					<p className="text-muted-foreground">Try adjusting your search or filter criteria.</p>
 				</div>
 			)}
 		</div>
-	)
+	);
 }
