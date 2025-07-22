@@ -36,7 +36,7 @@ export default function AuthPage() {
 			} else {
 				setError("Invalid password. Please try again.");
 			}
-		} catch (_err) {
+		} catch (error) {
 			setError("An error occurred. Please try again.");
 		} finally {
 			setIsLoading(false);
