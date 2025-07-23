@@ -5,11 +5,13 @@ import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
 import {
 	DateTime,
+	type Match,
 	CompletedMatch,
+	ScheduledMatch,
 	type Tournament,
 	type GroupSummary,
-	type ScheduleMatch,
 	type TournamentData,
+	DefinedPlayersMatch,
 	type TournamentSummary,
 	type TournamentOverview,
 	type TournamentSchedule
@@ -63,16 +65,11 @@ export class TournamentRepository extends BaseRepository {
 		const playerRepo = new PlayerRepository();
 
 		const scheduleMatches = await Promise.all(
-			matches.map<Promise<ScheduleMatch>>(async (match) => {
-				const player1 = await playerRepo.getById(match.player1Id);
-				const player2 = await playerRepo.getById(match.player1Id);
+			matches.map<Promise<Match>>(async (match) => {
+				const player1Name = match.player1Id ? (await playerRepo.getById(match.player1Id)).name : undefined;
+				const player2Name = match.player2Id ? (await playerRepo.getById(match.player2Id)).name : undefined;
 
-				return {
-					...match,
-					player1: { id: player1.id, name: player1?.name },
-					player2: { id: player2.id, name: player2?.name },
-					status: CompletedMatch.isInstance(match) ? "completed" : "scheduled"
-				};
+				return { ...match, player1Name, player2Name };
 			})
 		);
 
@@ -86,11 +83,14 @@ export class TournamentRepository extends BaseRepository {
 
 		const players = groups.map((group) => group.players).flat();
 
-		const upcomingMatches = matches.filter(
-			(match) => !CompletedMatch.isInstance(match) && match.scheduledAt && new Date(match.scheduledAt.date) > new Date()
-		);
+		const upcomingMatches = matches
+			.filter((match): match is ScheduledMatch => ScheduledMatch.isInstance(match) && new Date(match.scheduledAt.date) > new Date())
+			.sort((a, b) => DateTime.createComparator("asc")(a.scheduledAt, b.scheduledAt))
+			.slice(0, 5);
 
-		const completedMatches = matches.filter(CompletedMatch.isInstance);
+		const completedMatches = matches.filter(
+			(match): match is CompletedMatch => DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match)
+		);
 
 		const comparator = DateTime.createComparator("desc");
 		const recentMatches = completedMatches.sort((a, b) => comparator(a.scheduledAt, b.scheduledAt)).slice(0, 5);

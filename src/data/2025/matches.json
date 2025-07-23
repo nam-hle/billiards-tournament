@@ -205,9 +205,7 @@
 			"scheduledAt": {
 				"date": "2025-07-21",
 				"time": "23:15"
-			},
-			"score1": 2,
-			"score2": 5
+			}
 		},
 		{
 			"id": "25B16",
@@ -216,11 +214,9 @@
 			"player1Id": "hnnguyen",
 			"player2Id": "ltnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "00:00"
-			},
-			"score1": 5,
-			"score2": 2
+			}
 		},
 		{
 			"id": "25B17",
@@ -229,11 +225,9 @@
 			"player1Id": "hqnguyen",
 			"player2Id": "hqtran",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "00:45"
-			},
-			"score1": 5,
-			"score2": 1
+			}
 		},
 		{
 			"id": "25B18",
@@ -242,11 +236,9 @@
 			"player1Id": "hqnguyen",
 			"player2Id": "ltnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "01:30"
-			},
-			"score1": 3,
-			"score2": 5
+			}
 		},
 		{
 			"id": "25B19",
@@ -255,24 +247,16 @@
 			"player1Id": "hqtran",
 			"player2Id": "ltnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "02:15"
-			},
-			"score1": 3,
-			"score2": 5
+			}
 		},
 		{
 			"id": "25C20",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "mbnguyen",
-			"player2Id": "qanguyen",
-			"scheduledAt": {
-				"date": "2025-07-22",
-				"time": "03:00"
-			},
-			"score1": 5,
-			"score2": 1
+			"player2Id": "qanguyen"
 		},
 		{
 			"id": "25C21",
@@ -281,11 +265,9 @@
 			"player1Id": "mbnguyen",
 			"player2Id": "shvu",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "03:45"
-			},
-			"score1": 5,
-			"score2": 3
+			}
 		},
 		{
 			"id": "25C22",
@@ -294,11 +276,9 @@
 			"player1Id": "mbnguyen",
 			"player2Id": "thnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "04:30"
-			},
-			"score1": 5,
-			"score2": 0
+			}
 		},
 		{
 			"id": "25C23",
@@ -307,11 +287,9 @@
 			"player1Id": "mbnguyen",
 			"player2Id": "tmdo",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "05:15"
-			},
-			"score1": 5,
-			"score2": 2
+			}
 		},
 		{
 			"id": "25C24",
@@ -320,11 +298,9 @@
 			"player1Id": "qanguyen",
 			"player2Id": "shvu",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "06:00"
-			},
-			"score1": 5,
-			"score2": 4
+			}
 		},
 		{
 			"id": "25C25",
@@ -333,11 +309,9 @@
 			"player1Id": "qanguyen",
 			"player2Id": "thnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "06:45"
-			},
-			"score1": 3,
-			"score2": 5
+			}
 		},
 		{
 			"id": "25C26",
@@ -346,11 +320,9 @@
 			"player1Id": "qanguyen",
 			"player2Id": "tmdo",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "07:30"
-			},
-			"score1": 0,
-			"score2": 5
+			}
 		},
 		{
 			"id": "25C27",
@@ -359,11 +331,9 @@
 			"player1Id": "shvu",
 			"player2Id": "thnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "08:15"
-			},
-			"score1": 5,
-			"score2": 0
+			}
 		},
 		{
 			"id": "25C28",
@@ -372,11 +342,9 @@
 			"player1Id": "shvu",
 			"player2Id": "tmdo",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "09:00"
-			},
-			"score1": 3,
-			"score2": 5
+			}
 		},
 		{
 			"id": "25C29",
@@ -385,95 +353,65 @@
 			"player1Id": "thnguyen",
 			"player2Id": "tmdo",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-13",
 				"time": "09:45"
-			},
-			"score1": 2,
-			"score2": 5
+			}
 		},
 		{
 			"id": "25QF00",
 			"type": "quarter-final",
-			"player1Id": "hqnguyen",
-			"player2Id": "tttran",
 			"scheduledAt": {
-				"date": "2025-07-22",
-				"time": "10:30"
-			},
-			"score1": 3,
-			"score2": 7
+				"date": "2025-08-16",
+				"time": "8:30"
+			}
 		},
 		{
 			"id": "25QF01",
 			"type": "quarter-final",
-			"player1Id": "bvphan",
-			"player2Id": "hnnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
-				"time": "11:15"
-			},
-			"score1": 7,
-			"score2": 4
+				"date": "2025-08-16",
+				"time": "8:30"
+			}
 		},
 		{
 			"id": "25QF02",
 			"type": "quarter-final",
-			"player1Id": "qanguyen",
-			"player2Id": "nhle",
 			"scheduledAt": {
-				"date": "2025-07-22",
-				"time": "12:00"
-			},
-			"score1": 6,
-			"score2": 7
+				"date": "2025-08-16",
+				"time": "8:30"
+			}
 		},
 		{
 			"id": "25QF03",
 			"type": "quarter-final",
-			"player1Id": "dple",
-			"player2Id": "mbnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
-				"time": "12:45"
-			},
-			"score1": 7,
-			"score2": 5
+				"date": "2025-08-16",
+				"time": "8:30"
+			}
 		},
 		{
 			"id": "25SF00",
 			"type": "semi-final",
-			"player1Id": "hqnguyen",
-			"player2Id": "hnnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
-				"time": "13:30"
-			},
-			"score1": 1,
-			"score2": 9
+				"date": "2025-08-17",
+				"time": "8:30"
+			}
 		},
 		{
 			"id": "25SF01",
 			"type": "semi-final",
-			"player1Id": "qanguyen",
-			"player2Id": "mbnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
-				"time": "14:15"
-			},
-			"score1": 2,
-			"score2": 9
+				"date": "2025-08-17",
+				"time": "8:30"
+			}
 		},
 		{
 			"id": "25FN00",
 			"type": "final",
-			"player1Id": "hqnguyen",
-			"player2Id": "mbnguyen",
 			"scheduledAt": {
-				"date": "2025-07-22",
+				"date": "2025-08-24",
 				"time": "15:00"
-			},
-			"score1": 6,
-			"score2": 9
+			}
 		}
 	]
 }

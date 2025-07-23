@@ -5,9 +5,17 @@ import { Badge } from "@/components/shadcn/badge";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { type Group, GroupMatch, type ScheduleMatch } from "@/interfaces";
+import { Match, type Group, type MatchStatus, DefinedPlayersMatch, type ScheduledMatch } from "@/interfaces";
 
-export function DaySchedule({ date, groups, matches }: { date: string | undefined; matches: ScheduleMatch[]; groups: Pick<Group, "id" | "name">[] }) {
+export function DaySchedule({
+	date,
+	groups,
+	matches
+}: {
+	date: string | undefined;
+	matches: ScheduledMatch[];
+	groups: Pick<Group, "id" | "name">[];
+}) {
 	if (matches.length === 0) {
 		return (
 			<div className="py-8 text-center text-muted-foreground">
@@ -34,7 +42,7 @@ export function DaySchedule({ date, groups, matches }: { date: string | undefine
 							<TableRow>
 								{date === "upcoming" ? <TableHead className="w-[140px]">Date</TableHead> : null}
 								<TableHead className="w-[100px]">Time</TableHead>
-								<TableHead className="w-[120px]">Type</TableHead>
+								<TableHead className="w-[140px] text-center">Type</TableHead>
 								<TableHead>Player 1</TableHead>
 								<TableHead className="w-[100px] text-center">Score</TableHead>
 								<TableHead>Player 2</TableHead>
@@ -57,18 +65,18 @@ export function DaySchedule({ date, groups, matches }: { date: string | undefine
 												</TableCell>
 											) : null}
 											<TableCell className="font-mono text-sm">{match.scheduledAt ? formatTime(match.scheduledAt.time) : "-"}</TableCell>
-											<TableCell>
+											<TableCell className="text-center">
 												<div className="space-y-1">
 													<Badge variant="outline" className="text-xs">
-														{GroupMatch.isInstance(match)
-															? (groups.find((group) => group.id === match.groupId)?.name ?? "Unknown group")
-															: "Knockout"}
+														{match.name}
 													</Badge>
 												</div>
 											</TableCell>
 											<TableCell>
 												<div className="flex items-center gap-2">
-													<span className={`font-medium ${winner === "player1" ? "text-green-600" : ""}`}>{match.player1.name}</span>
+													<span className={`font-medium ${winner === "player1" ? "text-green-600" : ""}`}>
+														{DefinedPlayersMatch.isInstance(match) ? match.player1Name : "TBD"}
+													</span>
 													{winner === "player1" && (
 														<Badge variant="default" className="px-1 py-0 text-xs">
 															W
@@ -87,7 +95,9 @@ export function DaySchedule({ date, groups, matches }: { date: string | undefine
 											</TableCell>
 											<TableCell>
 												<div className="flex items-center gap-2">
-													<span className={`font-medium ${winner === "player2" ? "text-green-600" : ""}`}>{match.player2.name}</span>
+													<span className={`font-medium ${winner === "player2" ? "text-green-600" : ""}`}>
+														{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}
+													</span>
 													{winner === "player2" && (
 														<Badge variant="default" className="px-1 py-0 text-xs">
 															W
@@ -96,7 +106,7 @@ export function DaySchedule({ date, groups, matches }: { date: string | undefine
 												</div>
 											</TableCell>
 											<TableCell>
-												<Badge className={getStatusColor(match.status)}>{getStatusText(match.status)}</Badge>
+												<Badge className={getStatusColor(Match.getStatus(match))}>{getStatusText(Match.getStatus(match))}</Badge>
 											</TableCell>
 										</TableRow>
 									);
@@ -113,7 +123,7 @@ export const formatDate = (dateString: string, options?: Intl.DateTimeFormatOpti
 	return new Date(dateString).toLocaleDateString("en-US", options ?? { month: "long", day: "numeric", weekday: "long", year: "numeric" });
 };
 
-const getStatusColor = (status: string) => {
+const getStatusColor = (status: MatchStatus) => {
 	switch (status) {
 		case "completed":
 			return "bg-green-100 text-green-800";
@@ -121,8 +131,6 @@ const getStatusColor = (status: string) => {
 			return "bg-blue-100 text-blue-800";
 		case "scheduled":
 			return "bg-gray-100 text-gray-800";
-		case "postponed":
-			return "bg-red-100 text-red-800";
 		default:
 			return "bg-gray-100 text-gray-800";
 	}
@@ -134,7 +142,7 @@ export const formatTime = (timeString: string) => {
 	return format(parsed, "hh:mm a");
 };
 
-const getWinner = (match: ScheduleMatch) => {
+const getWinner = (match: ScheduledMatch) => {
 	if (match.score1 != null && match.score2 != null) {
 		if (match.score1 > match.score2) {
 			return "player1";

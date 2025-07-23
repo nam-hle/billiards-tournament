@@ -6,10 +6,12 @@ import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { CompletedMatch, type GroupMatch } from "@/interfaces";
+import { formatTime } from "@/components/day-schedule";
+
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
+import { CompletedMatch, ScheduledMatch, type GroupMatch, DefinedPlayersMatch } from "@/interfaces";
 
 interface Props {
 	params: Promise<{ year: string; groupId: string }>;
@@ -24,10 +26,18 @@ export default async function GroupPage({ params }: Props) {
 	}
 
 	const players = await new PlayerRepository().getAll();
-	const getPlayerName = (playerId: string) => {
+	const getPlayerName = (playerId: string | undefined) => {
+		if (!playerId) {
+			return "TBD";
+		}
+
 		const player = players.find((p) => p.id === playerId);
 
-		return player ? player.name : "Unknown Player";
+		if (!player) {
+			throw new Error(`Player with ID ${playerId} not found`);
+		}
+
+		return player.name;
 	};
 
 	const getMatchStatus = (score1: number | undefined, score2: number | undefined) => {
@@ -147,6 +157,7 @@ export default async function GroupPage({ params }: Props) {
 						<TableHeader>
 							<TableRow>
 								<TableHead className="w-[120px]">Date</TableHead>
+								<TableHead className="w-[120px]">Time</TableHead>
 								<TableHead>Player 1</TableHead>
 								<TableHead className="w-[120px] text-center">Score</TableHead>
 								<TableHead>Player 2</TableHead>
@@ -160,8 +171,11 @@ export default async function GroupPage({ params }: Props) {
 								return (
 									<TableRow key={match.id}>
 										<TableCell className="font-mono text-sm">
-											{match.scheduledAt ? new Date(match.scheduledAt.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "-"}
+											{ScheduledMatch.isInstance(match)
+												? new Date(match.scheduledAt.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+												: "-"}
 										</TableCell>
+										<TableCell className="font-mono text-sm">{ScheduledMatch.isInstance(match) ? formatTime(match.scheduledAt.time) : "-"}</TableCell>
 										<TableCell>
 											<div className="flex items-center">
 												{getPlayerName(match.player1Id)}
@@ -202,7 +216,7 @@ export default async function GroupPage({ params }: Props) {
 }
 
 const getWinnerBadge = (match: GroupMatch, isPlayer1: boolean) => {
-	const winnerId = CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
+	const winnerId = DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
 
 	if (winnerId === undefined) {
 		return null;

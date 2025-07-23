@@ -13,10 +13,10 @@ export class MatchRepository extends BaseRepository {
 
 		return Promise.all(
 			matches.map(async (match) => {
-				const player1 = await playerRepository.getById(match.player1Id);
-				const player2 = await playerRepository.getById(match.player2Id);
+				const player1Name = match.player1Id ? (await playerRepository.getById(match.player1Id)).name : undefined;
+				const player2Name = match.player2Id ? (await playerRepository.getById(match.player2Id)).name : undefined;
 
-				return { ...match, player1Name: player1.name, player2Name: player2.name, name: await this.computeMatchName(match, groups) };
+				return { ...match, player1Name, player2Name, name: await this.computeMatchName(match, groups) };
 			})
 		);
 	}

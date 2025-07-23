@@ -24,52 +24,26 @@ export interface Tournament {
 	endDate: string;
 	startDate: string;
 }
+export type TournamentStatus = "upcoming" | "ongoing" | "completed";
 export interface TournamentOverview extends Tournament {
 	totalGroups: number;
 	totalPlayers: number;
 	totalMatches: number;
 	completedMatches: number;
-	status: "upcoming" | "ongoing" | "completed";
+	status: TournamentStatus;
 }
 
 export interface TournamentData {
 	groups: GroupSummary[];
-	upcomingMatches: Match[];
 	overview: TournamentOverview;
 	recentMatches: CompletedMatch[];
+	upcomingMatches: ScheduledMatch[];
 	topPlayers: Array<{ name: string; wins: number; points: number }>;
 }
 
 export interface TournamentSchedule extends Tournament {
-	matches: ScheduleMatch[];
+	matches: Match[];
 	groups: Pick<Group, "id" | "name">[];
-}
-
-export type ScheduleMatch = Match & {
-	player1: { id: string; name: string };
-	player2: { id: string; name: string };
-	status: "scheduled" | "in-progress" | "completed" | "postponed";
-};
-
-export type WithCompleteness<M extends BaseMatch> = M & Required<Pick<Match, "scheduledAt" | "score1" | "score2">>;
-
-export type CompletedMatch = WithCompleteness<Match>;
-export namespace CompletedMatch {
-	export function isInstance<M extends Match>(match: M): match is WithCompleteness<M> {
-		return match.score1 !== undefined && match.score2 !== undefined && match.scheduledAt !== undefined;
-	}
-
-	export function getWinnerId(match: CompletedMatch): string | undefined {
-		if (match.score1 > match.score2) {
-			return match.player1Id;
-		}
-
-		if (match.score2 > match.score1) {
-			return match.player2Id;
-		}
-
-		return undefined;
-	}
 }
 
 export interface TournamentSummary extends Tournament {
@@ -100,13 +74,27 @@ export interface BaseMatch {
 
 	score1?: number;
 	score2?: number;
-	player1Id: string;
-	player2Id: string;
+	player1Id?: string;
+	player2Id?: string;
 }
 
-type WithName<M extends BaseMatch> = M & { name: string; player1Name: string; player2Name: string };
+export type WithDefinedPlayers<M extends Match = Match> = M &
+	Required<Pick<M, "player1Id" | "player2Id">> & { player1Name: string; player2Name: string };
+export namespace DefinedPlayersMatch {
+	export function isInstance<M extends Match>(match: M): match is WithDefinedPlayers<M> {
+		return (
+			match.player1Id !== undefined &&
+			match.player2Id !== undefined &&
+			"player1Name" in match &&
+			match.player1Name !== undefined &&
+			"player2Name" in match &&
+			match.player2Name !== undefined
+		);
+	}
+}
 
-export interface GroupMatch extends WithName<BaseMatch> {
+export interface GroupMatch extends BaseMatch {
+	name: string;
 	type: "group";
 	groupId: string;
 }
@@ -115,7 +103,8 @@ export namespace GroupMatch {
 		return match.type === "group";
 	}
 }
-export interface KnockoutMatch extends WithName<BaseMatch> {
+export interface KnockoutMatch extends BaseMatch {
+	name: string;
 	type: "quarter-final" | "semi-final" | "final";
 }
 export namespace KnockoutMatch {
@@ -124,17 +113,94 @@ export namespace KnockoutMatch {
 	}
 }
 export type Match = GroupMatch | KnockoutMatch;
+// TODO: "waiting"??
+export type MatchStatus = "scheduling" | "scheduled" | "waiting" | "in-progress" | "completed";
+export namespace Match {
+	export function getStatus(match: Match) {
+		if (DefinedPlayersMatch.isInstance(match)) {
+			if (CompletedMatch.isInstance(match)) {
+				return "completed";
+			}
 
+			if (match.score1 !== undefined && match.score2 !== undefined) {
+				return "in-progress";
+			}
+
+			if (ScheduledMatch.isInstance(match)) {
+				return "scheduled";
+			}
+
+			return "scheduling";
+		}
+
+		if (ScheduledMatch.isInstance(match)) {
+			return "scheduled";
+		}
+
+		return "waiting";
+	}
+
+	export function getRaceScore(match: BaseMatch): number {
+		if (GroupMatch.isInstance(match)) {
+			return 5;
+		}
+
+		if (KnockoutMatch.isInstance(match)) {
+			switch (match.type) {
+				case "quarter-final":
+					return 7;
+				case "semi-final":
+					return 9;
+				case "final":
+					return 11;
+				default:
+					throw new Error(`Unknown knockout match type: ${match.type}`);
+			}
+		}
+
+		throw new Error(`Unknown match type: ${match.type}`);
+	}
+}
+
+export type WithCompleteness<M extends WithDefinedPlayers> = M & Required<Pick<M, "scheduledAt" | "score1" | "score2">>;
+
+export type CompletedMatch = WithScheduled<WithCompleteness<WithDefinedPlayers>>;
+export namespace CompletedMatch {
+	export function isInstance<M extends WithDefinedPlayers>(match: M): match is WithCompleteness<M> {
+		return match.score1 !== undefined && match.score2 !== undefined && [match.score1, match.score2].includes(Match.getRaceScore(match));
+	}
+
+	export function getWinnerId(match: CompletedMatch): string | undefined {
+		if (match.score1 > match.score2) {
+			return match.player1Id;
+		}
+
+		if (match.score2 > match.score1) {
+			return match.player2Id;
+		}
+
+		return undefined;
+	}
+}
+
+export type WithScheduled<M extends BaseMatch> = M & Required<Pick<M, "scheduledAt">>;
+export type ScheduledMatch = WithScheduled<Match>;
+export namespace ScheduledMatch {
+	export function isInstance<M extends BaseMatch>(match: M): match is WithScheduled<M> {
+		return match.scheduledAt !== undefined;
+	}
+}
 export interface Group {
 	id: string;
 	name: string;
 	players: string[];
 }
 
+export type GroupStatus = "ongoing" | "completed" | "upcoming";
 export interface GroupSummary extends Group {
+	status: GroupStatus;
 	matches: GroupMatch[];
 	completedMatches: number;
-	status: "active" | "completed" | "upcoming";
 	leader: { name: string; points: number } | null;
 }
 

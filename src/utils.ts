@@ -1,4 +1,3 @@
-import { nanoid, customAlphabet } from "nanoid";
 import { format, isToday, isThisWeek, isYesterday, formatDistanceToNow, differenceInCalendarDays } from "date-fns";
 
 export function noop() {}
@@ -80,27 +79,14 @@ export function convertVerb(verb: string) {
 	return { vIng, pastTense };
 }
 
-export function generateUid(): string {
-	return Math.round(Math.random() * Math.pow(2, 32)).toString(16);
-}
-
-// export function wait(duration: number) {
-// 	return new Promise((resolve) => setTimeout(resolve, duration));
-// }
-
 export function assert(condition: unknown, onFailedMessage = "Condition return a falsely value."): asserts condition {
 	if (!condition) {
 		throw new Error(onFailedMessage);
 	}
 }
 
-const ALPHABETS = {
-	numeric: "1234567890",
-	alphanumeric: "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-};
+export function getAbbrName(name: string) {
+	const parts = name.trim().split(" ");
 
-export const TransactionIdGenerator = customAlphabet(ALPHABETS.alphanumeric, 6);
-export const BillIdGenerator = customAlphabet(ALPHABETS.alphanumeric, 6);
-export const GroupIdGenerator = customAlphabet(ALPHABETS.numeric, 8);
-
-export const CommitIdGenerator = () => nanoid();
+	return parts[0][0] + parts[parts.length - 1][0];
+}

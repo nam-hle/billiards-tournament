@@ -3,7 +3,16 @@ import { combineComparators } from "@/utils/comparator";
 import { BaseRepository } from "@/repositories/base.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
-import { type Group, type Standing, CompletedMatch, type GroupMatch, type GroupSummary, type WithCompleteness } from "@/interfaces";
+import {
+	type Group,
+	type Standing,
+	CompletedMatch,
+	type GroupMatch,
+	type GroupSummary,
+	DefinedPlayersMatch,
+	type WithCompleteness,
+	type WithDefinedPlayers
+} from "@/interfaces";
 
 export class GroupRepository extends BaseRepository {
 	async getByYear(params: { year: string }): Promise<Group[]> {
@@ -29,8 +38,8 @@ export class GroupRepository extends BaseRepository {
 		const matches = await new MatchRepository().getAllMatchesByGroup(params);
 		const playerRepository = new PlayerRepository();
 
-		const completedMatches = matches.filter(CompletedMatch.isInstance);
-		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "active" : "completed";
+		const completedMatches = matches.filter((match) => DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match));
+		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "ongoing" : "completed";
 
 		const [topPlayer] = await this.getStandings(params);
 		const leader = status === "upcoming" ? null : { points: topPlayer.points, name: (await playerRepository.getById(topPlayer.playerId)).name };
@@ -48,9 +57,11 @@ export class GroupRepository extends BaseRepository {
 
 	async getStandings(params: { year: string; groupId: string }): Promise<Standing[]> {
 		const group = await this.get(params);
-		const matches = (await new MatchRepository().getAllMatchesByGroup(params)).filter((match): match is WithCompleteness<GroupMatch> => {
-			return CompletedMatch.isInstance(match);
-		});
+		const matches = (await new MatchRepository().getAllMatchesByGroup(params)).filter(
+			(match): match is WithCompleteness<WithDefinedPlayers<GroupMatch>> => {
+				return DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match);
+			}
+		);
 
 		const findHeadMatch = (player1Id: string, player2Id: string) => {
 			return matches.find(

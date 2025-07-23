@@ -13,6 +13,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar"
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
+import { getAbbrName } from "@/utils";
 import { type Group, type PlayerTournamentStat } from "@/interfaces";
 
 namespace PlayersPageClient {
@@ -66,9 +67,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 					<Users className="h-8 w-8 text-primary" />
 					<div>
 						<h1 className="text-3xl font-bold tracking-tight">Tournament Players</h1>
-						<p className="text-xl text-muted-foreground">
-							{name} - {year}
-						</p>
+						<p className="text-xl text-muted-foreground">{name}</p>
 					</div>
 				</div>
 			</div>
@@ -234,13 +233,8 @@ function PlayersTable({ year, players }: { year: string; players: PlayerTourname
 									<TableCell>
 										<div className="flex items-center gap-3">
 											<Avatar className="h-8 w-8">
-												<AvatarImage alt={player.name} src="/placeholder.svg" />
-												<AvatarFallback className="text-xs">
-													{player.name
-														.split(" ")
-														.map((n) => n[0])
-														.join("")}
-												</AvatarFallback>
+												<AvatarImage alt={player.name} />
+												<AvatarFallback className="text-xs">{getAbbrName(player.name)}</AvatarFallback>
 											</Avatar>
 											<div>
 												<p className="font-medium">{player.name}</p>

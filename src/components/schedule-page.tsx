@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/ta
 import { DaySchedule } from "@/components/day-schedule";
 import { ScheduleFilters } from "@/components/schedule-filters";
 
-import { GroupMatch, type ScheduleMatch, type TournamentSchedule } from "@/interfaces";
+import { Match, GroupMatch, ScheduledMatch, type TournamentSchedule } from "@/interfaces";
 
 export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule }) {
 	const [selectedGroupId, setSelectedGroupId] = useState("all");
@@ -21,7 +21,7 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 	// Filter matches
 	const filteredMatches = schedule.matches.filter((match) => {
 		const groupMatch = selectedGroupId === "all" || (GroupMatch.isInstance(match) && match.groupId === selectedGroupId);
-		const statusMatch = selectedStatus === "all" || match.status === selectedStatus;
+		const statusMatch = selectedStatus === "all" || Match.getStatus(match) === selectedStatus;
 
 		return groupMatch && statusMatch;
 	});
@@ -29,7 +29,7 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 	// Group matches by date
 	const matchesByDate = filteredMatches.reduce(
 		(acc, match) => {
-			if (!match.scheduledAt) {
+			if (!ScheduledMatch.isInstance(match)) {
 				return acc;
 			}
 
@@ -41,10 +41,10 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 
 			return acc;
 		},
-		{} as Record<string, ScheduleMatch[]>
+		{} as Record<string, ScheduledMatch[]>
 	);
 
-	const unscheduledMatches = filteredMatches.filter((match) => !match.scheduledAt);
+	// const unscheduledMatches = filteredMatches.filter((match) => !match.scheduledAt);
 
 	const dates = Object.keys(matchesByDate).sort();
 	const currentDateIndex = dates.indexOf(currentDate);
@@ -59,9 +59,9 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 
 	const todayMatches = matchesByDate[currentDate] || [];
 	const upcomingMatches = filteredMatches.filter(
-		(match) => match.status === "scheduled" && match.scheduledAt && new Date(match.scheduledAt.date) > new Date()
+		(match): match is ScheduledMatch => ScheduledMatch.isInstance(match) && new Date(match.scheduledAt.date) > new Date()
 	);
-	const liveMatches = filteredMatches.filter((match) => match.status === "in-progress");
+	const liveMatches = filteredMatches.filter((match) => Match.getStatus(match) === "in-progress");
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
@@ -71,9 +71,7 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 					<Trophy className="h-8 w-8 text-primary" />
 					<div>
 						<h1 className="text-3xl font-bold tracking-tight">Tournament Schedule</h1>
-						<p className="text-xl text-muted-foreground">
-							{schedule.name} - {schedule.year}
-						</p>
+						<p className="text-xl text-muted-foreground">{schedule.name}</p>
 					</div>
 				</div>
 			</div>
@@ -185,7 +183,7 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 							{date !== dates[dates.length - 1] && <Separator className="my-8" />}
 						</div>
 					))}
-					{unscheduledMatches.length > 0 && <DaySchedule date={undefined} groups={schedule.groups} matches={unscheduledMatches} />}
+					{/*{unscheduledMatches.length > 0 && <DaySchedule date={undefined} groups={schedule.groups} matches={unscheduledMatches} />}*/}
 				</TabsContent>
 			</Tabs>
 		</div>

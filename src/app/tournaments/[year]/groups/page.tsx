@@ -7,17 +7,18 @@ import { Progress } from "@/components/shadcn/progress";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 
+import { type GroupStatus } from "@/interfaces";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 
 interface Props {
 	params: Promise<{ year: string }>;
 }
 
-const getStatusColor = (status: string) => {
+const getStatusColor = (status: GroupStatus) => {
 	switch (status) {
 		case "completed":
 			return "bg-green-100 text-green-800";
-		case "active":
+		case "ongoing":
 			return "bg-blue-100 text-blue-800";
 		case "upcoming":
 			return "bg-gray-100 text-gray-800";
@@ -26,12 +27,12 @@ const getStatusColor = (status: string) => {
 	}
 };
 
-const getStatusText = (status: string) => {
+const getStatusText = (status: GroupStatus) => {
 	switch (status) {
 		case "completed":
 			return "Completed";
-		case "active":
-			return "In Progress";
+		case "ongoing":
+			return "Ongoing";
 		case "upcoming":
 			return "Upcoming";
 		default:
@@ -67,7 +68,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 					<Trophy className="h-10 w-10 text-primary" />
 					<div>
 						<h1 className="text-4xl font-bold tracking-tight">{tournamentInfo.name}</h1>
-						<p className="text-xl text-muted-foreground">Year {year}</p>
+						<p className="mx-auto max-w-2xl text-muted-foreground">{tournamentInfo.description}</p>
 					</div>
 				</div>
 
@@ -192,7 +193,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 								<Users className="h-4 w-4 text-blue-600" />
 							</div>
 							<div>
-								<p className="text-2xl font-bold">{groups.filter((g) => g.status === "active").length}</p>
+								<p className="text-2xl font-bold">{groups.filter((g) => g.status === "ongoing").length}</p>
 								<p className="text-xs text-muted-foreground">Groups Active</p>
 							</div>
 						</div>

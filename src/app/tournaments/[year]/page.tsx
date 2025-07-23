@@ -11,8 +11,8 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { formatDate, formatTime } from "@/components/day-schedule";
 
 import { assert } from "@/utils";
-import { type TournamentOverview } from "@/interfaces";
 import { TournamentRepository } from "@/repositories/tournament.repository";
+import { DefinedPlayersMatch, type TournamentStatus, type TournamentOverview } from "@/interfaces";
 
 interface Props {
 	params: Promise<{ year: string }>;
@@ -138,11 +138,11 @@ export default async function TournamentOverviewPage({ params }: Props) {
 
 	const completionPercentage = (overview.completedMatches / overview.totalMatches) * 100;
 
-	const getStatusColor = (status: string) => {
+	const getStatusColor = (status: TournamentStatus) => {
 		switch (status) {
 			case "completed":
 				return "bg-green-100 text-green-800";
-			case "active":
+			case "ongoing":
 				return "bg-blue-100 text-blue-800";
 			case "upcoming":
 				return "bg-gray-100 text-gray-800";
@@ -151,12 +151,12 @@ export default async function TournamentOverviewPage({ params }: Props) {
 		}
 	};
 
-	const getStatusText = (status: string) => {
+	const getStatusText = (status: TournamentStatus) => {
 		switch (status) {
 			case "completed":
 				return "Completed";
-			case "active":
-				return "In Progress";
+			case "ongoing":
+				return "Ongoing";
 			case "upcoming":
 				return "Upcoming";
 			default:
@@ -343,33 +343,30 @@ export default async function TournamentOverviewPage({ params }: Props) {
 					<CardContent>
 						<div className="space-y-4">
 							{recentMatches.map((match) => {
-								const { score1, score2, scheduledAt } = match;
-								assert(scheduledAt, "Match must have a scheduledAt date");
-								assert(score1, "Match must have a score1");
-								assert(score2, "Match must have a score2");
+								const { id, name, score1, score2, scheduledAt, player2Name, player1Name } = match;
 								const date = formatDate(scheduledAt.date);
 								const time = formatTime(scheduledAt.time);
 
 								return (
-									<div key={match.id} className="flex items-center justify-between rounded-lg border p-3">
+									<div key={id} className="flex items-center justify-between rounded-lg border p-3">
 										<div className="space-y-1">
 											<div className="flex items-center gap-2">
 												<Badge variant="outline" className="text-xs">
-													{match.name}
+													{name}
 												</Badge>
 												<span className="text-xs text-muted-foreground">
 													{date} at {time}
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<span className="font-medium">{match.player1Name}</span>
+												<span className="font-medium">{player1Name}</span>
 												<span className="text-muted-foreground">vs</span>
-												<span className="font-medium">{match.player2Name}</span>
+												<span className="font-medium">{player2Name}</span>
 											</div>
 										</div>
 										<div className="text-right">
 											<Badge variant="outline" className="font-mono">
-												{match.score1} : {match.score2}
+												{score1} : {score2}
 											</Badge>
 										</div>
 									</div>
@@ -408,9 +405,9 @@ export default async function TournamentOverviewPage({ params }: Props) {
 												</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<span className="font-medium">{match.player1Name}</span>
+												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player1Name : "TBD"}</span>
 												<span className="text-muted-foreground">vs</span>
-												<span className="font-medium">{match.player2Name}</span>
+												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}</span>
 											</div>
 										</div>
 										{/*<div className="text-right">*/}
