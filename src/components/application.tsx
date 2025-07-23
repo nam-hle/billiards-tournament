@@ -9,8 +9,9 @@ import { ThemeProvider } from "@/components/layouts/theme-provider";
 import { NavigationBar } from "@/components/layouts/navigation-bar/navigation-bar";
 
 import { type Container } from "@/types";
+import { type TournamentOverview } from "@/interfaces";
 
-export const Application: React.FC<Container> = ({ children }) => {
+export const Application: React.FC<Container & { tournaments: TournamentOverview[] }> = ({ children, tournaments }) => {
 	const pathname = usePathname();
 
 	if (pathname === "/" || pathname === "/auth") {
@@ -24,7 +25,7 @@ export const Application: React.FC<Container> = ({ children }) => {
 	return (
 		<ThemeProvider enableSystem attribute="class" defaultTheme="system" disableTransitionOnChange>
 			<div className="mx-auto flex min-h-screen max-w-screen-2xl flex-col px-8">
-				<NavigationBar />
+				<NavigationBar tournaments={tournaments} />
 				<main className="my-2 flex flex-1 flex-col">{children}</main>
 				<Footer />
 			</div>

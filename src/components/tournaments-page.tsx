@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Users, Search, Trophy, Filter, Calendar } from "lucide-react";
 
@@ -54,7 +55,7 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 	});
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+		<div className="min-h-screen">
 			<div className="container mx-auto px-4 py-8">
 				{/* Header */}
 				<div className="mb-8">
@@ -96,51 +97,55 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 				{/* Tournament Grid */}
 				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 					{filteredTournaments.map((tournament) => (
-						<Card key={tournament.id} className="overflow-hidden transition-shadow hover:shadow-lg">
-							<div className="aspect-video overflow-hidden">
-								<img alt={tournament.name} src="/placeholder.svg" className="h-full w-full object-cover transition-transform hover:scale-105" />
-							</div>
-							<CardHeader className="pb-3">
-								<div className="flex items-start justify-between gap-2">
-									<CardTitle className="line-clamp-1 text-lg">{tournament.name}</CardTitle>
-									<Badge className={getStatusColor(tournament.status)}>{tournament.status}</Badge>
+						<Link key={tournament.id} href={`/tournaments/${tournament.year}`}>
+							<Card className="cursor-pointer overflow-hidden transition-shadow hover:shadow-lg">
+								<div className="aspect-video overflow-hidden">
+									<img alt={tournament.name} src="/placeholder.svg" className="h-full w-full object-cover transition-transform hover:scale-105" />
 								</div>
-								<CardDescription className="line-clamp-2">{tournament.description}</CardDescription>
-							</CardHeader>
-							<CardContent className="pt-0">
-								<div className="space-y-3">
-									<div className="flex items-center gap-4 text-sm text-gray-600">
-										<div className="flex items-center gap-1">
-											<Calendar className="h-4 w-4" />
-											<span>{formatDate(tournament.startDate)}</span>
-										</div>
-										<div className="flex items-center gap-1">
-											<Users className="h-4 w-4" />
-											<span>{tournament.totalPlayers}</span>
-										</div>
+								<CardHeader className="pb-3">
+									<div className="flex items-start justify-between gap-2">
+										<CardTitle className="line-clamp-1 text-lg">{tournament.name}</CardTitle>
+										<Badge className={getStatusColor(tournament.status)}>{tournament.status}</Badge>
 									</div>
+									<CardDescription className="line-clamp-2">{tournament.description}</CardDescription>
+								</CardHeader>
+								<CardContent className="pt-0">
+									<div className="space-y-3">
+										<div className="flex items-center gap-4 text-sm text-gray-600">
+											<div className="flex items-center gap-1">
+												<Calendar className="h-4 w-4" />
+												<span>{formatDate(tournament.startDate)}</span>
+											</div>
+											<div className="flex items-center gap-1">
+												<Users className="h-4 w-4" />
+												<span>{tournament.totalPlayers}</span>
+											</div>
+										</div>
 
-									<div className="flex gap-2 pt-2">
-										<Button size="sm" variant="outline" className="flex-1 bg-transparent">
-											View Details
-										</Button>
-										{tournament.status === "upcoming" ? (
-											<Button size="sm" className="flex-1">
-												Join Tournament
-											</Button>
-										) : tournament.status === "ongoing" ? (
-											<Button size="sm" className="flex-1">
-												Watch Live
-											</Button>
-										) : (
-											<Button size="sm" className="flex-1" variant="secondary">
-												View Results
-											</Button>
-										)}
+										<div className="flex gap-2 pt-2">
+											<Link className="flex-1" href={`/tournaments/${tournament.year}`}>
+												<Button size="sm" variant="outline" className="flex-1 bg-transparent">
+													View Details
+												</Button>
+											</Link>
+											{tournament.status === "upcoming" ? (
+												<Button size="sm" className="flex-1">
+													Join Tournament
+												</Button>
+											) : tournament.status === "ongoing" ? (
+												<Button size="sm" className="flex-1">
+													Watch Live
+												</Button>
+											) : (
+												<Button size="sm" className="flex-1" variant="secondary">
+													View Results
+												</Button>
+											)}
+										</div>
 									</div>
-								</div>
-							</CardContent>
-						</Card>
+								</CardContent>
+							</Card>
+						</Link>
 					))}
 				</div>
 

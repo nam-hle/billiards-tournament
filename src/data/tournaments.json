@@ -2,6 +2,7 @@
 	"$schema": "../schemas/tournaments.schema.json",
 	"data": [
 		{
+			"id": "2025",
 			"year": "2025",
 			"startDate": "2025-08-03",
 			"endDate": "2025-08-28",
@@ -9,6 +10,7 @@
 			"venue": "Billiards Club - 37 Pasteur, Danang"
 		},
 		{
+			"id": "2024",
 			"year": "2024",
 			"startDate": "2024-06-01",
 			"endDate": "2024-06-10",

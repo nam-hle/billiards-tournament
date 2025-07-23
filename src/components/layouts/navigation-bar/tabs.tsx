@@ -22,11 +22,11 @@ function useTabs(): Tab[] {
 		const basePath = pathname.split("/").slice(0, 3).join("/");
 
 		return [
-			{ href: basePath, label: "Overview", match: (path) => path === pathname },
-			{ label: "Groups", href: `${basePath}/groups`, match: (path) => path === `${pathname}/groups` },
-			{ label: "Schedule", href: `${basePath}/schedule`, match: (path) => path === `${pathname}/schedule` },
-			{ label: "Players", href: `${basePath}/players`, match: (path) => path === `${pathname}/players` },
-			{ label: "Results", href: `${basePath}/results`, match: (path) => path === `${pathname}/results` }
+			{ href: basePath, label: "Overview", match: (path) => path === basePath },
+			{ label: "Groups", href: `${basePath}/groups`, match: (path) => path === `${basePath}/groups` },
+			{ label: "Schedule", href: `${basePath}/schedule`, match: (path) => path === `${basePath}/schedule` },
+			{ label: "Players", href: `${basePath}/players`, match: (path) => path === `${basePath}/players` },
+			{ label: "Results", href: `${basePath}/results`, match: (path) => path === `${basePath}/results` }
 		];
 	}
 
@@ -49,11 +49,15 @@ export const Tabs = () => {
 			return;
 		}
 
-		if (!tabs.some((tab) => tab.match(pathname))) {
+		const currentActiveIndex = tabs.findIndex((tab) => tab.match(pathname));
+
+		if (currentActiveIndex < 0) {
 			setActiveIndex(() => -1);
 			setActiveStyle(() => ({ left: "0px", width: "0px" }));
+		} else if (currentActiveIndex !== activeIndex) {
+			setActiveIndex(currentActiveIndex);
 		}
-	}, [pathname, tabs]);
+	}, [activeIndex, pathname, tabs]);
 
 	useEffect(() => {
 		if (hoveredIndex !== null) {

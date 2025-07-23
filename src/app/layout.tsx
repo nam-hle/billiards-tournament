@@ -7,6 +7,8 @@ import { Inter } from "next/font/google";
 
 import { Application } from "@/components/application";
 
+import { TournamentRepository } from "@/repositories/tournament.repository";
+
 const interSans = Inter({
 	subsets: ["latin"],
 	variable: "--font-geist-sans"
@@ -25,6 +27,16 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const tournamentRepo = new TournamentRepository();
+	const tournaments = await tournamentRepo.getAll();
+	const tournamentOverviews = (
+		await Promise.all(
+			tournaments.map(async (tournament) => {
+				return tournamentRepo.getData(tournament.year);
+			})
+		)
+	).map((e) => e.overview);
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
@@ -32,7 +44,7 @@ export default async function RootLayout({
 				<title>mgm Billiards Club</title>
 			</head>
 			<body suppressHydrationWarning className={interSans.variable}>
-				<Application>{children}</Application>
+				<Application tournaments={tournamentOverviews}>{children}</Application>
 			</body>
 		</html>
 	);

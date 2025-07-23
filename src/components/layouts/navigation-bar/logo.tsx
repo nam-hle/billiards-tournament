@@ -3,17 +3,16 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
-import { useHomePage } from "@/hooks";
+import { usePathname } from "next/navigation";
 
 export const Logo = () => {
-	const homePage = useHomePage();
+	const pathname = usePathname();
 
 	return (
 		<Link href="/">
 			<div data-testid="logo" className="flex items-center">
 				<Image width={24} height={24} src="/logo.svg" alt="Application Logo" />
-				{homePage && <span className="ml-2 text-xl font-bold">BillPilot</span>}
+				{pathname === "/tournaments" && <span className="ml-2 text-xl font-bold">mgm Billiards Club</span>}
 			</div>
 		</Link>
 	);
