@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Menu, Star, Users, Clock, Target, Trophy, MapPin, Calendar, ArrowRight, CheckCircle } from "lucide-react";
 
@@ -21,6 +22,7 @@ export default function LandingPage() {
 	const [email, setEmail] = useState("");
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [scrollY, setScrollY] = useState(0);
+	const router = useRouter();
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -44,8 +46,7 @@ export default function LandingPage() {
 						transition={{ duration: 0.5 }}
 						initial={{ y: -20, opacity: 0 }}
 						className="flex items-center gap-2">
-						<Target className="h-6 w-6 text-green-500" />
-						<span className="text-xl font-bold">mgm</span>
+						<span className="text-xl font-bold">mgm Billiards Club</span>
 					</motion.div>
 					<nav className="hidden items-center gap-8 md:flex">
 						{["Tournaments", "Tables", "About", "Members"].map((item, i) => (
@@ -62,10 +63,9 @@ export default function LandingPage() {
 					</nav>
 					<motion.div animate={{ y: 0, opacity: 1 }} initial={{ y: -20, opacity: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
 						<Button
-							variant="outline"
-							onClick={() => setIsModalOpen(true)}
-							className="hidden border-green-500 bg-transparent text-green-500 hover:bg-green-950 md:flex">
-							Join Tournament
+							onClick={() => router.push("/tournaments")}
+							className="hidden rounded-full bg-gradient-to-r from-green-600 to-yellow-600 px-6 py-4 text-white shadow-lg shadow-green-900/30 transition-all duration-300 hover:from-green-700 hover:to-yellow-700 hover:shadow-green-900/50 md:flex">
+							Explore <ArrowRight className="h-5 w-5" />
 						</Button>
 						<Button size="icon" variant="ghost" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
 							{isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -94,12 +94,9 @@ export default function LandingPage() {
 								</Link>
 							))}
 							<Button
-								onClick={() => {
-									setIsMenuOpen(false);
-									setIsModalOpen(true);
-								}}
+								onClick={() => router.push("/tournaments")}
 								className="w-full bg-gradient-to-r from-green-600 to-yellow-600 hover:from-green-700 hover:to-yellow-700">
-								Join Tournament
+								Explore
 							</Button>
 						</div>
 					</motion.div>
@@ -131,14 +128,6 @@ export default function LandingPage() {
 							Join the most competitive pool tournaments in the company. Professional tables, expert players, and exciting prizes await at mgm
 							Billiards Club.
 						</motion.p>
-						<motion.div animate={{ y: 0, opacity: 1 }} initial={{ y: 20, opacity: 0 }} transition={{ delay: 0.6, duration: 0.8 }}>
-							<Button
-								onClick={() => setIsModalOpen(true)}
-								className="rounded-full bg-gradient-to-r from-green-600 to-yellow-600 px-4 py-4 text-sm font-medium text-white shadow-lg shadow-green-900/30 transition-all duration-300 hover:from-green-700 hover:to-yellow-700 hover:shadow-green-900/50 sm:px-8 sm:py-6 sm:text-lg">
-								Tournaments
-								<ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-							</Button>
-						</motion.div>
 					</div>
 
 					<motion.div
@@ -562,35 +551,31 @@ export default function LandingPage() {
 				<div className="container relative z-10 mx-auto px-4">
 					<div className="mb-16 text-center">
 						<motion.div viewport={{ once: true }} transition={{ duration: 0.8 }} initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}>
-							<h2 className="mb-4 text-3xl font-bold md:text-5xl">What Our Members Say</h2>
-							<p className="mx-auto max-w-2xl text-gray-400">
-								Hear from our community of passionate players who have made mgm their home for competitive pool.
-							</p>
+							<h2 className="mb-4 text-3xl font-bold md:text-5xl">What Players Are Saying</h2>
+							<p className="mx-auto max-w-2xl text-gray-400">See what others say about their mgm experience.</p>
 						</motion.div>
 					</div>
 
 					<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 						{[
 							{
-								name: "Marcus Johnson",
-								role: "Tournament Champion",
+								name: "Shane Van Boening",
+								role: "The Precision Breaker",
 								image: "https://avatar.vercel.sh/marcus",
 								content:
 									"The level of competition at mgm is incredible. I've improved my game tremendously since joining, and the tournament organization is top-notch."
 							},
 							{
-								name: "Lisa Chen",
-								role: "League Captain",
+								name: "Fedor Gorst",
+								role: "The Cool Competitor",
 								image: "https://avatar.vercel.sh/lisa",
-								content:
-									"mgm has the best tables in the city, hands down. The Diamond tables with Simonis cloth make every shot feel perfect. Great community too!"
+								content: "Every match here pushes me to play my best. The mgm community is world-class."
 							},
 							{
-								name: "David Rodriguez",
-								role: "Weekly Tournament Regular",
+								name: "Carlo Biado",
+								role: "The Filipino Phenomenon",
 								image: "https://avatar.vercel.sh/david",
-								content:
-									"I love the variety of tournaments here. Whether you're a beginner or pro, there's always a competition that matches your skill level."
+								content: "I've played all over the world, but mgm has a special vibe—competitive, fun, and full of heart."
 							}
 						].map((testimonial, index) => (
 							<motion.div
