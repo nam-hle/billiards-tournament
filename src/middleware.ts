@@ -5,8 +5,7 @@ import { COOKIE_NAME, COOKIE_VALUE } from "@/constants";
 export function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
-	// Allow access to /auth and /api/authenticate
-	if (pathname.startsWith("/auth") || pathname.startsWith("/api/authenticate")) {
+	if (pathname === "/" || pathname.startsWith("/auth") || pathname.startsWith("/api/authenticate")) {
 		return NextResponse.next();
 	}
 
