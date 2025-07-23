@@ -2,119 +2,14 @@
 	"$schema": "../../schemas/matches.schema.json",
 	"data": [
 		{
-			"id": "A-1",
+			"id": "A00",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "p1",
-			"player2Id": "p2",
-			"scheduledAt": { "date": "2025-07-21", "time": "12:00" },
+			"player1Id": "nhle",
+			"player2Id": "bvphan",
+			"scheduledAt": { "date": "2024-07-21", "time": "12:00" },
 			"score1": 3,
 			"score2": 5
-		},
-		{
-			"id": "A-2",
-			"type": "group",
-			"groupId": "A",
-			"player1Id": "p1",
-			"player2Id": "p3",
-			"scheduledAt": { "date": "2025-07-21", "time": "14:00" },
-			"score1": 5,
-			"score2": 2
-		},
-		{
-			"id": "A-3",
-			"type": "group",
-			"groupId": "A",
-			"player1Id": "p1",
-			"player2Id": "p4",
-			"scheduledAt": { "date": "2025-07-22", "time": "12:00" },
-			"score1": 4,
-			"score2": 5
-		},
-		{
-			"id": "A-4",
-			"type": "group",
-			"groupId": "A",
-			"player1Id": "p2",
-			"player2Id": "p3",
-			"scheduledAt": { "date": "2025-07-22", "time": "14:00" },
-			"score1": 2,
-			"score2": 5
-		},
-		{
-			"id": "A-5",
-			"type": "group",
-			"groupId": "A",
-			"player1Id": "p2",
-			"player2Id": "p4",
-			"scheduledAt": { "date": "2025-07-23", "time": "12:00" },
-			"score1": 5,
-			"score2": 1
-		},
-		{
-			"id": "A-6",
-			"type": "group",
-			"groupId": "A",
-			"player1Id": "p3",
-			"player2Id": "p4",
-			"scheduledAt": { "date": "2025-07-23", "time": "14:00" },
-			"score1": 1,
-			"score2": 5
-		},
-		{
-			"id": "B-1",
-			"type": "group",
-			"groupId": "B",
-			"player1Id": "p5",
-			"player2Id": "p6",
-			"scheduledAt": { "date": "2025-07-24", "time": "12:00" },
-			"score1": 5,
-			"score2": 4
-		},
-		{
-			"id": "B-2",
-			"type": "group",
-			"groupId": "B",
-			"player1Id": "p5",
-			"player2Id": "p7",
-			"scheduledAt": { "date": "2025-07-24", "time": "14:00" },
-			"score1": 1,
-			"score2": 5
-		},
-		{
-			"id": "B-3",
-			"type": "group",
-			"groupId": "B",
-			"player1Id": "p5",
-			"player2Id": "p8",
-			"scheduledAt": { "date": "2025-07-25", "time": "12:00" },
-			"score1": 5,
-			"score2": 3
-		},
-		{
-			"id": "B-4",
-			"type": "group",
-			"groupId": "B",
-			"player1Id": "p6",
-			"player2Id": "p7",
-			"scheduledAt": { "date": "2025-07-25", "time": "14:00" },
-			"score1": 2,
-			"score2": 5
-		},
-		{
-			"id": "B-5",
-			"type": "group",
-			"groupId": "B",
-			"player1Id": "p6",
-			"player2Id": "p8",
-			"scheduledAt": { "date": "2025-07-26", "time": "12:00" }
-		},
-		{
-			"id": "B-6",
-			"type": "group",
-			"groupId": "B",
-			"player1Id": "p7",
-			"player2Id": "p8"
 		}
 	]
 }

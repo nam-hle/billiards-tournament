@@ -129,10 +129,10 @@ export interface Group {
 	id: string;
 	name: string;
 	players: string[];
-	matches: string[];
 }
 
 export interface GroupSummary extends Group {
+	matches: GroupMatch[];
 	completedMatches: number;
 	status: "active" | "completed" | "upcoming";
 	leader: { name: string; points: number } | null;

@@ -1,13 +1,22 @@
 {
 	"$schema": "../schemas/players.schema.json",
 	"data": [
-		{ "id": "p1", "name": "Nam", "nickname": "The Breaker" },
-		{ "id": "p2", "name": "Linh", "nickname": "Spin Master" },
-		{ "id": "p3", "name": "Tuan", "nickname": "Silent Cue" },
-		{ "id": "p4", "name": "Hoa", "nickname": "Sharp Shooter" },
-		{ "id": "p5", "name": "Minh", "nickname": "Ice Man" },
-		{ "id": "p6", "name": "Hanh", "nickname": "Smooth Stroke" },
-		{ "id": "p7", "name": "Khanh", "nickname": "Fast Break" },
-		{ "id": "p8", "name": "Trang", "nickname": "Cue Queen" }
+		{ "id": "nhle", "name": "Nam Hoang Le", "nickname": "The Breaker" },
+		{ "id": "bvphan", "name": "Binh Van Phan", "nickname": "Spin Master" },
+		{ "id": "tttran", "name": "Tuyen Trung Tran", "nickname": "Silent Cue" },
+		{ "id": "atvo", "name": "An Tien Vo", "nickname": "The Sharp Shooter" },
+		{ "id": "bvqhuynh", "name": "Binh Van Quoc Huynh", "nickname": "Ice Man" },
+		{ "id": "dple", "name": "Duy Phi Le", "nickname": "Smooth Stroke" },
+		{ "id": "hnnguyen", "name": "Hung Ngoc Nguyen", "nickname": "The Tactician" },
+		{ "id": "hqnguyen", "name": "Hieu Quang Nguyen", "nickname": "The Precisionist" },
+		{ "id": "hqtran", "name": "Huy Quang Tran", "nickname": "Rack Reaper" },
+		{ "id": "ltnguyen", "name": "Liem Thanh Nguyen", "nickname": "Cue Master" },
+		{ "id": "mbnguyen", "name": "Minh Binh Nguyen", "nickname": "Rack Slayer" },
+		{ "id": "qanguyen", "name": "Quoc Anh Nguyen", "nickname": "Angle Artist" },
+		{ "id": "shvu", "name": "Son Hoang Vu", "nickname": "The Dominator" },
+		{ "id": "thnguyen", "name": "Thien Hoang Nguyen", "nickname": "Cue Terminator" },
+		{ "id": "tmdo", "name": "Tuan Minh Do", "nickname": "Pocket Predator" },
+		{ "id": "lvluu", "name": "Loi Van Luu", "nickname": "The Dominator" },
+		{ "id": "dxnguyen", "name": "Dung Xuan Nguyen", "nickname": "Ice Veins" }
 	]
 }

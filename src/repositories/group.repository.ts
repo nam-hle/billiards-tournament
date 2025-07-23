@@ -30,7 +30,7 @@ export class GroupRepository extends BaseRepository {
 		const playerRepository = new PlayerRepository();
 
 		const completedMatches = matches.filter(CompletedMatch.isInstance);
-		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < group.matches.length ? "active" : "completed";
+		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "active" : "completed";
 
 		const [topPlayer] = await this.getStandings(params);
 		const leader = status === "upcoming" ? null : { points: topPlayer.points, name: (await playerRepository.getById(topPlayer.playerId)).name };
@@ -38,10 +38,10 @@ export class GroupRepository extends BaseRepository {
 		return {
 			leader,
 			status,
+			matches,
 			id: group.id,
 			name: group.name,
 			players: group.players,
-			matches: group.matches,
 			completedMatches: completedMatches.length
 		};
 	}
