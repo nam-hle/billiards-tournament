@@ -13,9 +13,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar"
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
-import { getAbbrName } from "@/utils";
-import { toLabel, getStatusColor } from "@/utils/strings";
 import { type Group, type PlayerTournamentStat } from "@/interfaces";
+import { toLabel, getAbbrName, getStatusColor } from "@/utils/strings";
 
 namespace PlayersPageClient {
 	export interface Props {
