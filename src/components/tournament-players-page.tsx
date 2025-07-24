@@ -30,7 +30,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedGroup, setSelectedGroup] = useState("all");
 	const [selectedStatus, setSelectedStatus] = useState("all");
-	const [sortBy, setSortBy] = useState("points");
+	// const [sortBy, setSortBy] = useState("points");
 
 	// Filter and sort players
 	const filteredPlayers = players
@@ -42,16 +42,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 			return matchesSearch && matchesGroup && matchesStatus;
 		})
 		.sort((a, b) => {
-			switch (sortBy) {
-				case "wins":
-					return b.wins - a.wins;
-				case "winRate":
-					return b.winRate - a.winRate;
-				case "name":
-					return a.name.localeCompare(b.name);
-				default:
-					return 0;
-			}
+			return b.wins - a.wins || a.name.localeCompare(b.name);
 		});
 
 	const totalPlayers = players.length;
@@ -173,17 +164,17 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 							</SelectContent>
 						</Select>
 
-						<Select value={sortBy} onValueChange={setSortBy}>
-							<SelectTrigger className="w-[140px]">
-								<SelectValue placeholder="Sort by" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="points">Points</SelectItem>
-								<SelectItem value="wins">Wins</SelectItem>
-								<SelectItem value="winRate">Win Rate</SelectItem>
-								<SelectItem value="name">Name</SelectItem>
-							</SelectContent>
-						</Select>
+						{/*<Select value={sortBy} onValueChange={setSortBy}>*/}
+						{/*	<SelectTrigger className="w-[140px]">*/}
+						{/*		<SelectValue placeholder="Sort by" />*/}
+						{/*	</SelectTrigger>*/}
+						{/*	<SelectContent>*/}
+						{/*		<SelectItem value="points">Points</SelectItem>*/}
+						{/*		<SelectItem value="wins">Wins</SelectItem>*/}
+						{/*		<SelectItem value="winRate">Win Rate</SelectItem>*/}
+						{/*		<SelectItem value="name">Name</SelectItem>*/}
+						{/*	</SelectContent>*/}
+						{/*</Select>*/}
 					</div>
 				</CardContent>
 			</Card>

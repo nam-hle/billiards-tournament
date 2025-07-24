@@ -120,7 +120,7 @@ function TournamentStats({ overview }: { overview: TournamentOverview }) {
 							<Award className="h-4 w-4 text-yellow-600" />
 						</div>
 						<div>
-							<p className="text-2xl font-bold">5000 USD</p>
+							<p className="text-2xl font-bold">5000 VND</p>
 							<p className="text-xs text-muted-foreground">Prize Pool</p>
 						</div>
 					</div>

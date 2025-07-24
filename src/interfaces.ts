@@ -235,6 +235,7 @@ export interface Standing {
 	points: number;
 	played: number;
 	playerId: string;
+	playerName: string;
 
 	matchesWins: number;
 	matchesLosses: number;

@@ -114,7 +114,7 @@ export class TournamentRepository extends BaseRepository {
 			)
 		)
 			.flat()
-			.sort((a, b) => b.points - a.points || b.wins - a.wins)
+			.sort((a, b) => b.points - a.points || b.wins - a.wins || a.name.localeCompare(b.name))
 			.slice(0, 5)
 			.map((player) => {
 				return { name: player.name, wins: player.wins, points: player.points };

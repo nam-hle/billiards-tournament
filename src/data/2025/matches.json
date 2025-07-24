@@ -12,8 +12,8 @@
 			"id": "25A01",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "nhle",
-			"player2Id": "atvo"
+			"player1Id": "atvo",
+			"player2Id": "nhle"
 		},
 		{
 			"id": "25A02",
@@ -26,8 +26,8 @@
 			"id": "25A03",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "nhle",
-			"player2Id": "hqnguyen"
+			"player1Id": "hqnguyen",
+			"player2Id": "nhle"
 		},
 		{
 			"id": "25A04",
@@ -40,8 +40,8 @@
 			"id": "25A05",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "hqtran",
-			"player2Id": "dple"
+			"player1Id": "dple",
+			"player2Id": "hqtran"
 		},
 		{
 			"id": "25A06",
@@ -61,8 +61,8 @@
 			"id": "25A08",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "atvo",
-			"player2Id": "hqnguyen"
+			"player1Id": "hqnguyen",
+			"player2Id": "atvo"
 		},
 		{
 			"id": "25A09",
@@ -82,8 +82,8 @@
 			"id": "25B11",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "bvphan",
-			"player2Id": "qanguyen"
+			"player1Id": "qanguyen",
+			"player2Id": "bvphan"
 		},
 		{
 			"id": "25B12",
@@ -96,8 +96,8 @@
 			"id": "25B13",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "bvphan",
-			"player2Id": "mbnguyen"
+			"player1Id": "mbnguyen",
+			"player2Id": "bvphan"
 		},
 		{
 			"id": "25B14",
@@ -110,8 +110,8 @@
 			"id": "25B15",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "tmdo",
-			"player2Id": "hnnguyen"
+			"player1Id": "hnnguyen",
+			"player2Id": "tmdo"
 		},
 		{
 			"id": "25B16",
@@ -131,8 +131,8 @@
 			"id": "25B18",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "qanguyen",
-			"player2Id": "mbnguyen"
+			"player1Id": "mbnguyen",
+			"player2Id": "qanguyen"
 		},
 		{
 			"id": "25B19",
@@ -152,8 +152,8 @@
 			"id": "25C21",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "tttran",
-			"player2Id": "shvu"
+			"player1Id": "shvu",
+			"player2Id": "tttran"
 		},
 		{
 			"id": "25C22",
@@ -166,8 +166,8 @@
 			"id": "25C23",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "tttran",
-			"player2Id": "ltnguyen"
+			"player1Id": "ltnguyen",
+			"player2Id": "tttran"
 		},
 		{
 			"id": "25C24",
@@ -180,8 +180,8 @@
 			"id": "25C25",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "bvqhuynh",
-			"player2Id": "thnguyen"
+			"player1Id": "thnguyen",
+			"player2Id": "bvqhuynh"
 		},
 		{
 			"id": "25C26",
@@ -201,8 +201,8 @@
 			"id": "25C28",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "shvu",
-			"player2Id": "ltnguyen"
+			"player1Id": "ltnguyen",
+			"player2Id": "shvu"
 		},
 		{
 			"id": "25C29",

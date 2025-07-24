@@ -90,11 +90,16 @@ export class GroupRepository extends BaseRepository {
 				}
 
 				return 0;
-			}
+			},
+			(a, b) => a.playerName.localeCompare(b.playerName)
 		);
+
+		const players = await new PlayerRepository().getAll();
 
 		return group.players
 			.map((playerId) => {
+				const playerName = players.find((player) => player.id === playerId)?.name;
+				assert(playerName, `Player with ID ${playerId} not found in group ${group.id}`);
 				let wins = 0,
 					losses = 0,
 					points = 0,
@@ -125,7 +130,7 @@ export class GroupRepository extends BaseRepository {
 					}
 				}
 
-				return { wins, losses, points, played, playerId, matchesWins, matchesLosses };
+				return { wins, losses, points, played, playerId, playerName, matchesWins, matchesLosses };
 			})
 			.sort(comparator);
 	}

@@ -5,9 +5,9 @@ import { Badge } from "@/components/shadcn/badge";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { Match, type Group, type MatchStatus, DefinedPlayersMatch, type ScheduledMatch } from "@/interfaces";
+import { Match, type Group, CompletedMatch, type MatchStatus, DefinedPlayersMatch } from "@/interfaces";
 
-export function DaySchedule({ date, matches }: { date: string | undefined; matches: ScheduledMatch[]; groups: Pick<Group, "id" | "name">[] }) {
+export function DaySchedule({ date, matches }: { date: string; matches: Match[]; groups: Pick<Group, "id" | "name">[] }) {
 	if (matches.length === 0) {
 		return (
 			<div className="py-8 text-center text-muted-foreground">
@@ -21,7 +21,9 @@ export function DaySchedule({ date, matches }: { date: string | undefined; match
 		<div className="space-y-4">
 			<div className="mb-6 flex items-center gap-2">
 				<Calendar className="h-5 w-5 text-primary" />
-				<h3 className="text-lg font-semibold">{date === undefined ? "Unscheduled" : date === "upcoming" ? "Upcoming Matches" : formatDate(date)}</h3>
+				<h3 className="text-lg font-semibold">
+					{date === "unscheduled" ? "Unscheduled Matches" : date === "upcoming" ? "Upcoming Matches" : formatDate(date)}
+				</h3>
 				<Badge className="ml-2" variant="secondary">
 					{matches.length} {matches.length === 1 ? "match" : "matches"}
 				</Badge>
@@ -45,7 +47,9 @@ export function DaySchedule({ date, matches }: { date: string | undefined; match
 							{matches
 								// .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())
 								.map((match) => {
-									const winner = getWinner(match);
+									const winnerId =
+										DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
+									const winner = winnerId !== undefined ? (match.player1Id === winnerId ? "player1" : "player2") : null;
 
 									return (
 										<TableRow key={match.id}>
@@ -115,7 +119,7 @@ export const formatDate = (dateString: string, options?: Intl.DateTimeFormatOpti
 	return new Date(dateString).toLocaleDateString("en-US", options ?? { month: "long", day: "numeric", weekday: "long", year: "numeric" });
 };
 
-const getStatusColor = (status: MatchStatus) => {
+export const getStatusColor = (status: MatchStatus) => {
 	switch (status) {
 		case "completed":
 			return "bg-green-100 text-green-800";
@@ -134,21 +138,7 @@ export const formatTime = (timeString: string) => {
 	return format(parsed, "hh:mm a");
 };
 
-const getWinner = (match: ScheduledMatch) => {
-	if (match.score1 != null && match.score2 != null) {
-		if (match.score1 > match.score2) {
-			return "player1";
-		}
-
-		if (match.score2 > match.score1) {
-			return "player2";
-		}
-	}
-
-	return null;
-};
-
-const getStatusText = (status: string) => {
+export const getStatusText = (status: MatchStatus) => {
 	switch (status) {
 		case "completed":
 			return "Completed";
@@ -156,8 +146,10 @@ const getStatusText = (status: string) => {
 			return "Live";
 		case "scheduled":
 			return "Scheduled";
-		case "postponed":
-			return "Postponed";
+		case "scheduling":
+			return "Scheduling";
+		case "waiting":
+			return "Waiting";
 		default:
 			return "Unknown";
 	}

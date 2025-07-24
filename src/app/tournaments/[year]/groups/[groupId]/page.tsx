@@ -6,12 +6,12 @@ import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { formatTime } from "@/components/day-schedule";
+import { formatTime, getStatusText, getStatusColor } from "@/components/day-schedule";
 
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
-import { CompletedMatch, ScheduledMatch, type GroupMatch, DefinedPlayersMatch } from "@/interfaces";
+import { Match, CompletedMatch, ScheduledMatch, type GroupMatch, DefinedPlayersMatch } from "@/interfaces";
 
 interface Props {
 	params: Promise<{ year: string; groupId: string }>;
@@ -38,14 +38,6 @@ export default async function GroupPage({ params }: Props) {
 		}
 
 		return player.name;
-	};
-
-	const getMatchStatus = (score1: number | undefined, score2: number | undefined) => {
-		if (score1 !== undefined && score2 !== undefined) {
-			return "completed";
-		}
-
-		return "scheduled";
 	};
 
 	const matches = await new MatchRepository().getAllMatchesByGroup({ year, groupId });
@@ -166,7 +158,7 @@ export default async function GroupPage({ params }: Props) {
 						</TableHeader>
 						<TableBody>
 							{matches.map((match) => {
-								const status = getMatchStatus(match.score1, match.score2);
+								const status = Match.getStatus(match);
 
 								return (
 									<TableRow key={match.id}>
@@ -198,11 +190,7 @@ export default async function GroupPage({ params }: Props) {
 											</div>
 										</TableCell>
 										<TableCell className="text-center">
-											<Badge
-												variant={status === "completed" ? "default" : "secondary"}
-												className={status === "completed" ? "bg-green-100 text-green-800" : ""}>
-												{status === "completed" ? "Completed" : "Scheduled"}
-											</Badge>
+											<Badge className={getStatusColor(status)}>{getStatusText(status)}</Badge>
 										</TableCell>
 									</TableRow>
 								);

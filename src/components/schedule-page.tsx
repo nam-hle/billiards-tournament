@@ -88,10 +88,9 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 	};
 
 	const todayMatches = matchesByDate[currentDate] || [];
-	const upcomingMatches = schedule.matches.filter(
-		(match): match is ScheduledMatch => ScheduledMatch.isInstance(match) && new Date(match.scheduledAt.date) > new Date()
-	);
+	const upcomingMatches = schedule.matches.filter((match) => !DefinedPlayersMatch.isInstance(match) || !CompletedMatch.isInstance(match));
 	const completedMatches = schedule.matches.filter((match) => DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match));
+	const unscheduledMatches = schedule.matches.filter((match) => !ScheduledMatch.isInstance(match));
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
@@ -216,7 +215,7 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 							{date !== dates[dates.length - 1] && <Separator className="my-8" />}
 						</div>
 					))}
-					{/*{unscheduledMatches.length > 0 && <DaySchedule date={undefined} groups={schedule.groups} matches={unscheduledMatches} />}*/}
+					{unscheduledMatches.length > 0 && <DaySchedule date="unscheduled" groups={schedule.groups} matches={unscheduledMatches} />}
 				</TabsContent>
 			</Tabs>
 		</div>
