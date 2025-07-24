@@ -24,9 +24,9 @@ function useTabs(): Tab[] {
 		return [
 			// TODO: Reduce duplications
 			{ href: basePath, label: "Overview", match: (path) => path === basePath },
+			{ label: "Players", href: `${basePath}/players`, match: (path) => path.startsWith(`${basePath}/players`) },
 			{ label: "Groups", href: `${basePath}/groups`, match: (path) => path.startsWith(`${basePath}/groups`) },
-			{ label: "Schedule", href: `${basePath}/schedule`, match: (path) => path.startsWith(`${basePath}/schedule`) },
-			{ label: "Players", href: `${basePath}/players`, match: (path) => path.startsWith(`${basePath}/players`) }
+			{ label: "Schedule", href: `${basePath}/schedule`, match: (path) => path.startsWith(`${basePath}/schedule`) }
 			// { label: "Results", href: `${basePath}/results`, match: (path) => path.startsWith(`${basePath}/results`) }
 		];
 	}

@@ -1,4 +1,6 @@
+import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Users, Clock, Award, Trophy, Target, MapPin, Calendar, ArrowRight, TrendingUp } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
@@ -169,7 +171,7 @@ export default async function TournamentOverviewPage({ params }: Props) {
 			{/* Tournament Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
-					<Trophy className="h-10 w-10 text-primary" />
+					<Image width={56} height={56} src="/billiards-logo.svg" alt="Billiards Tournament Logo" />
 					<div>
 						<h1 className="text-4xl font-bold tracking-tight">{overview.name}</h1>
 					</div>
