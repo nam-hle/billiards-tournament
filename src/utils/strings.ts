@@ -17,7 +17,7 @@ export function getStatusColor(status: string): string {
 	switch (status) {
 		case "upcoming":
 		case "scheduling":
-			return "bg-yellow-100 text-yellow-800";
+			return "bg-orange-100 text-orange-800";
 		case "active":
 		case "ongoing":
 		case "in-progress":
