@@ -113,14 +113,15 @@ export class GroupRepository extends BaseRepository {
 						continue;
 					}
 
-					matchesWins += match.score1;
-					matchesLosses += match.score2;
-
 					if (playerId === CompletedMatch.getWinnerId(match)) {
 						points += 3;
 						wins++;
+						matchesWins += CompletedMatch.getWinnerRacksWon(match);
+						matchesLosses += CompletedMatch.getLoserRacksWon(match);
 					} else {
 						losses++;
+						matchesWins += CompletedMatch.getLoserRacksWon(match);
+						matchesLosses += CompletedMatch.getWinnerRacksWon(match);
 					}
 				}
 

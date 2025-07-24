@@ -181,6 +181,30 @@ export namespace CompletedMatch {
 
 		return undefined;
 	}
+
+	export function getLoserRacksWon(match: CompletedMatch): number {
+		if (match.score1 > match.score2) {
+			return match.score2;
+		}
+
+		if (match.score2 > match.score1) {
+			return match.score1;
+		}
+
+		throw new Error("Match is a draw, cannot determine loser racks won");
+	}
+
+	export function getWinnerRacksWon(match: CompletedMatch): number {
+		if (match.score1 > match.score2) {
+			return match.score1;
+		}
+
+		if (match.score2 > match.score1) {
+			return match.score2;
+		}
+
+		throw new Error("Match is a draw, cannot determine loser racks won");
+	}
 }
 
 export type WithScheduled<M extends BaseMatch> = M & Required<Pick<M, "scheduledAt">>;

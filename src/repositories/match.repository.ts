@@ -48,6 +48,6 @@ export class MatchRepository extends BaseRepository {
 			return "Quarter Final";
 		}
 
-		throw new Error(`Unknown match type: ${match.type}`);
+		throw new Error(`Unknown match type: ${JSON.stringify(match)}`);
 	}
 }

@@ -17,6 +17,11 @@
 		{ "id": "thnguyen", "name": "Thien Hoang Nguyen", "nickname": "Cue Terminator" },
 		{ "id": "tmdo", "name": "Tuan Minh Do", "nickname": "Pocket Predator" },
 		{ "id": "lvluu", "name": "Loi Van Luu", "nickname": "The Dominator" },
-		{ "id": "dxnguyen", "name": "Dung Xuan Nguyen", "nickname": "Ice Veins" }
+		{ "id": "dxnguyen", "name": "Dung Xuan Nguyen", "nickname": "Ice Veins" },
+		{ "id": "lhpham", "name": "Long Hoang Pham" },
+		{ "id": "benvphan", "name": "Ben Van Phan" },
+		{ "id": "ewilton", "name": "Eric Wilton" },
+		{ "id": "dqtrinh", "name": "Duy Quang Trinh" },
+		{ "id": "tuanttran", "name": "Tuan Thanh Tran" }
 	]
 }

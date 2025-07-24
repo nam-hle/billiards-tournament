@@ -7,15 +7,7 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 
 import { Match, type Group, type MatchStatus, DefinedPlayersMatch, type ScheduledMatch } from "@/interfaces";
 
-export function DaySchedule({
-	date,
-	groups,
-	matches
-}: {
-	date: string | undefined;
-	matches: ScheduledMatch[];
-	groups: Pick<Group, "id" | "name">[];
-}) {
+export function DaySchedule({ date, matches }: { date: string | undefined; matches: ScheduledMatch[]; groups: Pick<Group, "id" | "name">[] }) {
 	if (matches.length === 0) {
 		return (
 			<div className="py-8 text-center text-muted-foreground">
