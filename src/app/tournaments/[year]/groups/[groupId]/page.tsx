@@ -43,7 +43,7 @@ export default async function GroupPage({ params }: Props) {
 
 	const matches = await new MatchRepository().getAllMatchesByGroup({ year, groupId });
 	const standings = await new GroupRepository().getStandings({ year, groupId });
-	const advancedPlayerIds = await new GroupRepository().getAdvancedPlayerIds({ year });
+	const advancedPlayerIds = (await new GroupRepository().getAdvancedPlayers({ year })).map((standing) => standing.playerId);
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">

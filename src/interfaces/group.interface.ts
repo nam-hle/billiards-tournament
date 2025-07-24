@@ -23,7 +23,10 @@ export interface GroupStanding {
 	points: number;
 	played: number;
 	playerId: string;
+	groupName: string;
 	playerName: string;
+	racksWinRate: number;
+	groupPosition: number;
 
 	matchesWins: number;
 	matchesLosses: number;

@@ -22,6 +22,10 @@ export namespace CompletedMatch {
 		return undefined;
 	}
 
+	export function getLoserId(match: CompletedMatch): string | undefined {
+		return getWinnerId(match) === match.player1Id ? match.player2Id : match.player1Id;
+	}
+
 	export function getLoserRacksWon(match: CompletedMatch): number {
 		if (match.score1 > match.score2) {
 			return match.score2;

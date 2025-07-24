@@ -66,7 +66,7 @@ export class GroupRepository extends BaseRepository {
 		const players = await new PlayerRepository().getAll();
 
 		return group.players
-			.map((playerId) => {
+			.map<GroupStanding>((playerId) => {
 				const playerName = players.find((player) => player.id === playerId)?.name;
 				assert(playerName, `Player with ID ${playerId} not found in group ${group.id}`);
 
@@ -100,12 +100,27 @@ export class GroupRepository extends BaseRepository {
 					}
 				}
 
-				return { wins, losses, points, played, playerId, playerName, matchesWins, matchesLosses };
+				return {
+					wins,
+					losses,
+					points,
+					played,
+					playerId,
+					playerName,
+					matchesWins,
+					matchesLosses,
+					groupPosition: 0,
+					groupName: group.name,
+					racksWinRate: (matchesWins / (matchesWins + matchesLosses)) * 100
+				};
 			})
-			.sort(comparator);
+			.sort(comparator)
+			.map((standing, index) => {
+				return { ...standing, groupPosition: index + 1 };
+			});
 	}
 
-	async getAdvancedPlayerIds(params: { year: string }): Promise<string[]> {
+	async getAdvancedPlayers(params: { year: string }): Promise<GroupStanding[]> {
 		const groups = await this.getByYear(params);
 		const groupsStandings = await Promise.all(groups.map((group) => this.getStandings({ ...params, groupId: group.id })));
 
@@ -117,6 +132,6 @@ export class GroupRepository extends BaseRepository {
 			.sort(comparator)
 			.slice(0, 2);
 
-		return [...topPlayers, ...thirdPlayers].map((standing) => standing.playerId);
+		return [...topPlayers, ...thirdPlayers].sort(comparator);
 	}
 }
