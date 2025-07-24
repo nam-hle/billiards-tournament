@@ -10,30 +10,9 @@ import { Button } from "@/components/shadcn/button";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
+import { formatDate } from "@/utils/date-time";
+import { getStatusColor } from "@/utils/strings";
 import { type TournamentOverview } from "@/interfaces";
-
-const getStatusColor = (status: string) => {
-	switch (status) {
-		case "upcoming":
-			return "bg-blue-100 text-blue-800 hover:bg-blue-200";
-		case "ongoing":
-			return "bg-green-100 text-green-800 hover:bg-green-200";
-		case "completed":
-			return "bg-gray-100 text-gray-800 hover:bg-gray-200";
-		case "registration":
-			return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
-		default:
-			return "bg-gray-100 text-gray-800 hover:bg-gray-200";
-	}
-};
-
-const formatDate = (dateString: string) => {
-	return new Date(dateString).toLocaleDateString("en-US", {
-		month: "short",
-		day: "numeric",
-		year: "numeric"
-	});
-};
 
 export namespace TournamentsPage {
 	export interface Props {

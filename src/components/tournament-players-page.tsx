@@ -14,6 +14,7 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
 import { getAbbrName } from "@/utils";
+import { toLabel, getStatusColor } from "@/utils/strings";
 import { type Group, type PlayerTournamentStat } from "@/interfaces";
 
 namespace PlayersPageClient {
@@ -202,7 +203,7 @@ function PlayersTable({ year, players }: { year: string; players: PlayerTourname
 						<TableRow>
 							<TableHead className="w-[50px]">Rank</TableHead>
 							<TableHead>Player</TableHead>
-							<TableHead>Group</TableHead>
+							<TableHead className="text-center">Group</TableHead>
 							<TableHead className="text-center">Played</TableHead>
 							<TableHead className="text-center">Wins</TableHead>
 							<TableHead className="text-center">Losses</TableHead>
@@ -232,7 +233,7 @@ function PlayersTable({ year, players }: { year: string; players: PlayerTourname
 											</div>
 										</div>
 									</TableCell>
-									<TableCell>
+									<TableCell className="text-center">
 										<Badge variant="outline">{player.group.name}</Badge>
 									</TableCell>
 									<TableCell className="text-center">{player.playedMatches}</TableCell>
@@ -248,7 +249,7 @@ function PlayersTable({ year, players }: { year: string; players: PlayerTourname
 									</TableCell>
 									<TableCell className="text-center">{player.winRate.toFixed(1)}%</TableCell>
 									<TableCell className="text-center">
-										<Badge className={getStatusColor(player.status)}>{getStatusText(player.status)}</Badge>
+										<Badge className={getStatusColor(player.status)}>{toLabel(player.status)}</Badge>
 									</TableCell>
 									<TableCell>
 										<Button asChild size="sm" variant="outline">
@@ -263,29 +264,3 @@ function PlayersTable({ year, players }: { year: string; players: PlayerTourname
 		</Card>
 	);
 }
-
-const getStatusColor = (status: string) => {
-	switch (status) {
-		case "qualified":
-			return "bg-green-100 text-green-800";
-		case "active":
-			return "bg-blue-100 text-blue-800";
-		case "eliminated":
-			return "bg-red-100 text-red-800";
-		default:
-			return "bg-gray-100 text-gray-800";
-	}
-};
-
-const getStatusText = (status: string) => {
-	switch (status) {
-		case "qualified":
-			return "Qualified";
-		case "active":
-			return "Active";
-		case "eliminated":
-			return "Eliminated";
-		default:
-			return "Unknown";
-	}
-};

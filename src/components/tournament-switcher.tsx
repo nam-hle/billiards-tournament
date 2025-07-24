@@ -12,33 +12,8 @@ import { Command, CommandItem, CommandList, CommandEmpty, CommandGroup, CommandI
 
 import { cn } from "@/utils/cn";
 import { extractTournamentId } from "@/utils/paths";
-import { type Tournament, type TournamentStatus, type TournamentOverview } from "@/interfaces";
-
-const getStatusColor = (status: TournamentStatus) => {
-	switch (status) {
-		case "completed":
-			return "bg-green-100 text-green-800 border-green-200";
-		case "ongoing":
-			return "bg-blue-100 text-blue-800 border-blue-200";
-		case "upcoming":
-			return "bg-gray-100 text-gray-800 border-gray-200";
-		default:
-			return "bg-gray-100 text-gray-800 border-gray-200";
-	}
-};
-
-const getStatusText = (status: TournamentStatus) => {
-	switch (status) {
-		case "completed":
-			return "Completed";
-		case "ongoing":
-			return "Ongoing";
-		case "upcoming":
-			return "Upcoming";
-		default:
-			return "Unknown";
-	}
-};
+import { toLabel, getStatusColor } from "@/utils/strings";
+import { type Tournament, type TournamentOverview } from "@/interfaces";
 
 export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }> = ({ tournaments }) => {
 	const [open, setOpen] = useState(false);
@@ -127,7 +102,7 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 											<div className="flex items-center gap-2">
 												<span className="truncate text-sm font-medium">{tournament.name}</span>
 												<Badge variant="secondary" className={cn("px-1.5 py-0.5 text-xs", getStatusColor(tournament.status))}>
-													{getStatusText(tournament.status)}
+													{toLabel(tournament.status)}
 												</Badge>
 											</div>
 											<div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -166,7 +141,7 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 												<div className="flex items-center gap-2">
 													<span className="truncate text-sm font-medium">{tournament.name}</span>
 													<Badge variant="secondary" className={cn("px-1.5 py-0.5 text-xs", getStatusColor(tournament.status))}>
-														{getStatusText(tournament.status)}
+														{toLabel(tournament.status)}
 													</Badge>
 												</div>
 												<div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -206,7 +181,7 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 												<div className="flex items-center gap-2">
 													<span className="truncate text-sm font-medium">{tournament.name}</span>
 													<Badge variant="secondary" className={cn("px-1.5 py-0.5 text-xs", getStatusColor(tournament.status))}>
-														{getStatusText(tournament.status)}
+														{toLabel(tournament.status)}
 													</Badge>
 												</div>
 												<div className="flex items-center gap-3 text-xs text-muted-foreground">

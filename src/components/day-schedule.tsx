@@ -1,11 +1,12 @@
 import { Calendar } from "lucide-react";
-import { parse, format } from "date-fns";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { Match, type Group, CompletedMatch, type MatchStatus, DefinedPlayersMatch } from "@/interfaces";
+import { toLabel, getStatusColor } from "@/utils/strings";
+import { formatDate, formatTime } from "@/utils/date-time";
+import { Match, type Group, CompletedMatch, DefinedPlayersMatch } from "@/interfaces";
 
 export function DaySchedule({ date, matches }: { date: string; matches: Match[]; groups: Pick<Group, "id" | "name">[] }) {
 	if (matches.length === 0) {
@@ -55,9 +56,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 										<TableRow key={match.id}>
 											{date === "upcoming" ? (
 												<TableCell className="font-mono text-sm">
-													{match.scheduledAt
-														? formatDate(match.scheduledAt.date, { month: "short", day: "numeric", weekday: "short" })
-														: "Unscheduled"}
+													{match.scheduledAt ? formatDate(match.scheduledAt.date, { month: "short", day: "numeric", weekday: "short" }) : "-"}
 												</TableCell>
 											) : null}
 											<TableCell className="font-mono text-sm">{match.scheduledAt ? formatTime(match.scheduledAt.time) : "-"}</TableCell>
@@ -102,7 +101,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 												</div>
 											</TableCell>
 											<TableCell className="text-center">
-												<Badge className={getStatusColor(Match.getStatus(match))}>{getStatusText(Match.getStatus(match))}</Badge>
+												<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
 											</TableCell>
 										</TableRow>
 									);
@@ -114,43 +113,3 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 		</div>
 	);
 }
-
-export const formatDate = (dateString: string, options?: Intl.DateTimeFormatOptions) => {
-	return new Date(dateString).toLocaleDateString("en-US", options ?? { month: "long", day: "numeric", weekday: "long", year: "numeric" });
-};
-
-export const getStatusColor = (status: MatchStatus) => {
-	switch (status) {
-		case "completed":
-			return "bg-green-100 text-green-800";
-		case "in-progress":
-			return "bg-blue-100 text-blue-800";
-		case "scheduled":
-			return "bg-gray-100 text-gray-800";
-		default:
-			return "bg-gray-100 text-gray-800";
-	}
-};
-
-export const formatTime = (timeString: string) => {
-	const parsed = parse(timeString, "HH:mm", new Date());
-
-	return format(parsed, "hh:mm a");
-};
-
-export const getStatusText = (status: MatchStatus) => {
-	switch (status) {
-		case "completed":
-			return "Completed";
-		case "in-progress":
-			return "Live";
-		case "scheduled":
-			return "Scheduled";
-		case "scheduling":
-			return "Scheduling";
-		case "waiting":
-			return "Waiting";
-		default:
-			return "Unknown";
-	}
-};

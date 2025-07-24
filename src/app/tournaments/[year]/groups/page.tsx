@@ -7,38 +7,12 @@ import { Progress } from "@/components/shadcn/progress";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 
-import { type GroupStatus } from "@/interfaces";
+import { toLabel, getStatusColor } from "@/utils/strings";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 
 interface Props {
 	params: Promise<{ year: string }>;
 }
-
-const getStatusColor = (status: GroupStatus) => {
-	switch (status) {
-		case "completed":
-			return "bg-green-100 text-green-800";
-		case "ongoing":
-			return "bg-blue-100 text-blue-800";
-		case "upcoming":
-			return "bg-gray-100 text-gray-800";
-		default:
-			return "bg-gray-100 text-gray-800";
-	}
-};
-
-const getStatusText = (status: GroupStatus) => {
-	switch (status) {
-		case "completed":
-			return "Completed";
-		case "ongoing":
-			return "Ongoing";
-		case "upcoming":
-			return "Upcoming";
-		default:
-			return "Unknown";
-	}
-};
 
 const completionPercentage = (completed: number, total: number) => {
 	return total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -67,8 +41,8 @@ export default async function GroupsIndexPage({ params }: Props) {
 				<div className="flex items-center justify-center gap-3">
 					<Trophy className="h-10 w-10 text-primary" />
 					<div>
-						<h1 className="text-4xl font-bold tracking-tight">{tournamentInfo.name}</h1>
-						<p className="mx-auto max-w-2xl text-muted-foreground">{tournamentInfo.description}</p>
+						<h1 className="text-3xl font-bold tracking-tight">Tournament Groups</h1>
+						<p className="text-xl text-muted-foreground">{tournamentInfo.name}</p>
 					</div>
 				</div>
 
@@ -124,7 +98,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 							<CardHeader className="pb-3">
 								<div className="flex items-center justify-between">
 									<CardTitle className="text-xl">{group.name}</CardTitle>
-									<Badge className={getStatusColor(group.status)}>{getStatusText(group.status)}</Badge>
+									<Badge className={getStatusColor(group.status)}>{toLabel(group.status)}</Badge>
 								</div>
 								<CardDescription>{group.players.length} players competing</CardDescription>
 							</CardHeader>

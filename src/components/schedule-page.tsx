@@ -13,6 +13,7 @@ import { DaySchedule } from "@/components/day-schedule";
 import { ScheduleFilters } from "@/components/schedule-filters";
 
 import { ALL_FILTER } from "@/constants";
+import { formatDate } from "@/utils/date-time";
 import { Match, GroupMatch, ScheduledMatch, CompletedMatch, DefinedPlayersMatch, type TournamentSchedule } from "@/interfaces";
 
 const GROUP_QUERY_KEY = "group";
@@ -186,13 +187,7 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 
 						<div className="text-center">
 							<p className="text-sm text-muted-foreground">Viewing</p>
-							<p className="font-semibold">
-								{new Date(currentDate).toLocaleDateString("en-US", {
-									month: "long",
-									day: "numeric",
-									weekday: "long"
-								})}
-							</p>
+							<p className="font-semibold">{formatDate(currentDate)}</p>
 						</div>
 
 						<Button variant="outline" onClick={() => navigateDate("next")} disabled={currentDateIndex >= dates.length - 1}>

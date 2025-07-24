@@ -6,8 +6,8 @@ import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { formatTime, getStatusText, getStatusColor } from "@/components/day-schedule";
-
+import { toLabel, getStatusColor } from "@/utils/strings";
+import { formatDate, formatTime } from "@/utils/date-time";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
@@ -163,9 +163,7 @@ export default async function GroupPage({ params }: Props) {
 								return (
 									<TableRow key={match.id}>
 										<TableCell className="font-mono text-sm">
-											{ScheduledMatch.isInstance(match)
-												? new Date(match.scheduledAt.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-												: "-"}
+											{ScheduledMatch.isInstance(match) ? formatDate(match.scheduledAt.date, { month: "short", day: "numeric" }) : "-"}
 										</TableCell>
 										<TableCell className="font-mono text-sm">{ScheduledMatch.isInstance(match) ? formatTime(match.scheduledAt.time) : "-"}</TableCell>
 										<TableCell>
@@ -190,7 +188,7 @@ export default async function GroupPage({ params }: Props) {
 											</div>
 										</TableCell>
 										<TableCell className="text-center">
-											<Badge className={getStatusColor(status)}>{getStatusText(status)}</Badge>
+											<Badge className={getStatusColor(status)}>{toLabel(status)}</Badge>
 										</TableCell>
 									</TableRow>
 								);

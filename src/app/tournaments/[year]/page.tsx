@@ -10,9 +10,9 @@ import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { formatDate, formatTime } from "@/components/day-schedule";
-
 import { assert } from "@/utils";
+import { toLabel } from "@/utils/strings";
+import { formatDate, formatTime } from "@/utils/date-time";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 import { DefinedPlayersMatch, type TournamentStatus, type TournamentOverview } from "@/interfaces";
 
@@ -153,19 +153,6 @@ export default async function TournamentOverviewPage({ params }: Props) {
 		}
 	};
 
-	const getStatusText = (status: TournamentStatus) => {
-		switch (status) {
-			case "completed":
-				return "Completed";
-			case "ongoing":
-				return "Ongoing";
-			case "upcoming":
-				return "Upcoming";
-			default:
-				return "Unknown";
-		}
-	};
-
 	return (
 		<div className="container mx-auto space-y-8 py-8">
 			{/* Tournament Header */}
@@ -179,7 +166,7 @@ export default async function TournamentOverviewPage({ params }: Props) {
 
 				<div className="flex justify-center">
 					<Badge variant="secondary" className={getStatusColor(overview.status)}>
-						{getStatusText(overview.status)}
+						{toLabel(overview.status)}
 					</Badge>
 				</div>
 
@@ -265,7 +252,7 @@ export default async function TournamentOverviewPage({ params }: Props) {
 									</div>
 									<div className="text-right">
 										<Badge variant="secondary" className={getStatusColor(group.status)}>
-											{getStatusText(group.status)}
+											{toLabel(group.status)}
 										</Badge>
 										{!!group.leader?.points && <p className="mt-1 text-sm font-medium">{group.leader.points} pts</p>}
 									</div>
