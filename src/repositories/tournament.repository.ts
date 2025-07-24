@@ -63,6 +63,7 @@ export class TournamentRepository extends BaseRepository {
 		const matches = await new MatchRepository().getAllByYear({ year });
 
 		const playerRepo = new PlayerRepository();
+		const players = await playerRepo.getAllByYear(year);
 
 		const scheduleMatches = await Promise.all(
 			matches.map<Promise<Match>>(async (match) => {
@@ -73,7 +74,7 @@ export class TournamentRepository extends BaseRepository {
 			})
 		);
 
-		return { ...tournament, matches: scheduleMatches, groups: groups.map(({ id, name }) => ({ id, name })) };
+		return { ...tournament, players, matches: scheduleMatches, groups: groups.map(({ id, name }) => ({ id, name })) };
 	}
 
 	public async getData(year: string): Promise<TournamentData> {

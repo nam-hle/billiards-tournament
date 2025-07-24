@@ -43,6 +43,7 @@ export interface TournamentData {
 
 export interface TournamentSchedule extends Tournament {
 	matches: Match[];
+	players: Player[];
 	groups: Pick<Group, "id" | "name">[];
 }
 

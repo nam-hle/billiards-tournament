@@ -2,20 +2,26 @@ import { Filter } from "lucide-react";
 
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
-import { type Group } from "@/interfaces";
+import { type Group, type Player } from "@/interfaces";
 
 export function ScheduleFilters({
 	groups,
+	players,
 	selectedGroup,
 	onGroupChange,
 	selectedStatus,
-	onStatusChange
+	onStatusChange,
+	onPlayerChange,
+	selectedPlayer
 }: {
+	players: Player[];
 	selectedGroup: string;
 	selectedStatus: string;
+	selectedPlayer: string;
 	groups: Pick<Group, "id" | "name">[];
 	onGroupChange: (value: string) => void;
 	onStatusChange: (value: string) => void;
+	onPlayerChange: (value: string) => void;
 }) {
 	return (
 		<div className="flex flex-wrap items-center gap-4">
@@ -48,6 +54,22 @@ export function ScheduleFilters({
 					<SelectItem value="in-progress">In Progress</SelectItem>
 					<SelectItem value="completed">Completed</SelectItem>
 					<SelectItem value="postponed">Postponed</SelectItem>
+				</SelectContent>
+			</Select>
+
+			<Select value={selectedPlayer} onValueChange={onPlayerChange}>
+				<SelectTrigger className="w-[180px]">
+					<SelectValue placeholder="All Players" />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectItem value="all">All Players</SelectItem>
+					{players.map((player) => {
+						return (
+							<SelectItem key={player.id} value={player.id}>
+								{player.name}
+							</SelectItem>
+						);
+					})}
 				</SelectContent>
 			</Select>
 		</div>

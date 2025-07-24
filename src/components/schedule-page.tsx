@@ -16,14 +16,16 @@ import { Match, GroupMatch, ScheduledMatch, type TournamentSchedule } from "@/in
 export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule }) {
 	const [selectedGroupId, setSelectedGroupId] = useState("all");
 	const [selectedStatus, setSelectedStatus] = useState("all");
+	const [selectedPlayerId, setSelectedPlayerId] = useState("all");
 	const [currentDate, setCurrentDate] = useState(new Date().toISOString().split("T")[0]);
 
 	// Filter matches
 	const filteredMatches = schedule.matches.filter((match) => {
 		const groupMatch = selectedGroupId === "all" || (GroupMatch.isInstance(match) && match.groupId === selectedGroupId);
 		const statusMatch = selectedStatus === "all" || Match.getStatus(match) === selectedStatus;
+		const playerMatch = selectedPlayerId === "all" || match.player1Id === selectedPlayerId || match.player2Id === selectedPlayerId;
 
-		return groupMatch && statusMatch;
+		return groupMatch && statusMatch && playerMatch;
 	});
 
 	// Group matches by date
@@ -128,10 +130,13 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 				<CardContent className="pt-6">
 					<ScheduleFilters
 						groups={schedule.groups}
+						players={schedule.players}
 						selectedGroup={selectedGroupId}
 						selectedStatus={selectedStatus}
+						selectedPlayer={selectedPlayerId}
 						onGroupChange={setSelectedGroupId}
 						onStatusChange={setSelectedStatus}
+						onPlayerChange={setSelectedPlayerId}
 					/>
 				</CardContent>
 			</Card>
