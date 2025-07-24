@@ -141,8 +141,8 @@
 				"date": "2024-07-21",
 				"time": "19:30"
 			},
-			"score1": 2,
-			"score2": 4
+			"score1": 5,
+			"score2": 1
 		},
 		{
 			"id": "24B11",
@@ -155,7 +155,7 @@
 				"time": "20:15"
 			},
 			"score1": 5,
-			"score2": 2
+			"score2": 4
 		},
 		{
 			"id": "24B12",
@@ -167,8 +167,8 @@
 				"date": "2024-07-21",
 				"time": "21:00"
 			},
-			"score1": 4,
-			"score2": 5
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "24B13",
@@ -180,8 +180,8 @@
 				"date": "2024-07-21",
 				"time": "21:45"
 			},
-			"score1": 1,
-			"score2": 5
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "24B14",
@@ -193,8 +193,8 @@
 				"date": "2024-07-21",
 				"time": "22:30"
 			},
-			"score1": 2,
-			"score2": 5
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "24B15",
@@ -220,7 +220,7 @@
 				"time": "00:00"
 			},
 			"score1": 5,
-			"score2": 3
+			"score2": 1
 		},
 		{
 			"id": "24B17",
@@ -233,7 +233,7 @@
 				"time": "00:45"
 			},
 			"score1": 5,
-			"score2": 2
+			"score2": 4
 		},
 		{
 			"id": "24B18",
@@ -245,8 +245,8 @@
 				"date": "2024-07-22",
 				"time": "01:30"
 			},
-			"score1": 1,
-			"score2": 5
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "24B19",
@@ -258,8 +258,8 @@
 				"date": "2024-07-22",
 				"time": "02:15"
 			},
-			"score1": 1,
-			"score2": 5
+			"score1": 5,
+			"score2": 4
 		},
 		{
 			"id": "24C20",
@@ -271,8 +271,8 @@
 				"date": "2024-07-22",
 				"time": "03:00"
 			},
-			"score1": 3,
-			"score2": 5
+			"score1": 5,
+			"score2": 2
 		},
 		{
 			"id": "24C21",
@@ -285,7 +285,7 @@
 				"time": "03:45"
 			},
 			"score1": 5,
-			"score2": 0
+			"score2": 1
 		},
 		{
 			"id": "24C22",
@@ -297,8 +297,8 @@
 				"date": "2024-07-22",
 				"time": "04:30"
 			},
-			"score1": 2,
-			"score2": 5
+			"score1": 5,
+			"score2": 4
 		},
 		{
 			"id": "24C23",
@@ -310,8 +310,8 @@
 				"date": "2024-07-22",
 				"time": "05:15"
 			},
-			"score1": 0,
-			"score2": 5
+			"score1": 5,
+			"score2": 3
 		},
 		{
 			"id": "24C24",
@@ -323,8 +323,8 @@
 				"date": "2024-07-22",
 				"time": "06:00"
 			},
-			"score1": 1,
-			"score2": 5
+			"score1": 5,
+			"score2": 1
 		},
 		{
 			"id": "24C25",
@@ -336,8 +336,8 @@
 				"date": "2024-07-22",
 				"time": "06:45"
 			},
-			"score1": 1,
-			"score2": 5
+			"score1": 5,
+			"score2": 1
 		},
 		{
 			"id": "24C26",
@@ -350,7 +350,7 @@
 				"time": "07:30"
 			},
 			"score1": 5,
-			"score2": 4
+			"score2": 0
 		},
 		{
 			"id": "24C27",
@@ -363,7 +363,7 @@
 				"time": "08:15"
 			},
 			"score1": 5,
-			"score2": 0
+			"score2": 3
 		},
 		{
 			"id": "24C28",
@@ -376,7 +376,7 @@
 				"time": "09:00"
 			},
 			"score1": 5,
-			"score2": 3
+			"score2": 0
 		},
 		{
 			"id": "24C29",
@@ -388,8 +388,8 @@
 				"date": "2024-07-22",
 				"time": "09:45"
 			},
-			"score1": 1,
-			"score2": 5
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "24D30",
@@ -401,8 +401,8 @@
 				"date": "2024-07-22",
 				"time": "10:30"
 			},
-			"score1": 3,
-			"score2": 5
+			"score1": 5,
+			"score2": 2
 		},
 		{
 			"id": "24D31",
@@ -415,7 +415,7 @@
 				"time": "11:15"
 			},
 			"score1": 5,
-			"score2": 1
+			"score2": 4
 		},
 		{
 			"id": "24D32",
@@ -427,8 +427,8 @@
 				"date": "2024-07-22",
 				"time": "12:00"
 			},
-			"score1": 2,
-			"score2": 5
+			"score1": 5,
+			"score2": 4
 		},
 		{
 			"id": "24D33",
@@ -454,7 +454,7 @@
 				"time": "13:30"
 			},
 			"score1": 5,
-			"score2": 3
+			"score2": 1
 		},
 		{
 			"id": "24D35",
@@ -467,7 +467,7 @@
 				"time": "14:15"
 			},
 			"score1": 5,
-			"score2": 4
+			"score2": 2
 		},
 		{
 			"id": "24D36",
@@ -479,8 +479,8 @@
 				"date": "2024-07-22",
 				"time": "15:00"
 			},
-			"score1": 0,
-			"score2": 5
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "24D37",
@@ -492,8 +492,8 @@
 				"date": "2024-07-22",
 				"time": "15:45"
 			},
-			"score1": 0,
-			"score2": 5
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "24D38",
@@ -518,7 +518,91 @@
 				"date": "2024-07-22",
 				"time": "17:15"
 			},
-			"score1": 0,
+			"score1": 5,
+			"score2": 4
+		},
+		{
+			"id": "24QF00",
+			"type": "quarter-final",
+			"scheduledAt": {
+				"date": "2024-08-16",
+				"time": "8:30"
+			},
+			"player1Id": "tmdo",
+			"player2Id": "dxnguyen",
+			"score1": 7,
+			"score2": 4
+		},
+		{
+			"id": "24QF01",
+			"type": "quarter-final",
+			"scheduledAt": {
+				"date": "2024-08-16",
+				"time": "8:30"
+			},
+			"player1Id": "bvphan",
+			"player2Id": "ltnguyen",
+			"score1": 7,
+			"score2": 5
+		},
+		{
+			"id": "24QF02",
+			"type": "quarter-final",
+			"scheduledAt": {
+				"date": "2024-08-16",
+				"time": "8:30"
+			},
+			"player1Id": "hqtran",
+			"player2Id": "tttran",
+			"score1": 2,
+			"score2": 7
+		},
+		{
+			"id": "24QF03",
+			"type": "quarter-final",
+			"scheduledAt": {
+				"date": "2024-08-16",
+				"time": "8:30"
+			},
+			"player1Id": "hqnguyen",
+			"player2Id": "nhle",
+			"score1": 2,
+			"score2": 7
+		},
+		{
+			"id": "24SF00",
+			"type": "semi-final",
+			"scheduledAt": {
+				"date": "2024-08-17",
+				"time": "8:30"
+			},
+			"player1Id": "tmdo",
+			"player2Id": "bvphan",
+			"score1": 6,
+			"score2": 9
+		},
+		{
+			"id": "24SF01",
+			"type": "semi-final",
+			"scheduledAt": {
+				"date": "2024-08-17",
+				"time": "8:30"
+			},
+			"player1Id": "tttran",
+			"player2Id": "nhle",
+			"score1": 6,
+			"score2": 9
+		},
+		{
+			"id": "24FN00",
+			"type": "final",
+			"scheduledAt": {
+				"date": "2024-08-24",
+				"time": "15:00"
+			},
+			"player1Id": "nhle",
+			"player2Id": "bvphan",
+			"score1": 11,
 			"score2": 5
 		}
 	]
