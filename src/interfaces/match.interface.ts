@@ -28,6 +28,7 @@ export namespace GroupMatch {
 
 export interface KnockoutMatch extends BaseMatch {
 	name: string;
+	order: number;
 	type: "quarter-final" | "semi-final" | "final";
 }
 export namespace KnockoutMatch {

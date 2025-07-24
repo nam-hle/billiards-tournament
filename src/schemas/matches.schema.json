@@ -9,7 +9,7 @@
 				"oneOf": [
 					{
 						"type": "object",
-						"required": ["id", "type", "groupId", "player1Id", "player2Id"],
+						"required": ["id", "type", "groupId"],
 						"properties": {
 							"id": {
 								"type": "string"
@@ -51,7 +51,7 @@
 					},
 					{
 						"type": "object",
-						"required": ["id", "type", "player1Id", "player2Id"],
+						"required": ["id", "type", "order"],
 						"properties": {
 							"id": {
 								"type": "string"
@@ -84,6 +84,10 @@
 							},
 							"player2Id": {
 								"type": "string"
+							},
+							"order": {
+								"type": "integer",
+								"minimum": 1
 							}
 						},
 						"additionalProperties": false
