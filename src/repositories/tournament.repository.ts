@@ -11,7 +11,6 @@ import {
 	type Tournament,
 	type GroupSummary,
 	type TournamentData,
-	DefinedPlayersMatch,
 	type TournamentSummary,
 	type TournamentOverview,
 	type TournamentSchedule
@@ -89,9 +88,7 @@ export class TournamentRepository extends BaseRepository {
 			.sort((a, b) => DateTime.createComparator("asc")(a.scheduledAt, b.scheduledAt))
 			.slice(0, 5);
 
-		const completedMatches = matches.filter(
-			(match): match is CompletedMatch => DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match)
-		);
+		const completedMatches = matches.filter(CompletedMatch.isInstance);
 
 		const comparator = DateTime.createComparator("desc");
 		const recentMatches = completedMatches.sort((a, b) => comparator(a.scheduledAt, b.scheduledAt)).slice(0, 5);

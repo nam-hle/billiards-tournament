@@ -48,8 +48,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 							{matches
 								// .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())
 								.map((match) => {
-									const winnerId =
-										DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
+									const winnerId = CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
 									const winner = winnerId !== undefined ? (match.player1Id === winnerId ? "player1" : "player2") : null;
 
 									return (

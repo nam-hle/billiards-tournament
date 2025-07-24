@@ -38,7 +38,6 @@ export namespace KnockoutMatch {
 
 export type Match = GroupMatch | KnockoutMatch;
 
-// TODO: "waiting"??
 export type MatchStatus = "scheduling" | "scheduled" | "waiting" | "in-progress" | "completed";
 export namespace Match {
 	export function getStatus(match: Match): MatchStatus {

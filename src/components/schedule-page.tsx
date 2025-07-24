@@ -14,7 +14,7 @@ import { ScheduleFilters } from "@/components/schedule-filters";
 
 import { ALL_FILTER } from "@/constants";
 import { formatDate } from "@/utils/date-time";
-import { Match, GroupMatch, ScheduledMatch, CompletedMatch, DefinedPlayersMatch, type TournamentSchedule } from "@/interfaces";
+import { Match, GroupMatch, ScheduledMatch, CompletedMatch, type TournamentSchedule } from "@/interfaces";
 
 const GROUP_QUERY_KEY = "group";
 const STATUS_QUERY_KEY = "status";
@@ -89,8 +89,8 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 	};
 
 	const todayMatches = matchesByDate[currentDate] || [];
-	const upcomingMatches = schedule.matches.filter((match) => !DefinedPlayersMatch.isInstance(match) || !CompletedMatch.isInstance(match));
-	const completedMatches = schedule.matches.filter((match) => DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match));
+	const upcomingMatches = schedule.matches.filter((match) => !CompletedMatch.isInstance(match));
+	const completedMatches = schedule.matches.filter((match) => CompletedMatch.isInstance(match));
 	const unscheduledMatches = schedule.matches.filter((match) => !ScheduledMatch.isInstance(match));
 
 	return (

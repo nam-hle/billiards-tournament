@@ -11,7 +11,7 @@ import { formatDate, formatTime } from "@/utils/date-time";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
-import { Match, CompletedMatch, ScheduledMatch, type GroupMatch, DefinedPlayersMatch } from "@/interfaces";
+import { Match, CompletedMatch, ScheduledMatch, type GroupMatch } from "@/interfaces";
 
 interface Props {
 	params: Promise<{ year: string; groupId: string }>;
@@ -202,7 +202,7 @@ export default async function GroupPage({ params }: Props) {
 }
 
 const getWinnerBadge = (match: GroupMatch, isPlayer1: boolean) => {
-	const winnerId = DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
+	const winnerId = CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
 
 	if (winnerId === undefined) {
 		return null;

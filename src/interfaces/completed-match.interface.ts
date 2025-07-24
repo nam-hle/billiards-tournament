@@ -2,11 +2,11 @@ import { Match } from "@/interfaces/match.interface";
 import { type WithScheduled } from "@/interfaces/scheduled-match.interface";
 import { type WithDefinedPlayers } from "@/interfaces/defined-players-match.interface";
 
-export type WithCompleteness<M extends WithDefinedPlayers> = M & Required<Pick<M, "scheduledAt" | "score1" | "score2">>;
+export type WithCompleted<M extends Match> = M & WithDefinedPlayers<M> & WithScheduled<M> & Required<Pick<M, "score1" | "score2">>;
 
-export type CompletedMatch = WithScheduled<WithCompleteness<WithDefinedPlayers>>;
+export type CompletedMatch = WithCompleted<Match>;
 export namespace CompletedMatch {
-	export function isInstance<M extends WithDefinedPlayers>(match: M): match is WithCompleteness<M> {
+	export function isInstance<M extends Match>(match: M): match is WithCompleted<M> {
 		return match.score1 !== undefined && match.score2 !== undefined && [match.score1, match.score2].includes(Match.getRaceScore(match));
 	}
 

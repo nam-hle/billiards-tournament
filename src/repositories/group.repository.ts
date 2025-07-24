@@ -9,8 +9,7 @@ import {
 	CompletedMatch,
 	type GroupMatch,
 	type GroupSummary,
-	DefinedPlayersMatch,
-	type WithCompleteness,
+	type WithCompleted,
 	type WithDefinedPlayers
 } from "@/interfaces";
 
@@ -38,7 +37,7 @@ export class GroupRepository extends BaseRepository {
 		const matches = await new MatchRepository().getAllMatchesByGroup(params);
 		const playerRepository = new PlayerRepository();
 
-		const completedMatches = matches.filter((match) => DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match));
+		const completedMatches = matches.filter((match) => CompletedMatch.isInstance(match));
 		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "ongoing" : "completed";
 
 		const [topPlayer] = await this.getStandings(params);
@@ -58,8 +57,8 @@ export class GroupRepository extends BaseRepository {
 	async getStandings(params: { year: string; groupId: string }): Promise<Standing[]> {
 		const group = await this.get(params);
 		const matches = (await new MatchRepository().getAllMatchesByGroup(params)).filter(
-			(match): match is WithCompleteness<WithDefinedPlayers<GroupMatch>> => {
-				return DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match);
+			(match): match is WithCompleted<WithDefinedPlayers<GroupMatch>> => {
+				return CompletedMatch.isInstance(match);
 			}
 		);
 

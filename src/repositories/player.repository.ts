@@ -2,7 +2,7 @@ import { assert } from "@/utils";
 import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
-import { type Player, CompletedMatch, DefinedPlayersMatch, type PlayerTournamentStat } from "@/interfaces";
+import { type Player, CompletedMatch, type PlayerTournamentStat } from "@/interfaces";
 
 export class PlayerRepository extends BaseRepository {
 	public getAll(): Promise<Player[]> {
@@ -35,7 +35,7 @@ export class PlayerRepository extends BaseRepository {
 		const player = await this.getById(id);
 		const groups = await new GroupRepository().getByYear({ year });
 		const matches = (await new MatchRepository().getAllByYear({ year })).filter((match) => match.player1Id === id || match.player2Id === id);
-		const completedMatches = matches.filter((match) => DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match));
+		const completedMatches = matches.filter(CompletedMatch.isInstance);
 
 		const group = groups.find((group) => group.players.includes(id));
 		assert(group);
