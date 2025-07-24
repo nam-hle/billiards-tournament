@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import { notFound } from "next/navigation";
 import { Trophy, Target, Calendar } from "lucide-react";
 
@@ -41,8 +42,8 @@ export default async function GroupPage({ params }: Props) {
 	};
 
 	const matches = await new MatchRepository().getAllMatchesByGroup({ year, groupId });
-
 	const standings = await new GroupRepository().getStandings({ year, groupId });
+	const advancedPlayerIds = await new GroupRepository().getAdvancedPlayerIds({ year });
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
@@ -82,7 +83,11 @@ export default async function GroupPage({ params }: Props) {
 						</TableHeader>
 						<TableBody>
 							{standings.map((standing, index) => (
-								<TableRow key={standing.playerId}>
+								<TableRow
+									key={standing.playerId}
+									className={clsx({
+										"bg-blue-100 transition-colors hover:bg-blue-200": advancedPlayerIds.includes(standing.playerId)
+									})}>
 									<TableCell className="font-medium">
 										<div className="flex items-center gap-2">
 											<Badge variant={index === 0 ? "default" : "outline"} className="flex h-6 w-6 items-center justify-center p-0 text-xs">
@@ -169,7 +174,7 @@ export default async function GroupPage({ params }: Props) {
 										<TableCell>
 											<div className="flex items-center">
 												{getPlayerName(match.player1Id)}
-												{getWinnerBadge(match, true)}
+												{getWinnerBadge(match, match.player1Id)}
 											</div>
 										</TableCell>
 										<TableCell className="text-center">
@@ -184,7 +189,7 @@ export default async function GroupPage({ params }: Props) {
 										<TableCell>
 											<div className="flex items-center">
 												{getPlayerName(match.player2Id)}
-												{getWinnerBadge(match, false)}
+												{getWinnerBadge(match, match.player2Id)}
 											</div>
 										</TableCell>
 										<TableCell className="text-center">
@@ -201,14 +206,14 @@ export default async function GroupPage({ params }: Props) {
 	);
 }
 
-const getWinnerBadge = (match: GroupMatch, isPlayer1: boolean) => {
+const getWinnerBadge = (match: GroupMatch, playerId: string | undefined) => {
 	const winnerId = CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
 
-	if (winnerId === undefined) {
+	if (winnerId === undefined || playerId === undefined) {
 		return null;
 	}
 
-	if ((isPlayer1 && winnerId === match.player1Id) || (!isPlayer1 && winnerId === match.player2Id)) {
+	if (winnerId === playerId) {
 		return (
 			<Badge className="ml-2" variant="default">
 				W

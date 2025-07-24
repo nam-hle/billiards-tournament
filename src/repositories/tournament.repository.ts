@@ -46,22 +46,16 @@ export class TournamentRepository extends BaseRepository {
 	public async getGroupSummaries(year: string): Promise<GroupSummary[]> {
 		const groupRepository = new GroupRepository();
 		const groups = await groupRepository.getByYear({ year });
-		const groupSummaries: GroupSummary[] = [];
 
-		for (const group of groups) {
-			groupSummaries.push(await groupRepository.getSummary({ year, groupId: group.id }));
-		}
-
-		return groupSummaries;
+		return Promise.all(groups.map(async (group) => groupRepository.getSummary({ year, groupId: group.id })));
 	}
 
 	public async getSchedule(year: string): Promise<TournamentSchedule> {
 		const tournament = await this.getByYear(year);
 		const groups = await new GroupRepository().getByYear({ year });
-
 		const matches = await new MatchRepository().getAllByYear({ year });
-
 		const playerRepo = new PlayerRepository();
+
 		const players = await playerRepo.getAllByYear(year);
 
 		const scheduleMatches = await Promise.all(

@@ -1,11 +1,10 @@
 import { assert } from "@/utils";
-import { combineComparators } from "@/utils/comparator";
 import { BaseRepository } from "@/repositories/base.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
 import {
 	type Group,
-	type Standing,
+	GroupStanding,
 	CompletedMatch,
 	type GroupMatch,
 	type GroupSummary,
@@ -54,7 +53,7 @@ export class GroupRepository extends BaseRepository {
 		};
 	}
 
-	async getStandings(params: { year: string; groupId: string }): Promise<Standing[]> {
+	async getStandings(params: { year: string; groupId: string }): Promise<GroupStanding[]> {
 		const group = await this.get(params);
 		const matches = (await new MatchRepository().getAllMatchesByGroup(params)).filter(
 			(match): match is WithCompleted<WithDefinedPlayers<GroupMatch>> => {
@@ -62,36 +61,7 @@ export class GroupRepository extends BaseRepository {
 			}
 		);
 
-		const findHeadMatch = (player1Id: string, player2Id: string) => {
-			return matches.find(
-				(match) =>
-					(match.player1Id === player1Id && match.player2Id === player2Id) || (match.player1Id === player2Id && match.player2Id === player1Id)
-			);
-		};
-
-		const comparator = combineComparators<Standing>(
-			(a, b) => b.points - a.points,
-			(a, b) => b.matchesWins - b.matchesLosses - (a.matchesWins - a.matchesLosses),
-			(a, b) => b.wins - a.wins,
-			(a, b) => {
-				const match = findHeadMatch(a.playerId, b.playerId);
-
-				if (!match) {
-					return 0;
-				}
-
-				if (CompletedMatch.getWinnerId(match) === a.playerId) {
-					return -1;
-				}
-
-				if (CompletedMatch.getWinnerId(match) === b.playerId) {
-					return 1;
-				}
-
-				return 0;
-			},
-			(a, b) => a.playerName.localeCompare(b.playerName)
-		);
+		const comparator = GroupStanding.createComparator(matches);
 
 		const players = await new PlayerRepository().getAll();
 
@@ -99,6 +69,7 @@ export class GroupRepository extends BaseRepository {
 			.map((playerId) => {
 				const playerName = players.find((player) => player.id === playerId)?.name;
 				assert(playerName, `Player with ID ${playerId} not found in group ${group.id}`);
+
 				let wins = 0,
 					losses = 0,
 					points = 0,
@@ -113,7 +84,7 @@ export class GroupRepository extends BaseRepository {
 
 					played++;
 
-					if (match.score1 == null || match.score2 == null) {
+					if (!CompletedMatch.isInstance(match)) {
 						continue;
 					}
 
@@ -132,5 +103,20 @@ export class GroupRepository extends BaseRepository {
 				return { wins, losses, points, played, playerId, playerName, matchesWins, matchesLosses };
 			})
 			.sort(comparator);
+	}
+
+	async getAdvancedPlayerIds(params: { year: string }): Promise<string[]> {
+		const groups = await this.getByYear(params);
+		const groupsStandings = await Promise.all(groups.map((group) => this.getStandings({ ...params, groupId: group.id })));
+
+		// TODO: Add tournament rules to determine top players
+		const topPlayers = groupsStandings.map((standings) => standings.slice(0, 2)).flat();
+		const comparator = GroupStanding.createComparator([]);
+		const thirdPlayers = groupsStandings
+			.map((standings) => standings[2])
+			.sort(comparator)
+			.slice(0, 2);
+
+		return [...topPlayers, ...thirdPlayers].map((standing) => standing.playerId);
 	}
 }

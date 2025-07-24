@@ -40,6 +40,12 @@ export type Match = GroupMatch | KnockoutMatch;
 
 export type MatchStatus = "scheduling" | "scheduled" | "waiting" | "in-progress" | "completed";
 export namespace Match {
+	export function findHeadMatch<M extends Match>(matches: M[], player1Id: string, player2Id: string): M | undefined {
+		return matches.find(
+			(match) => (match.player1Id === player1Id && match.player2Id === player2Id) || (match.player1Id === player2Id && match.player2Id === player1Id)
+		);
+	}
+
 	export function getStatus(match: Match): MatchStatus {
 		if (DefinedPlayersMatch.isInstance(match)) {
 			if (CompletedMatch.isInstance(match)) {
