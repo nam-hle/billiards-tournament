@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Users, Trophy, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/shadcn/button";
@@ -11,13 +12,40 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/ta
 import { DaySchedule } from "@/components/day-schedule";
 import { ScheduleFilters } from "@/components/schedule-filters";
 
-import { Match, GroupMatch, ScheduledMatch, type TournamentSchedule } from "@/interfaces";
+import { ALL_FILTER } from "@/constants";
+import { Match, GroupMatch, ScheduledMatch, CompletedMatch, DefinedPlayersMatch, type TournamentSchedule } from "@/interfaces";
+
+const GROUP_QUERY_KEY = "group";
+const STATUS_QUERY_KEY = "status";
+const PLAYER_QUERY_KEY = "player";
 
 export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule }) {
-	const [selectedGroupId, setSelectedGroupId] = useState("all");
-	const [selectedStatus, setSelectedStatus] = useState("all");
-	const [selectedPlayerId, setSelectedPlayerId] = useState("all");
+	const searchParams = useSearchParams();
+	const router = useRouter();
+
+	const [selectedGroupId, setSelectedGroupId] = useState(searchParams.get(GROUP_QUERY_KEY) ?? ALL_FILTER);
+	const [selectedStatus, setSelectedStatus] = useState(searchParams.get(STATUS_QUERY_KEY) ?? ALL_FILTER);
+	const [selectedPlayerId, setSelectedPlayerId] = useState(() => searchParams.get(PLAYER_QUERY_KEY) ?? ALL_FILTER);
 	const [currentDate, setCurrentDate] = useState(new Date().toISOString().split("T")[0]);
+
+	const createChangeHandler = React.useCallback(
+		(setter: React.Dispatch<React.SetStateAction<string>>, queryKey: string) => {
+			return (value: string) => {
+				const params = new URLSearchParams(searchParams);
+
+				if (value === ALL_FILTER) {
+					params.delete(queryKey);
+				} else {
+					params.set(queryKey, value);
+				}
+
+				router.push(`?${params.toString()}`, { scroll: false });
+
+				setter(() => value);
+			};
+		},
+		[router, searchParams]
+	);
 
 	// Filter matches
 	const filteredMatches = schedule.matches.filter((match) => {
@@ -60,10 +88,10 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 	};
 
 	const todayMatches = matchesByDate[currentDate] || [];
-	const upcomingMatches = filteredMatches.filter(
+	const upcomingMatches = schedule.matches.filter(
 		(match): match is ScheduledMatch => ScheduledMatch.isInstance(match) && new Date(match.scheduledAt.date) > new Date()
 	);
-	const liveMatches = filteredMatches.filter((match) => Match.getStatus(match) === "in-progress");
+	const completedMatches = schedule.matches.filter((match) => DefinedPlayersMatch.isInstance(match) && CompletedMatch.isInstance(match));
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
@@ -85,12 +113,12 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 				<Card>
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-2">
-							<div className="rounded-lg bg-blue-100 p-2">
-								<Users className="h-4 w-4 text-blue-600" />
+							<div className="rounded-lg bg-green-100 p-2">
+								<Users className="h-4 w-4 text-green-600" />
 							</div>
 							<div>
-								<p className="text-2xl font-bold">{liveMatches.length}</p>
-								<p className="text-xs text-muted-foreground">Live Matches</p>
+								<p className="text-2xl font-bold">{completedMatches.length}</p>
+								<p className="text-xs text-muted-foreground">Completed Matches</p>
 							</div>
 						</div>
 					</CardContent>
@@ -99,8 +127,8 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 				<Card>
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-2">
-							<div className="rounded-lg bg-green-100 p-2">
-								<Calendar className="h-4 w-4 text-green-600" />
+							<div className="rounded-lg bg-orange-100 p-2">
+								<Calendar className="h-4 w-4 text-orange-600" />
 							</div>
 							<div>
 								<p className="text-2xl font-bold">{upcomingMatches.length}</p>
@@ -134,9 +162,9 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 						selectedGroup={selectedGroupId}
 						selectedStatus={selectedStatus}
 						selectedPlayer={selectedPlayerId}
-						onGroupChange={setSelectedGroupId}
-						onStatusChange={setSelectedStatus}
-						onPlayerChange={setSelectedPlayerId}
+						onGroupChange={createChangeHandler(setSelectedGroupId, GROUP_QUERY_KEY)}
+						onStatusChange={createChangeHandler(setSelectedStatus, STATUS_QUERY_KEY)}
+						onPlayerChange={createChangeHandler(setSelectedPlayerId, PLAYER_QUERY_KEY)}
 					/>
 				</CardContent>
 			</Card>

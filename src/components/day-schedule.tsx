@@ -38,7 +38,7 @@ export function DaySchedule({ date, matches }: { date: string | undefined; match
 								<TableHead>Player 1</TableHead>
 								<TableHead className="w-[100px] text-center">Score</TableHead>
 								<TableHead>Player 2</TableHead>
-								<TableHead className="w-[120px]">Status</TableHead>
+								<TableHead className="w-[120px] text-center">Status</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -97,7 +97,7 @@ export function DaySchedule({ date, matches }: { date: string | undefined; match
 													)}
 												</div>
 											</TableCell>
-											<TableCell>
+											<TableCell className="text-center">
 												<Badge className={getStatusColor(Match.getStatus(match))}>{getStatusText(Match.getStatus(match))}</Badge>
 											</TableCell>
 										</TableRow>
