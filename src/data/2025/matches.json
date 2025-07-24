@@ -6,356 +6,210 @@
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "nhle",
-			"player2Id": "bvphan",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "12:00"
-			},
-			"score1": 5,
-			"score2": 3
+			"player2Id": "hqtran"
 		},
 		{
 			"id": "25A01",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "nhle",
-			"player2Id": "tttran",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "12:45"
-			},
-			"score1": 5,
-			"score2": 2
+			"player2Id": "atvo"
 		},
 		{
 			"id": "25A02",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "nhle",
-			"player2Id": "atvo",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "13:30"
-			},
-			"score1": 5,
-			"score2": 2
+			"player2Id": "dple"
 		},
 		{
 			"id": "25A03",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "nhle",
-			"player2Id": "bvqhuynh",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "14:15"
-			},
-			"score1": 5,
-			"score2": 1
+			"player2Id": "hqnguyen"
 		},
 		{
 			"id": "25A04",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "bvphan",
-			"player2Id": "tttran",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "15:00"
-			},
-			"score1": 4,
-			"score2": 5
+			"player1Id": "hqtran",
+			"player2Id": "atvo"
 		},
 		{
 			"id": "25A05",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "bvphan",
-			"player2Id": "atvo",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "15:45"
-			},
-			"score1": 2,
-			"score2": 5
+			"player1Id": "hqtran",
+			"player2Id": "dple"
 		},
 		{
 			"id": "25A06",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "bvphan",
-			"player2Id": "bvqhuynh",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "16:30"
-			},
-			"score1": 3,
-			"score2": 5
+			"player1Id": "hqtran",
+			"player2Id": "hqnguyen"
 		},
 		{
 			"id": "25A07",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "tttran",
-			"player2Id": "atvo",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "17:15"
-			},
-			"score1": 2,
-			"score2": 5
+			"player1Id": "atvo",
+			"player2Id": "dple"
 		},
 		{
 			"id": "25A08",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "tttran",
-			"player2Id": "bvqhuynh",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "18:00"
-			},
-			"score1": 4,
-			"score2": 5
+			"player1Id": "atvo",
+			"player2Id": "hqnguyen"
 		},
 		{
 			"id": "25A09",
 			"type": "group",
 			"groupId": "A",
-			"player1Id": "atvo",
-			"player2Id": "bvqhuynh",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "18:45"
-			},
-			"score1": 5,
-			"score2": 2
+			"player1Id": "dple",
+			"player2Id": "hqnguyen"
 		},
 		{
 			"id": "25B10",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "dple",
-			"player2Id": "hnnguyen",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "19:30"
-			},
-			"score1": 2,
-			"score2": 5
+			"player1Id": "bvphan",
+			"player2Id": "tmdo"
 		},
 		{
 			"id": "25B11",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "dple",
-			"player2Id": "hqnguyen",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "20:15"
-			},
-			"score1": 1,
-			"score2": 5
+			"player1Id": "bvphan",
+			"player2Id": "qanguyen"
 		},
 		{
 			"id": "25B12",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "dple",
-			"player2Id": "hqtran",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "21:00"
-			},
-			"score1": 1,
-			"score2": 5
+			"player1Id": "bvphan",
+			"player2Id": "hnnguyen"
 		},
 		{
 			"id": "25B13",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "dple",
-			"player2Id": "ltnguyen",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "21:45"
-			},
-			"score1": 5,
-			"score2": 1
+			"player1Id": "bvphan",
+			"player2Id": "mbnguyen"
 		},
 		{
 			"id": "25B14",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "hnnguyen",
-			"player2Id": "hqnguyen",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "22:30"
-			},
-			"score1": 5,
-			"score2": 3
+			"player1Id": "tmdo",
+			"player2Id": "qanguyen"
 		},
 		{
 			"id": "25B15",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "hnnguyen",
-			"player2Id": "hqtran",
-			"scheduledAt": {
-				"date": "2025-07-21",
-				"time": "23:15"
-			}
+			"player1Id": "tmdo",
+			"player2Id": "hnnguyen"
 		},
 		{
 			"id": "25B16",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "hnnguyen",
-			"player2Id": "ltnguyen",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "00:00"
-			}
+			"player1Id": "tmdo",
+			"player2Id": "mbnguyen"
 		},
 		{
 			"id": "25B17",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "hqnguyen",
-			"player2Id": "hqtran",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "00:45"
-			}
+			"player1Id": "qanguyen",
+			"player2Id": "hnnguyen"
 		},
 		{
 			"id": "25B18",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "hqnguyen",
-			"player2Id": "ltnguyen",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "01:30"
-			}
+			"player1Id": "qanguyen",
+			"player2Id": "mbnguyen"
 		},
 		{
 			"id": "25B19",
 			"type": "group",
 			"groupId": "B",
-			"player1Id": "hqtran",
-			"player2Id": "ltnguyen",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "02:15"
-			}
+			"player1Id": "hnnguyen",
+			"player2Id": "mbnguyen"
 		},
 		{
 			"id": "25C20",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "mbnguyen",
-			"player2Id": "qanguyen"
+			"player1Id": "tttran",
+			"player2Id": "bvqhuynh"
 		},
 		{
 			"id": "25C21",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "mbnguyen",
-			"player2Id": "shvu",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "03:45"
-			}
+			"player1Id": "tttran",
+			"player2Id": "shvu"
 		},
 		{
 			"id": "25C22",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "mbnguyen",
-			"player2Id": "thnguyen",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "04:30"
-			}
+			"player1Id": "tttran",
+			"player2Id": "thnguyen"
 		},
 		{
 			"id": "25C23",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "mbnguyen",
-			"player2Id": "tmdo",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "05:15"
-			}
+			"player1Id": "tttran",
+			"player2Id": "ltnguyen"
 		},
 		{
 			"id": "25C24",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "qanguyen",
-			"player2Id": "shvu",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "06:00"
-			}
+			"player1Id": "bvqhuynh",
+			"player2Id": "shvu"
 		},
 		{
 			"id": "25C25",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "qanguyen",
-			"player2Id": "thnguyen",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "06:45"
-			}
+			"player1Id": "bvqhuynh",
+			"player2Id": "thnguyen"
 		},
 		{
 			"id": "25C26",
 			"type": "group",
 			"groupId": "C",
-			"player1Id": "qanguyen",
-			"player2Id": "tmdo",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "07:30"
-			}
+			"player1Id": "bvqhuynh",
+			"player2Id": "ltnguyen"
 		},
 		{
 			"id": "25C27",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "shvu",
-			"player2Id": "thnguyen",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "08:15"
-			}
+			"player2Id": "thnguyen"
 		},
 		{
 			"id": "25C28",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "shvu",
-			"player2Id": "tmdo",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "09:00"
-			}
+			"player2Id": "ltnguyen"
 		},
 		{
 			"id": "25C29",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "thnguyen",
-			"player2Id": "tmdo",
-			"scheduledAt": {
-				"date": "2025-08-13",
-				"time": "09:45"
-			}
+			"player2Id": "ltnguyen"
 		},
 		{
 			"id": "25QF00",
