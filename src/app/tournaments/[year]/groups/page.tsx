@@ -26,13 +26,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 	const groups = await tournamentRepo.getGroupSummaries(year);
 
 	const overallProgress =
-		(groups.reduce((acc, group) => {
-			return acc + group.completedMatches;
-		}, 0) /
-			groups.reduce((acc, group) => {
-				return acc + group.matches.length;
-			}, 0)) *
-		100;
+		(groups.reduce((acc, group) => acc + group.completedMatches, 0) / groups.reduce((acc, group) => acc + group.matches.length, 0)) * 100;
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">

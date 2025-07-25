@@ -1,4 +1,4 @@
-import { PlayersPageClient } from "@/components/tournament-players-page";
+import { PlayersPageClient } from "@/components/pages/tournament-players-page";
 
 import { GroupRepository } from "@/repositories/group.repository";
 import { PlayerRepository } from "@/repositories/player.repository";

@@ -1,4 +1,4 @@
-import { SchedulePageClient } from "@/components/schedule-page";
+import { SchedulePageClient } from "@/components/pages/schedule-page";
 
 import { TournamentRepository } from "@/repositories/tournament.repository";
 

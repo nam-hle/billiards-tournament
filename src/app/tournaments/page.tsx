@@ -1,4 +1,4 @@
-import { ClientTournamentsPage } from "@/components/tournaments-page";
+import { ClientTournamentsPage } from "@/components/pages/tournaments-page";
 
 import { TournamentRepository } from "@/repositories/tournament.repository";
 

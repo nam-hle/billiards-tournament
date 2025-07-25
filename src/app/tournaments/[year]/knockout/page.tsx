@@ -3,7 +3,7 @@ import { Crown, Trophy, MapPin, Calendar } from "lucide-react";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 
-import { TournamentBracket, QualifiedPlayersList } from "@/components/tournament-knockout-page";
+import { TournamentBracket, QualifiedPlayersList } from "@/components/pages/tournament-knockout-page";
 
 import { KnockoutMatch, CompletedMatch } from "@/interfaces";
 import { MatchRepository } from "@/repositories/match.repository";
