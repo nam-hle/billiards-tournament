@@ -10,6 +10,8 @@ import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
+import { PlayerDisplay } from "@/components/player-display";
+
 import { assert } from "@/utils";
 import { toLabel } from "@/utils/strings";
 import { formatDate, formatTime } from "@/utils/date-time";
@@ -244,7 +246,7 @@ export default async function TournamentOverviewPage({ params }: Props) {
 									<div className="flex items-center gap-3">
 										<Badge variant="outline">{group.name}</Badge>
 										<div>
-											<p className="font-medium">{group.leader?.name ?? "Undetermined"}</p>
+											<PlayerDisplay showAvatar={false} player={group.leader} />
 											<p className="text-xs text-muted-foreground">
 												{group.completedMatches}/{group.matches.length} matches
 											</p>
@@ -297,7 +299,9 @@ export default async function TournamentOverviewPage({ params }: Props) {
 												{index + 1}
 											</Badge>
 										</TableCell>
-										<TableCell className="font-medium">{player.name}</TableCell>
+										<TableCell className="font-medium">
+											<PlayerDisplay player={player} showAvatar={false} />
+										</TableCell>
 										<TableCell className="text-center">{player.wins}</TableCell>
 										<TableCell className="text-center">
 											<Badge variant="secondary">{player.points}</Badge>
@@ -399,12 +403,6 @@ export default async function TournamentOverviewPage({ params }: Props) {
 												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}</span>
 											</div>
 										</div>
-										{/*<div className="text-right">*/}
-										{/*	<div className="flex items-center gap-1 text-xs text-muted-foreground">*/}
-										{/*		<MapPin className="h-3 w-3" />*/}
-										{/*		{match.venue}*/}
-										{/*	</div>*/}
-										{/*</div>*/}
 									</div>
 								);
 							})}

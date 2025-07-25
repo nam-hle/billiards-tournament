@@ -7,12 +7,14 @@ import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
+import { PlayerDisplay } from "@/components/player-display";
+
 import { toLabel, getStatusColor } from "@/utils/strings";
 import { formatDate, formatTime } from "@/utils/date-time";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
-import { Match, CompletedMatch, ScheduledMatch, type GroupMatch } from "@/interfaces";
+import { Match, CompletedMatch, ScheduledMatch, DefinedPlayersMatch } from "@/interfaces";
 
 interface Props {
 	params: Promise<{ year: string; groupId: string }>;
@@ -172,10 +174,11 @@ export default async function GroupPage({ params }: Props) {
 										</TableCell>
 										<TableCell className="font-mono text-sm">{ScheduledMatch.isInstance(match) ? formatTime(match.scheduledAt.time) : "-"}</TableCell>
 										<TableCell>
-											<div className="flex items-center">
-												{getPlayerName(match.player1Id)}
-												{getWinnerBadge(match, match.player1Id)}
-											</div>
+											<PlayerDisplay
+												showAvatar={false}
+												highlight={CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player1Id}
+												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
+											/>
 										</TableCell>
 										<TableCell className="text-center">
 											{match.score1 != null && match.score2 != null ? (
@@ -187,10 +190,11 @@ export default async function GroupPage({ params }: Props) {
 											)}
 										</TableCell>
 										<TableCell>
-											<div className="flex items-center">
-												{getPlayerName(match.player2Id)}
-												{getWinnerBadge(match, match.player2Id)}
-											</div>
+											<PlayerDisplay
+												showAvatar={false}
+												highlight={CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player2Id}
+												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
+											/>
 										</TableCell>
 										<TableCell className="text-center">
 											<Badge className={getStatusColor(status)}>{toLabel(status)}</Badge>
@@ -205,25 +209,3 @@ export default async function GroupPage({ params }: Props) {
 		</div>
 	);
 }
-
-const getWinnerBadge = (match: GroupMatch, playerId: string | undefined) => {
-	const winnerId = CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
-
-	if (winnerId === undefined || playerId === undefined) {
-		return null;
-	}
-
-	if (winnerId === playerId) {
-		return (
-			<Badge className="ml-2" variant="default">
-				W
-			</Badge>
-		);
-	}
-
-	return (
-		<Badge className="ml-2" variant="secondary">
-			L
-		</Badge>
-	);
-};

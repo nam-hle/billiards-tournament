@@ -39,7 +39,7 @@ export interface TournamentData {
 	overview: TournamentOverview;
 	recentMatches: CompletedMatch[];
 	upcomingMatches: ScheduledMatch[];
-	topPlayers: Array<{ name: string; wins: number; points: number }>;
+	topPlayers: Array<{ id: string; name: string; wins: number; points: number }>;
 }
 
 export interface TournamentSchedule extends Tournament {

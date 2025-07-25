@@ -41,7 +41,7 @@ export class GroupRepository extends BaseRepository {
 		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "ongoing" : "completed";
 
 		const [topPlayer] = await this.getStandings(params);
-		const leader = status === "upcoming" ? null : { points: topPlayer.points, name: (await playerRepository.getById(topPlayer.playerId)).name };
+		const leader = { id: topPlayer.playerId, points: topPlayer.points, name: (await playerRepository.getById(topPlayer.playerId)).name };
 
 		return {
 			leader,

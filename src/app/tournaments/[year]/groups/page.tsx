@@ -75,7 +75,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 					<CardDescription>Overall completion status across all groups</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<div className="space-y-2">
+					<div className="mb-6 space-y-2">
 						<div className="flex justify-between text-sm">
 							<span>Matches Completed</span>
 							<span>{Math.round(overallProgress)}%</span>
@@ -85,6 +85,51 @@ export default async function GroupsIndexPage({ params }: Props) {
 							{groups.reduce((acc, group) => acc + group.completedMatches, 0)} of {groups.reduce((acc, group) => acc + group.matches.length, 0)} total
 							matches completed
 						</p>
+					</div>
+
+					{/* Quick Stats */}
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+						<Card>
+							<CardContent className="pt-6">
+								<div className="flex items-center gap-2">
+									<div className="rounded-lg bg-gray-100 p-2">
+										<Calendar className="h-4 w-4 text-gray-600" />
+									</div>
+									<div>
+										<p className="text-2xl font-bold">{groups.filter((g) => g.status === "upcoming").length}</p>
+										<p className="text-xs text-muted-foreground">Groups Upcoming</p>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card>
+							<CardContent className="pt-6">
+								<div className="flex items-center gap-2">
+									<div className="rounded-lg bg-blue-100 p-2">
+										<Users className="h-4 w-4 text-blue-600" />
+									</div>
+									<div>
+										<p className="text-2xl font-bold">{groups.filter((g) => g.status === "ongoing").length}</p>
+										<p className="text-xs text-muted-foreground">Groups Active</p>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card>
+							<CardContent className="pt-6">
+								<div className="flex items-center gap-2">
+									<div className="rounded-lg bg-green-100 p-2">
+										<Trophy className="h-4 w-4 text-green-600" />
+									</div>
+									<div>
+										<p className="text-2xl font-bold">{groups.filter((g) => g.status === "completed").length}</p>
+										<p className="text-xs text-muted-foreground">Groups Completed</p>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
 					</div>
 				</CardContent>
 			</Card>
@@ -142,51 +187,6 @@ export default async function GroupsIndexPage({ params }: Props) {
 						</Card>
 					))}
 				</div>
-			</div>
-
-			{/* Quick Stats */}
-			<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-				<Card>
-					<CardContent className="pt-6">
-						<div className="flex items-center gap-2">
-							<div className="rounded-lg bg-green-100 p-2">
-								<Trophy className="h-4 w-4 text-green-600" />
-							</div>
-							<div>
-								<p className="text-2xl font-bold">{groups.filter((g) => g.status === "completed").length}</p>
-								<p className="text-xs text-muted-foreground">Groups Completed</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardContent className="pt-6">
-						<div className="flex items-center gap-2">
-							<div className="rounded-lg bg-blue-100 p-2">
-								<Users className="h-4 w-4 text-blue-600" />
-							</div>
-							<div>
-								<p className="text-2xl font-bold">{groups.filter((g) => g.status === "ongoing").length}</p>
-								<p className="text-xs text-muted-foreground">Groups Active</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardContent className="pt-6">
-						<div className="flex items-center gap-2">
-							<div className="rounded-lg bg-gray-100 p-2">
-								<Calendar className="h-4 w-4 text-gray-600" />
-							</div>
-							<div>
-								<p className="text-2xl font-bold">{groups.filter((g) => g.status === "upcoming").length}</p>
-								<p className="text-xs text-muted-foreground">Groups Upcoming</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
 			</div>
 		</div>
 	);

@@ -5,6 +5,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar"
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
+import { PlayerDisplay } from "@/components/player-display";
+
 import { getAbbrName } from "@/utils/strings";
 import { formatDate } from "@/utils/date-time";
 import { PlayerRepository } from "@/repositories/player.repository";
@@ -37,20 +39,15 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 						{matches.map((match) => (
 							<TableRow key={match.id}>
 								<TableCell className="font-mono text-sm">{formatDate(match.scheduledAt.date)}</TableCell>
-								{/*<TableCell className="text-sm text-muted-foreground">{match.tournament}</TableCell>*/}
 								<TableCell className="text-center">
 									<Badge variant="outline" className="text-xs">
 										{match.name}
 									</Badge>
 								</TableCell>
 								<TableCell>
-									<div className="flex items-center gap-2">
-										<Avatar className="h-6 w-6">
-											<AvatarImage alt={DefinedPlayersMatch.getOpponentName(match, playerId)} />
-											<AvatarFallback className="text-xs">{getAbbrName(DefinedPlayersMatch.getOpponentName(match, playerId))}</AvatarFallback>
-										</Avatar>
-										<span className="font-medium">{DefinedPlayersMatch.getOpponentName(match, playerId)}</span>
-									</div>
+									<PlayerDisplay
+										player={{ id: DefinedPlayersMatch.getOpponentId(match, playerId), name: DefinedPlayersMatch.getOpponentName(match, playerId) }}
+									/>
 								</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="font-mono">

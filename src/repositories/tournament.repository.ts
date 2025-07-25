@@ -100,7 +100,7 @@ export class TournamentRepository extends BaseRepository {
 						standings.map(async (standing) => {
 							const player = await playersRepo.getById(standing.playerId);
 
-							return { ...standing, name: player.name };
+							return { ...standing, id: player.id, name: player.name };
 						})
 					);
 				})
@@ -110,7 +110,7 @@ export class TournamentRepository extends BaseRepository {
 			.sort((a, b) => b.points - a.points || b.wins - a.wins || a.name.localeCompare(b.name))
 			.slice(0, 5)
 			.map((player) => {
-				return { name: player.name, wins: player.wins, points: player.points };
+				return { id: player.id, name: player.name, wins: player.wins, points: player.points };
 			});
 
 		const overview: TournamentOverview = {

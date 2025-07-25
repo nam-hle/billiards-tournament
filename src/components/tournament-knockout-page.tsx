@@ -1,12 +1,13 @@
 import { Medal, Crown, Award, Trophy, Calendar } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
+import { PlayerDisplay } from "@/components/player-display";
+
+import { toLabel, getStatusColor } from "@/utils/strings";
 import { formatDate, formatTime } from "@/utils/date-time";
-import { toLabel, getAbbrName, getStatusColor } from "@/utils/strings";
 import { Match, CompletedMatch, ScheduledMatch, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
 
 function MatchCard({ match, isWinner = false }: { isWinner?: boolean; match: KnockoutMatch }) {
@@ -32,21 +33,12 @@ function MatchCard({ match, isWinner = false }: { isWinner?: boolean; match: Kno
 					<div className="space-y-2">
 						{/* Player 1 */}
 						<div className="flex items-center justify-between">
-							<div className="flex min-w-0 items-center gap-2">
-								<Avatar className="h-6 w-6">
-									<AvatarImage alt={DefinedPlayersMatch.isInstance(match) ? match.player1Name : ""} />
-									<AvatarFallback className="text-xs">{DefinedPlayersMatch.isInstance(match) ? getAbbrName(match.player1Name) : "?"}</AvatarFallback>
-								</Avatar>
-								<span
-									className={`truncate text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player1Id ? "font-semibold text-green-600" : ""}`}>
-									{DefinedPlayersMatch.isInstance(match) ? match.player1Name : "TBD"}
-								</span>
-								{CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player1Id && (
-									<Badge variant="default" className="px-1 py-0 text-xs">
-										W
-									</Badge>
-								)}
-							</div>
+							<PlayerDisplay
+								avatarClassName="h-6 w-6"
+								containerClassName="gap-2"
+								player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
+								nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player1Id ? "font-semibold text-green-600" : ""}`}
+							/>
 							{CompletedMatch.isInstance(match) && (
 								<span className={`font-bold ${CompletedMatch.getWinnerId(match) === match.player1Id ? "text-green-600" : ""}`}>{match.score1}</span>
 							)}
@@ -54,21 +46,12 @@ function MatchCard({ match, isWinner = false }: { isWinner?: boolean; match: Kno
 
 						{/* Player 2 */}
 						<div className="flex items-center justify-between">
-							<div className="flex min-w-0 items-center gap-2">
-								<Avatar className="h-6 w-6">
-									<AvatarImage alt={DefinedPlayersMatch.isInstance(match) ? match.player2Name : ""} />
-									<AvatarFallback className="text-xs">{DefinedPlayersMatch.isInstance(match) ? getAbbrName(match.player2Name) : "?"}</AvatarFallback>
-								</Avatar>
-								<span
-									className={`truncate text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player2Id ? "font-semibold text-green-600" : ""}`}>
-									{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}
-								</span>
-								{CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player2Id && (
-									<Badge variant="default" className="px-1 py-0 text-xs">
-										W
-									</Badge>
-								)}
-							</div>
+							<PlayerDisplay
+								avatarClassName="h-6 w-6"
+								containerClassName="gap-2"
+								player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
+								nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player2Id ? "font-semibold text-green-600" : ""}`}
+							/>
 							{CompletedMatch.isInstance(match) && (
 								<span className={`font-bold ${CompletedMatch.getWinnerId(match) === match.player2Id ? "text-green-600" : ""}`}>{match.score2}</span>
 							)}
@@ -165,13 +148,7 @@ export function QualifiedPlayersList({ players }: { players: GroupStanding[] }) 
 						{players.map((player) => (
 							<TableRow key={player.playerId}>
 								<TableCell>
-									<div className="flex items-center gap-3">
-										<Avatar className="h-8 w-8">
-											<AvatarImage alt={player.playerName} />
-											<AvatarFallback className="text-xs">{getAbbrName(player.playerName)}</AvatarFallback>
-										</Avatar>
-										<span className="font-medium">{player.playerName}</span>
-									</div>
+									<PlayerDisplay player={{ id: player.playerId, name: player.playerName }} />
 								</TableCell>
 								<TableCell>
 									<Badge variant="outline">{player.groupName}</Badge>

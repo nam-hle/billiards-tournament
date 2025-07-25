@@ -14,7 +14,7 @@ export interface GroupSummary extends Group {
 	status: GroupStatus;
 	matches: GroupMatch[];
 	completedMatches: number;
-	leader: { name: string; points: number } | null;
+	leader: { id: string; name: string; points: number } | undefined;
 }
 
 export interface GroupStanding {

@@ -9,12 +9,13 @@ import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
+import { PlayerDisplay } from "@/components/player-display";
+
+import { toLabel, getStatusColor } from "@/utils/strings";
 import { type Group, type PlayerTournamentStat } from "@/interfaces";
-import { toLabel, getAbbrName, getStatusColor } from "@/utils/strings";
 
 namespace PlayersPageClient {
 	export interface Props {
@@ -222,15 +223,7 @@ function PlayersTable({ year, players }: { year: string; players: PlayerTourname
 										</Badge>
 									</TableCell>
 									<TableCell>
-										<div className="flex items-center gap-3">
-											<Avatar className="h-8 w-8">
-												<AvatarImage alt={player.name} />
-												<AvatarFallback className="text-xs">{getAbbrName(player.name)}</AvatarFallback>
-											</Avatar>
-											<div>
-												<p className="font-medium">{player.name}</p>
-											</div>
-										</div>
+										<PlayerDisplay player={player} />
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="outline">{player.group.name}</Badge>

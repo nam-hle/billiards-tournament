@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { Calendar } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
+
+import { PlayerDisplay } from "@/components/player-display";
 
 import { toLabel, getStatusColor } from "@/utils/strings";
 import { formatDate, formatTime } from "@/utils/date-time";
@@ -68,18 +69,11 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 												</div>
 											</TableCell>
 											<TableCell>
-												<div className="flex items-center gap-2">
-													<Link href={`/players/${match.player1Id}`}>
-														<span className={`font-medium ${winner === "player1" ? "text-green-600" : ""}`}>
-															{DefinedPlayersMatch.isInstance(match) ? match.player1Name : "TBD"}
-														</span>
-													</Link>
-													{winner === "player1" && (
-														<Badge variant="default" className="px-1 py-0 text-xs">
-															W
-														</Badge>
-													)}
-												</div>
+												<PlayerDisplay
+													showAvatar={false}
+													highlight={winner === "player1"}
+													player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
+												/>
 											</TableCell>
 											<TableCell className="text-center">
 												{match.score1 != null && match.score2 != null ? (
@@ -91,18 +85,11 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 												)}
 											</TableCell>
 											<TableCell>
-												<div className="flex items-center gap-2">
-													<Link href={`/players/${match.player2Id}`}>
-														<span className={`font-medium ${winner === "player2" ? "text-green-600" : ""}`}>
-															{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}
-														</span>
-													</Link>
-													{winner === "player2" && (
-														<Badge variant="default" className="px-1 py-0 text-xs">
-															W
-														</Badge>
-													)}
-												</div>
+												<PlayerDisplay
+													showAvatar={false}
+													highlight={winner === "player2"}
+													player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
+												/>
 											</TableCell>
 											<TableCell className="text-center">
 												<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>

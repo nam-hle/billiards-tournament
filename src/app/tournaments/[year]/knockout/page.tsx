@@ -2,11 +2,9 @@ import { Crown, Trophy, MapPin, Calendar } from "lucide-react";
 
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar";
 
 import { TournamentBracket, QualifiedPlayersList } from "@/components/tournament-knockout-page";
 
-import { getAbbrName } from "@/utils/strings";
 import { KnockoutMatch, CompletedMatch } from "@/interfaces";
 import { MatchRepository } from "@/repositories/match.repository";
 import { GroupRepository } from "@/repositories/group.repository";
@@ -65,10 +63,6 @@ export default async function TournamentKnockoutPage({ params }: Props) {
 							<div className="text-center">
 								<h2 className="text-2xl font-bold text-yellow-800">Tournament Champion</h2>
 								<div className="mt-2 flex items-center justify-center gap-3">
-									<Avatar className="h-12 w-12">
-										<AvatarImage alt={champion.playerName} />
-										<AvatarFallback>{getAbbrName(champion.playerName)}</AvatarFallback>
-									</Avatar>
 									<div>
 										<p className="text-xl font-semibold text-yellow-800">{champion.playerName}</p>
 										<p className="text-sm text-yellow-600">Defeated {runnerUp.playerName} in the final</p>

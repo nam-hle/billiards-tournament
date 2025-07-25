@@ -25,4 +25,16 @@ export namespace DefinedPlayersMatch {
 
 		throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Name}" and "${match.player2Name}"`);
 	}
+
+	export function getOpponentId(match: DefinedPlayersMatch, playerId: string): string {
+		if (match.player1Id === playerId) {
+			return match.player2Id;
+		}
+
+		if (match.player2Id === playerId) {
+			return match.player1Id;
+		}
+
+		throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Name}" and "${match.player2Name}"`);
+	}
 }
