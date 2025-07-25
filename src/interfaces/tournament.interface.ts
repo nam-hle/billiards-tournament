@@ -4,6 +4,15 @@ import { type Group, type GroupSummary } from "@/interfaces/group.interface";
 import { type CompletedMatch } from "@/interfaces/completed-match.interface";
 import { type ScheduledMatch } from "@/interfaces/scheduled-match.interface";
 
+export type KnockoutAdvanceRule =
+	| {
+			top: number;
+	  }
+	| {
+			count: number;
+			bestsOf: number;
+	  };
+
 export interface Tournament {
 	id: string;
 	name: string;
@@ -13,6 +22,8 @@ export interface Tournament {
 
 	endDate: string;
 	startDate: string;
+
+	knockoutAdvanceRules: KnockoutAdvanceRule[];
 }
 export type TournamentStatus = "upcoming" | "ongoing" | "completed";
 export interface TournamentOverview extends Tournament {

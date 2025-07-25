@@ -8,7 +8,16 @@
 			"endDate": "2025-08-28",
 			"name": "2nd mgm Billiards Tournament 2025",
 			"description": " A thrilling return with stronger competition and growing community",
-			"venue": "Billiards Club - 37 Pasteur, Danang"
+			"venue": "Billiards Club - 37 Pasteur, Danang",
+			"knockoutAdvanceRules": [
+				{
+					"top": 2
+				},
+				{
+					"bestsOf": 2,
+					"count": 2
+				}
+			]
 		},
 		{
 			"id": "2024",
@@ -17,7 +26,12 @@
 			"endDate": "2024-06-10",
 			"name": "1st mgm Billiards Tournament 2024",
 			"description": "The debut event that launched mgm’s billiards tradition",
-			"venue": "Billiards Club - 37 Pasteur, Danang"
+			"venue": "Billiards Club - 37 Pasteur, Danang",
+			"knockoutAdvanceRules": [
+				{
+					"top": 2
+				}
+			]
 		}
 	]
 }

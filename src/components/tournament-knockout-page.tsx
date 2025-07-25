@@ -7,11 +7,11 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 
 import { formatDate, formatTime } from "@/utils/date-time";
 import { toLabel, getAbbrName, getStatusColor } from "@/utils/strings";
-import { Match, CompletedMatch, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
+import { Match, CompletedMatch, ScheduledMatch, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
 
 function MatchCard({ match, isWinner = false }: { isWinner?: boolean; match: KnockoutMatch }) {
-	const date = CompletedMatch.isInstance(match) ? formatDate(match.scheduledAt.date) : "TBD";
-	const time = CompletedMatch.isInstance(match) ? formatTime(match.scheduledAt.time) : "TBD";
+	const date = ScheduledMatch.isInstance(match) ? formatDate(match.scheduledAt.date) : "TBD";
+	const time = ScheduledMatch.isInstance(match) ? formatTime(match.scheduledAt.time) : "TBD";
 
 	return (
 		<Card className={`${isWinner ? "bg-yellow-50 ring-2 ring-yellow-400" : ""} transition-shadow hover:shadow-md`}>

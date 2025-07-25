@@ -2,6 +2,7 @@ import { assert } from "@/utils";
 import { BaseRepository } from "@/repositories/base.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
+import { TournamentRepository } from "@/repositories/tournament.repository";
 import {
 	type Group,
 	GroupStanding,
@@ -124,14 +125,25 @@ export class GroupRepository extends BaseRepository {
 		const groups = await this.getByYear(params);
 		const groupsStandings = await Promise.all(groups.map((group) => this.getStandings({ ...params, groupId: group.id })));
 
-		// TODO: Add tournament rules to determine top players
-		const topPlayers = groupsStandings.map((standings) => standings.slice(0, 2)).flat();
-		const comparator = GroupStanding.createComparator([]);
-		const thirdPlayers = groupsStandings
-			.map((standings) => standings[2])
-			.sort(comparator)
-			.slice(0, 2);
+		const tournamentInfo = await new TournamentRepository().getInfoByYear(params);
 
-		return [...topPlayers, ...thirdPlayers].sort(comparator);
+		const topPlayers = groupsStandings
+			.map((standings) =>
+				tournamentInfo.knockoutAdvanceRules.flatMap((rule) => {
+					return "top" in rule ? standings.slice(0, rule.top) : [];
+				})
+			)
+			.flat();
+
+		const comparator = GroupStanding.createComparator([]);
+		const bestsOfRule = tournamentInfo.knockoutAdvanceRules.find((rule) => "bestsOf" in rule);
+		const bestsOfPlayers = bestsOfRule
+			? groupsStandings
+					.map((standings) => standings[bestsOfRule.bestsOf])
+					.sort(comparator)
+					.slice(0, bestsOfRule.count)
+			: [];
+
+		return [...topPlayers, ...bestsOfPlayers].sort(comparator);
 	}
 }
