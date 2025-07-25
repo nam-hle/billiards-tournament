@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Calendar } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
@@ -68,9 +69,11 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 											</TableCell>
 											<TableCell>
 												<div className="flex items-center gap-2">
-													<span className={`font-medium ${winner === "player1" ? "text-green-600" : ""}`}>
-														{DefinedPlayersMatch.isInstance(match) ? match.player1Name : "TBD"}
-													</span>
+													<Link href={`/players/${match.player1Id}`}>
+														<span className={`font-medium ${winner === "player1" ? "text-green-600" : ""}`}>
+															{DefinedPlayersMatch.isInstance(match) ? match.player1Name : "TBD"}
+														</span>
+													</Link>
 													{winner === "player1" && (
 														<Badge variant="default" className="px-1 py-0 text-xs">
 															W
@@ -89,9 +92,11 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 											</TableCell>
 											<TableCell>
 												<div className="flex items-center gap-2">
-													<span className={`font-medium ${winner === "player2" ? "text-green-600" : ""}`}>
-														{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}
-													</span>
+													<Link href={`/players/${match.player2Id}`}>
+														<span className={`font-medium ${winner === "player2" ? "text-green-600" : ""}`}>
+															{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}
+														</span>
+													</Link>
 													{winner === "player2" && (
 														<Badge variant="default" className="px-1 py-0 text-xs">
 															W

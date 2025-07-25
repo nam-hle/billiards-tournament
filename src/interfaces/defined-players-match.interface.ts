@@ -13,4 +13,16 @@ export namespace DefinedPlayersMatch {
 			match.player2Name !== undefined
 		);
 	}
+
+	export function getOpponentName(match: DefinedPlayersMatch, playerId: string): string {
+		if (match.player1Id === playerId) {
+			return match.player2Name;
+		}
+
+		if (match.player2Id === playerId) {
+			return match.player1Name;
+		}
+
+		throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Name}" and "${match.player2Name}"`);
+	}
 }

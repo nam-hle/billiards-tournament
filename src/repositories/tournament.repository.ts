@@ -4,16 +4,18 @@ import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
 import {
+	Match,
 	DateTime,
-	type Match,
 	CompletedMatch,
 	ScheduledMatch,
 	type Tournament,
 	type GroupSummary,
 	type TournamentData,
+	type PlayerAchievement,
 	type TournamentSummary,
 	type TournamentOverview,
-	type TournamentSchedule
+	type TournamentSchedule,
+	PlayerAchievementDescriptionMap
 } from "@/interfaces";
 
 export class TournamentRepository extends BaseRepository {
@@ -121,5 +123,45 @@ export class TournamentRepository extends BaseRepository {
 		};
 
 		return { groups, overview, topPlayers, recentMatches, upcomingMatches };
+	}
+
+	async getPlayerTournamentAchievements(params: { year: string; playerId: string }): Promise<PlayerAchievement[]> {
+		const matches = await new MatchRepository().getAllByYear(params);
+
+		const tournament = await this.getByYear(params.year);
+
+		if (!matches.every(CompletedMatch.isInstance)) {
+			// TODO: We still can compute results before the tournament is completed
+			return [];
+		}
+
+		const joinedMatches = matches.filter((match) => Match.hasPlayer(match, params.playerId));
+		const [finalMatch, semiFinalMatch, quarterFinalMatch] = ["final", "semi-final", "quarter-final"].map((type) =>
+			joinedMatches.find((match) => match.type === type)
+		);
+
+		if (finalMatch) {
+			if (CompletedMatch.getWinnerId(finalMatch) === params.playerId) {
+				return [{ ...PlayerAchievementDescriptionMap.champion, tournamentName: tournament.name }];
+			}
+
+			return [{ ...PlayerAchievementDescriptionMap["runner-up"], tournamentName: tournament.name }];
+		}
+
+		if (semiFinalMatch) {
+			return [{ ...PlayerAchievementDescriptionMap["semi-finalist"], tournamentName: tournament.name }];
+		}
+
+		if (quarterFinalMatch) {
+			return [{ ...PlayerAchievementDescriptionMap["quarter-finalist"], tournamentName: tournament.name }];
+		}
+
+		const groupMatch = joinedMatches.find((match) => match.type === "group");
+
+		if (groupMatch) {
+			return [{ ...PlayerAchievementDescriptionMap["group-stage"], tournamentName: tournament.name }];
+		}
+
+		return [];
 	}
 }

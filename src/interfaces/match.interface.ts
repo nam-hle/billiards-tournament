@@ -47,6 +47,22 @@ export namespace Match {
 		);
 	}
 
+	export function hasPlayer(match: Match, playerId: string): boolean {
+		return match.player1Id === playerId || match.player2Id === playerId;
+	}
+
+	export function getOpponentId(match: Match, playerId: string): string | undefined {
+		if (match.player1Id === playerId) {
+			return match.player2Id;
+		}
+
+		if (match.player2Id === playerId) {
+			return match.player1Id;
+		}
+
+		return undefined;
+	}
+
 	export function getStatus(match: Match): MatchStatus {
 		if (DefinedPlayersMatch.isInstance(match)) {
 			if (CompletedMatch.isInstance(match)) {
