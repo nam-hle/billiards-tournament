@@ -1,4 +1,4 @@
-import { Star, Users, Award, Crown, Medal, Trophy, Target, TrendingUp, ShieldCheck } from "lucide-react";
+import { Star, Users, Award, Crown, Medal, Gauge, Trophy, Target, TrendingUp, ShieldCheck } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar";
@@ -158,25 +158,11 @@ export default async function OverallPlayerProfilePage({ params }: Props) {
 							<CardContent className="pt-6">
 								<div className="flex items-center gap-2">
 									<div className="rounded-lg bg-blue-100 p-2">
-										<Trophy className="h-4 w-4 text-blue-600" />
+										<Gauge className="h-4 w-4 text-blue-600" />
 									</div>
 									<div>
-										<p className="text-2xl font-bold">{playerStat.totalTournaments}</p>
-										<p className="text-xs text-muted-foreground">Tournaments</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardContent className="pt-6">
-								<div className="flex items-center gap-2">
-									<div className="rounded-lg bg-purple-100 p-2">
-										<TrendingUp className="h-4 w-4 text-purple-600" />
-									</div>
-									<div>
-										<p className="text-2xl font-bold">{playerStat.maxStreak}</p>
-										<p className="text-xs text-muted-foreground">Max Streak</p>
+										<p className="text-2xl font-bold">{playerStat.elo.toFixed(0)}</p>
+										<p className="text-xs text-muted-foreground">Elo rating</p>
 									</div>
 								</div>
 							</CardContent>
@@ -205,6 +191,20 @@ export default async function OverallPlayerProfilePage({ params }: Props) {
 									<div>
 										<p className="text-2xl font-bold">{playerStat.racksWinRate.toFixed(1)}%</p>
 										<p className="text-xs text-muted-foreground">Rack Win Rate</p>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card>
+							<CardContent className="pt-6">
+								<div className="flex items-center gap-2">
+									<div className="rounded-lg bg-purple-100 p-2">
+										<TrendingUp className="h-4 w-4 text-purple-600" />
+									</div>
+									<div>
+										<p className="text-2xl font-bold">{playerStat.maxStreak}</p>
+										<p className="text-xs text-muted-foreground">Max Streak</p>
 									</div>
 								</div>
 							</CardContent>

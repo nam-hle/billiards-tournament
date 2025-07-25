@@ -1,8 +1,9 @@
 import { assert } from "@/utils";
 import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
-import { type Group, GroupMatch, type Match } from "@/interfaces";
 import { PlayerRepository } from "@/repositories/player.repository";
+import { TournamentRepository } from "@/repositories/tournament.repository";
+import { type Group, GroupMatch, type Match, CompletedMatch } from "@/interfaces";
 
 export class MatchRepository extends BaseRepository {
 	async getAllByYear(params: { year: string }): Promise<Match[]> {
@@ -49,5 +50,17 @@ export class MatchRepository extends BaseRepository {
 		}
 
 		throw new Error(`Unknown match type: ${JSON.stringify(match)}`);
+	}
+
+	async getAllCompletedMatches(): Promise<CompletedMatch[]> {
+		const completedMatches: CompletedMatch[] = [];
+
+		for (const tournament of await new TournamentRepository().getAll()) {
+			const matches = await new MatchRepository().getAllByYear({ year: tournament.year });
+
+			completedMatches.push(...matches.filter(CompletedMatch.isInstance));
+		}
+
+		return completedMatches;
 	}
 }

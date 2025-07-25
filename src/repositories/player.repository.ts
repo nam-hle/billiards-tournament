@@ -1,9 +1,19 @@
 import { assert } from "@/utils";
+import { Elo } from "@/utils/elo";
 import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
-import { Match, DateTime, type Player, CompletedMatch, type PlayerStat, type PlayerAchievement, type PlayerTournamentStat } from "@/interfaces";
+import {
+	Match,
+	DateTime,
+	type Player,
+	CompletedMatch,
+	ScheduledMatch,
+	type PlayerStat,
+	type PlayerAchievement,
+	type PlayerTournamentStat
+} from "@/interfaces";
 
 export class PlayerRepository extends BaseRepository {
 	public getAll(): Promise<Player[]> {
@@ -111,6 +121,7 @@ export class PlayerRepository extends BaseRepository {
 
 			totalTournaments: achievements.length,
 			totalMatches: completedMatches.length,
+			elo: await this.getEloRating(playerId),
 			recentMatches: completedMatches.slice(-10),
 			overallWinRate: (totalWins / completedMatches.length) * 100,
 			achievements: await this.getTournamentResults({ playerId }),
@@ -152,5 +163,15 @@ export class PlayerRepository extends BaseRepository {
 		}
 
 		return results;
+	}
+
+	async getEloRating(playerId: string): Promise<number> {
+		const elo = new Elo();
+
+		for (const match of (await new MatchRepository().getAllCompletedMatches()).sort(ScheduledMatch.ascendingComparator)) {
+			elo.processMatch(CompletedMatch.getWinnerId(match), CompletedMatch.getLoserId(match));
+		}
+
+		return elo.getRating(playerId);
 	}
 }

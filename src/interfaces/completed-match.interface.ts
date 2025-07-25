@@ -10,7 +10,7 @@ export namespace CompletedMatch {
 		return match.score1 !== undefined && match.score2 !== undefined && [match.score1, match.score2].includes(Match.getRaceScore(match));
 	}
 
-	export function getWinnerId(match: CompletedMatch): string | undefined {
+	export function getWinnerId(match: CompletedMatch): string {
 		if (match.score1 > match.score2) {
 			return match.player1Id;
 		}
@@ -19,10 +19,10 @@ export namespace CompletedMatch {
 			return match.player2Id;
 		}
 
-		return undefined;
+		throw new Error("Match is a draw, cannot determine winner ID");
 	}
 
-	export function getLoserId(match: CompletedMatch): string | undefined {
+	export function getLoserId(match: CompletedMatch): string {
 		return getWinnerId(match) === match.player1Id ? match.player2Id : match.player1Id;
 	}
 

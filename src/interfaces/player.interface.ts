@@ -19,6 +19,8 @@ export interface PlayerTournamentStat extends Player {
 	status: "active" | "eliminated" | "qualified";
 }
 export interface PlayerStat extends Player {
+	elo: number;
+
 	totalWins: number;
 	totalLosses: number;
 	totalMatches: number;
