@@ -48,6 +48,11 @@ export const Tabs = () => {
 
 	useEffect(() => {
 		if (!tabs.length) {
+			if (activeIndex !== -1) {
+				setActiveIndex(() => -1);
+				setActiveStyle(() => ({ left: "0px", width: "0px" }));
+			}
+
 			return;
 		}
 

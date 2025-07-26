@@ -9,6 +9,7 @@ import { PlayerDisplay } from "@/components/player-display";
 import { PageBreadcrumb } from "@/components/page-breadcrumb";
 
 import { Links } from "@/utils/links";
+import { formatRatio } from "@/utils/strings";
 import { formatDate } from "@/utils/date-time";
 import { PlayerRepository } from "@/repositories/player.repository";
 import { CompletedMatch, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
@@ -173,7 +174,7 @@ export default async function OverallPlayerProfilePage({ params }: Props) {
 										<Target className="h-4 w-4 text-green-600" />
 									</div>
 									<div>
-										<p className="text-2xl font-bold">{playerStat.overallWinRate.toFixed(1)}%</p>
+										<p className="text-2xl font-bold">{formatRatio(playerStat.overallWinRate)}</p>
 										<p className="text-xs text-muted-foreground">Match Win Rate</p>
 									</div>
 								</div>
@@ -187,7 +188,7 @@ export default async function OverallPlayerProfilePage({ params }: Props) {
 										<Crown className="h-4 w-4 text-yellow-600" />
 									</div>
 									<div>
-										<p className="text-2xl font-bold">{playerStat.racksWinRate.toFixed(1)}%</p>
+										<p className="text-2xl font-bold">{formatRatio(playerStat.racksWinRate)}</p>
 										<p className="text-xs text-muted-foreground">Rack Win Rate</p>
 									</div>
 								</div>
