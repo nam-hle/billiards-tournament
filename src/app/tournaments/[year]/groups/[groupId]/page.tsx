@@ -9,11 +9,11 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 
 import { PlayerDisplay } from "@/components/player-display";
 
-import { toLabel, getStatusColor } from "@/utils/strings";
 import { formatDate, formatTime } from "@/utils/date-time";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
-import { PlayerRepository } from "@/repositories/player.repository";
+import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
+import { TournamentRepository } from "@/repositories/tournament.repository";
 import { Match, CompletedMatch, ScheduledMatch, DefinedPlayersMatch } from "@/interfaces";
 
 interface Props {
@@ -22,26 +22,12 @@ interface Props {
 
 export default async function GroupPage({ params }: Props) {
 	const { year, groupId } = await params;
+	const tournament = await new TournamentRepository().getByYear(year);
 	const group = await new GroupRepository().find({ year, groupId });
 
 	if (!group) {
 		return notFound();
 	}
-
-	const players = await new PlayerRepository().getAll();
-	const getPlayerName = (playerId: string | undefined) => {
-		if (!playerId) {
-			return "TBD";
-		}
-
-		const player = players.find((p) => p.id === playerId);
-
-		if (!player) {
-			throw new Error(`Player with ID ${playerId} not found`);
-		}
-
-		return player.name;
-	};
 
 	const matches = await new MatchRepository().getAllMatchesByGroup({ year, groupId });
 	const standings = await new GroupRepository().getStandings({ year, groupId });
@@ -54,7 +40,7 @@ export default async function GroupPage({ params }: Props) {
 				<Trophy className="h-8 w-8 text-primary" />
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">{group.name}</h1>
-					<p className="text-muted-foreground">Tournament Year {year}</p>
+					<p className="text-muted-foreground">{tournament.name}</p>
 				</div>
 			</div>
 
@@ -81,6 +67,8 @@ export default async function GroupPage({ params }: Props) {
 								<TableHead className="text-center">Racks Lost</TableHead>
 								<TableHead className="text-center">Racks Diff</TableHead>
 								<TableHead className="text-center font-semibold">Points</TableHead>
+								<TableHead className="text-center font-semibold">Top 1 Probability</TableHead>
+								<TableHead className="text-center font-semibold">Top 2 Probability</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -95,7 +83,7 @@ export default async function GroupPage({ params }: Props) {
 											<Badge variant={index === 0 ? "default" : "outline"} className="flex h-6 w-6 items-center justify-center p-0 text-xs">
 												{index + 1}
 											</Badge>
-											{getPlayerName(standing.playerId)}
+											<PlayerDisplay showAvatar={false} player={{ id: standing.playerId, name: standing.playerName }} />
 										</div>
 									</TableCell>
 									<TableCell className="text-center">{standing.played}</TableCell>
@@ -135,6 +123,8 @@ export default async function GroupPage({ params }: Props) {
 											{standing.points}
 										</Badge>
 									</TableCell>
+									<TableCell className="text-center">{formatRatio(standing.top1Prob)}</TableCell>
+									<TableCell className="text-center">{formatRatio(standing.top2Prob)}</TableCell>
 								</TableRow>
 							))}
 						</TableBody>

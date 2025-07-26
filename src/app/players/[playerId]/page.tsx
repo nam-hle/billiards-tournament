@@ -161,7 +161,7 @@ export default async function OverallPlayerProfilePage({ params }: Props) {
 										<Gauge className="h-4 w-4 text-blue-600" />
 									</div>
 									<div>
-										<p className="text-2xl font-bold">{playerStat.elo.toFixed(0)}</p>
+										<p className="text-2xl font-bold">{isNaN(playerStat.elo) ? "-" : playerStat.elo.toFixed(0)}</p>
 										<p className="text-xs text-muted-foreground">Elo rating</p>
 									</div>
 								</div>

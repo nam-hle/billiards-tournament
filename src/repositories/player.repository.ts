@@ -166,12 +166,18 @@ export class PlayerRepository extends BaseRepository {
 	}
 
 	async getEloRating(playerId: string): Promise<number> {
+		const ratings = await this.getEloRatings();
+
+		return ratings[playerId] ?? Elo.DEFAULT_RATING;
+	}
+
+	async getEloRatings(): Promise<Record<string, number | undefined>> {
 		const elo = new Elo();
 
 		for (const match of (await new MatchRepository().getAllCompletedMatches()).sort(ScheduledMatch.ascendingComparator)) {
 			elo.processMatch(CompletedMatch.getWinnerId(match), CompletedMatch.getLoserId(match));
 		}
 
-		return elo.getRating(playerId);
+		return elo.getRatings();
 	}
 }

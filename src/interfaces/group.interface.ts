@@ -30,13 +30,16 @@ export interface GroupStanding {
 
 	matchesWins: number;
 	matchesLosses: number;
+
+	top1Prob: number;
+	top2Prob: number;
 }
 export namespace GroupStanding {
 	export function createComparator(matches: Match[]) {
 		return combineComparators<GroupStanding>(
 			(a, b) => b.points - a.points,
 			(a, b) => b.matchesWins - b.matchesLosses - (a.matchesWins - a.matchesLosses),
-			(a, b) => b.wins - a.wins,
+			(a, b) => b.matchesWins - a.matchesWins,
 			(a, b) => {
 				const match = Match.findHeadMatch(matches, a.playerId, b.playerId);
 

@@ -1,7 +1,9 @@
 import path from "path";
 import fs from "fs/promises";
 import * as Path from "node:path";
+import Fs from "node:fs/promises";
 
+import { type GroupPrediction } from "@/interfaces/prediction.interface";
 import { type Match, type Group, type Player, type Tournament } from "@/interfaces";
 
 export class DataSource {
@@ -10,6 +12,7 @@ export class DataSource {
 	private readonly playersFileName = "players.json";
 	private readonly groupsFileName = "groups.json";
 	private readonly matchesFileName = "matches.json";
+	private readonly predictionsFileName = "predictions.json";
 
 	public async getPlayers(): Promise<Player[]> {
 		return this.readJSON<Player[]>(Path.join(this.dataDir, this.playersFileName));
@@ -33,53 +36,40 @@ export class DataSource {
 		return this.readJSON<Match[]>(matchesFilePath);
 	}
 
-	//
-	// static async getMatches(year: string): Promise<Match[]> {
-	// 	return this.readJSON<Match[]>(Path.join(DataSource.dataDir, year, "matches.json"));
-	// }
-	//
-	// static async getGroups(year: string): Promise<Group[]> {
-	// 	return this.readJSON<Group[]>(Path.resolve(DataSource.getTournamentFolder(year), "groups.json"));
-	// }
-	//
-	// static async getParticipants(year: string): Promise<Player[]> {
-	// 	const participants = await this.readJSON<{ year: number; playerId: string }[]>(`participants-${year}.json`);
-	// 	const players = await this.getPlayers();
-	//
-	// 	return players.filter((p) => participants.some((pt) => pt.playerId === p.id));
-	// }
-	//
-	// static async getPlayerPerformance(year: string, playerId: string) {
-	// 	const matches = await this.getMatches(year);
-	//
-	// 	return matches.filter((m) => m.player1Id === playerId || m.player2Id === playerId);
-	// }
+	public async getPredictions(params: { year: string }): Promise<GroupPrediction[]> {
+		const predictionsFilePath = Path.join(this.dataDir, params.year, this.predictionsFileName);
 
-	// static async getSchedule(year: number): Promise<Match[]> {
-	// 	// In a real app, filter by year
-	// 	return this.getMatches();
-	// }
+		if (!(await isPathExists(predictionsFilePath))) {
+			return [];
+		}
 
-	// static async getGroupsForYear(year: number): Promise<Group[]> {
-	// 	// In a real app, filter by year
-	// 	return this.getGroups();
-	// }
+		return this.readJSON<GroupPrediction[]>(predictionsFilePath);
+	}
 
-	// static async getGroupById(year: string, groupId: string): Promise<Group | undefined> {
-	// 	const groups = await this.getGroups(year);
-	//
-	// 	return groups.find((g) => g.id === groupId);
-	// }
-	//
-	// static async getMatchesForGroup(year: string, groupId: string): Promise<Match[]> {
-	// 	const matches = await this.getMatches(year);
-	//
-	// 	return matches.filter((m) => m.groupId === groupId);
-	// }
+	public async updatePredictions(params: { year: string; predictions: GroupPrediction[] }) {
+		const predictionsFilePath = Path.join(this.dataDir, params.year, this.predictionsFileName);
+
+		await this.writeJSON<GroupPrediction[]>(predictionsFilePath, params.predictions);
+	}
 
 	private async readJSON<T>(filePath: string): Promise<T> {
 		const data = await fs.readFile(filePath, "utf-8");
 
 		return JSON.parse(data).data;
+	}
+
+	private async writeJSON<T>(filePath: string, data: T): Promise<void> {
+		await fs.mkdir(path.dirname(filePath), { recursive: true });
+		await fs.writeFile(filePath, JSON.stringify({ data }, null, 2), "utf-8");
+	}
+}
+
+async function isPathExists(path: string): Promise<boolean> {
+	try {
+		await Fs.access(path);
+
+		return true;
+	} catch {
+		return false;
 	}
 }

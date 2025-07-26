@@ -1,18 +1,17 @@
 export class Elo {
 	private ratings: Record<string, number> = {};
-	private readonly K: number;
-	private readonly defaultRating: number;
+	public static readonly DEFAULT_RATING = 1500;
+	public static readonly K = 32;
 
-	constructor(initialRating = 1500, K = 32) {
-		this.K = K;
-		this.defaultRating = initialRating;
+	public getRatings() {
+		return this.ratings;
 	}
 
 	public getRating(playerId: string): number {
-		return this.ratings[playerId] ?? this.defaultRating;
+		return this.ratings[playerId] ?? Elo.DEFAULT_RATING;
 	}
 
-	private expectedScore(rA: number, rB: number): number {
+	static expectedScore(rA: number, rB: number): number {
 		return 1 / (1 + 10 ** ((rB - rA) / 400));
 	}
 
@@ -20,10 +19,10 @@ export class Elo {
 		const rWinner = this.getRating(winnerId);
 		const rLoser = this.getRating(loserId);
 
-		const eWinner = this.expectedScore(rWinner, rLoser);
-		const eLoser = this.expectedScore(rLoser, rWinner);
+		const eWinner = Elo.expectedScore(rWinner, rLoser);
+		const eLoser = Elo.expectedScore(rLoser, rWinner);
 
-		this.ratings[winnerId] = rWinner + this.K * (1 - eWinner);
-		this.ratings[loserId] = rLoser + this.K * (0 - eLoser);
+		this.ratings[winnerId] = rWinner + Elo.K * (1 - eWinner);
+		this.ratings[loserId] = rLoser + Elo.K * (0 - eLoser);
 	}
 }

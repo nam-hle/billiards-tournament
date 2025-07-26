@@ -1,3 +1,11 @@
+export function formatRatio(ratio: number | undefined | null, fractionDigits = 1): string {
+	if (ratio === undefined || ratio === null || isNaN(ratio)) {
+		return "-";
+	}
+
+	return `${(ratio * 100).toFixed(fractionDigits)}%`;
+}
+
 export function toLabel(text: string): string {
 	return text
 		.split(/[-_]/)

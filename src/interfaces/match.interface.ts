@@ -1,3 +1,6 @@
+import Chance from "chance";
+
+import { Elo } from "@/utils/elo";
 import { type DateTime } from "@/interfaces/data-time.interface";
 import { CompletedMatch } from "@/interfaces/completed-match.interface";
 import { ScheduledMatch } from "@/interfaces/scheduled-match.interface";
@@ -106,5 +109,26 @@ export namespace Match {
 		}
 
 		throw new Error(`Unknown match type: ${match.type}`);
+	}
+
+	export function simulate(params: { raceTo: number; player1Id: string; player2Id: string; player2Rating: number; player1Rating: number }) {
+		const chance = new Chance();
+		const { raceTo, player1Id, player2Id, player2Rating, player1Rating } = params;
+		const player1WinRate = Elo.expectedScore(player1Rating, player2Rating);
+		let score1 = 0,
+			score2 = 0;
+
+		while (score1 < raceTo && score2 < raceTo) {
+			if (chance.floating({ min: 0, max: 1 }) < player1WinRate) {
+				score1++;
+			} else {
+				score2++;
+			}
+		}
+
+		const winnerId = score1 === raceTo ? player1Id : player2Id;
+		const loserId = score1 === raceTo ? player2Id : player1Id;
+
+		return { score1, score2, loserId, winnerId };
 	}
 }
