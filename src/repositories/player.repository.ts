@@ -63,7 +63,7 @@ export class PlayerRepository extends BaseRepository {
 
 			status: "active", // TODO: Determine status based on matches
 			playedMatches: completedMatches.length,
-			winRate: completedMatches.length > 0 ? (wins / completedMatches.length) * 100 : NaN
+			winRate: wins / completedMatches.length
 		};
 	}
 
@@ -125,9 +125,9 @@ export class PlayerRepository extends BaseRepository {
 			totalMatches: completedMatches.length,
 			elo: await this.getEloRating(playerId),
 			recentMatches: completedMatches.slice(-10),
-			overallWinRate: (totalWins / completedMatches.length) * 100,
+			overallWinRate: totalWins / completedMatches.length,
 			achievements: await this.getTournamentResults({ playerId }),
-			racksWinRate: totalRacksWins > 0 || totalRacksLost > 0 ? (totalRacksWins / (totalRacksWins + totalRacksLost)) * 100 : NaN
+			racksWinRate: totalRacksWins / (totalRacksWins + totalRacksLost)
 		};
 	}
 

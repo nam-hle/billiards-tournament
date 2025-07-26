@@ -1,4 +1,4 @@
-import { PlayersPageClient } from "@/components/pages/tournament-players-page";
+import { TournamentPlayersPageClient } from "@/components/pages/tournament-players-page";
 
 import { GroupRepository } from "@/repositories/group.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
@@ -16,5 +16,5 @@ export default async function TournamentPlayersPage({ params }: Props) {
 	const playerStats = await Promise.all(players.map((player) => playerRepo.getStatsByTournament(player.id, year)));
 	const groups = await new GroupRepository().getByYear({ year });
 
-	return <PlayersPageClient groups={groups} players={playerStats} tournament={tournament} />;
+	return <TournamentPlayersPageClient groups={groups} players={playerStats} tournament={tournament} />;
 }

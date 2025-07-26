@@ -17,7 +17,7 @@ import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
 import { type Group, type Tournament, type PlayerTournamentStat } from "@/interfaces";
 
-namespace PlayersPageClient {
+namespace TournamentPlayersPageClient {
 	export interface Props {
 		groups: Group[];
 		tournament: Tournament;
@@ -25,7 +25,7 @@ namespace PlayersPageClient {
 	}
 }
 
-export function PlayersPageClient(props: PlayersPageClient.Props) {
+export function TournamentPlayersPageClient(props: TournamentPlayersPageClient.Props) {
 	const { groups, players, tournament } = props;
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedGroup, setSelectedGroup] = useState("all");
