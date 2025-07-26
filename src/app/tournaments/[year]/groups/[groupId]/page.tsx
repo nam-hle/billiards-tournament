@@ -1,6 +1,7 @@
+import React from "react";
 import { clsx } from "clsx";
 import { notFound } from "next/navigation";
-import { Trophy, Target, Calendar } from "lucide-react";
+import { Target, Calendar } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Separator } from "@/components/shadcn/separator";
@@ -8,7 +9,9 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
 
+import { Links } from "@/utils/links";
 import { formatDate, formatTime } from "@/utils/date-time";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
@@ -35,9 +38,18 @@ export default async function GroupPage({ params }: Props) {
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
+			<PageBreadcrumb
+				items={[
+					Links.Tournaments.get(),
+					Links.Tournaments.Year.get(year, tournament.name),
+					Links.Tournaments.Year.Groups.get(year),
+					Links.Tournaments.Year.Groups.Group.get(year, groupId, group.name)
+				]}
+			/>
+
 			{/* Header */}
 			<div className="flex items-center gap-3">
-				<Trophy className="h-8 w-8 text-primary" />
+				<Target className="h-8 w-8 text-primary" />
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">{group.name}</h1>
 					<p className="text-muted-foreground">{tournament.name}</p>

@@ -16,5 +16,5 @@ export default async function TournamentPlayersPage({ params }: Props) {
 	const playerStats = await Promise.all(players.map((player) => playerRepo.getStatsByTournament(player.id, year)));
 	const groups = await new GroupRepository().getByYear({ year });
 
-	return <PlayersPageClient groups={groups} players={playerStats} name={tournament.name} />;
+	return <PlayersPageClient groups={groups} players={playerStats} tournament={tournament} />;
 }

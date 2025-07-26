@@ -10,17 +10,19 @@ import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/tabs";
 
 import { DaySchedule } from "@/components/day-schedule";
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
 import { ScheduleFilters } from "@/components/schedule-filters";
 
+import { Links } from "@/utils/links";
 import { ALL_FILTER } from "@/constants";
 import { formatDate } from "@/utils/date-time";
-import { Match, GroupMatch, ScheduledMatch, CompletedMatch, type TournamentSchedule } from "@/interfaces";
+import { Match, GroupMatch, ScheduledMatch, CompletedMatch, type Tournament, type TournamentSchedule } from "@/interfaces";
 
 const GROUP_QUERY_KEY = "group";
 const STATUS_QUERY_KEY = "status";
 const PLAYER_QUERY_KEY = "player";
 
-export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule }) {
+export function SchedulePageClient({ schedule, tournament }: { tournament: Tournament; schedule: TournamentSchedule }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
@@ -95,6 +97,14 @@ export function SchedulePageClient({ schedule }: { schedule: TournamentSchedule 
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
+			<PageBreadcrumb
+				items={[
+					Links.Tournaments.get(),
+					Links.Tournaments.Year.get(tournament.year, tournament.name),
+					Links.Tournaments.Year.Schedule.get(tournament.year)
+				]}
+			/>
+
 			{/* Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">

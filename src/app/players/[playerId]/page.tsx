@@ -1,13 +1,14 @@
+import React from "react";
 import { Star, Users, Award, Crown, Medal, Gauge, Trophy, Target, TrendingUp, ShieldCheck } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
 
-import { getAbbrName } from "@/utils/strings";
+import { Links } from "@/utils/links";
 import { formatDate } from "@/utils/date-time";
 import { PlayerRepository } from "@/repositories/player.repository";
 import { CompletedMatch, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
@@ -127,13 +128,10 @@ export default async function OverallPlayerProfilePage({ params }: Props) {
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
+			<PageBreadcrumb items={[Links.Players.get(), Links.Players.Player.get(playerId, playerStat.name)]} />
+
 			{/* Player Header */}
 			<div className="mb-8 flex items-center gap-6">
-				<Avatar className="h-16 w-16">
-					<AvatarImage alt={playerStat.name} />
-					<AvatarFallback className="text-xl">{getAbbrName(playerStat.name)}</AvatarFallback>
-				</Avatar>
-
 				<div className="flex-1">
 					<div className="mb-1 flex items-center gap-3">
 						<h1 className="text-2xl font-bold">{playerStat.name}</h1>

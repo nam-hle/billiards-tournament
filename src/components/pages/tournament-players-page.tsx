@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Users, Medal, Trophy, Search, Filter, Target } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
@@ -11,20 +11,22 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
 import { PlayerDisplay } from "@/components/player-display";
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
 
-import { type Group, type PlayerTournamentStat } from "@/interfaces";
+import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
+import { type Group, type Tournament, type PlayerTournamentStat } from "@/interfaces";
 
 namespace PlayersPageClient {
 	export interface Props {
-		name: string;
 		groups: Group[];
+		tournament: Tournament;
 		players: PlayerTournamentStat[];
 	}
 }
 
 export function PlayersPageClient(props: PlayersPageClient.Props) {
-	const { name, groups, players } = props;
+	const { groups, players, tournament } = props;
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedGroup, setSelectedGroup] = useState("all");
 	const [selectedStatus, setSelectedStatus] = useState("all");
@@ -48,13 +50,21 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
+			<PageBreadcrumb
+				items={[
+					Links.Tournaments.get(),
+					Links.Tournaments.Year.get(tournament.year, tournament.name),
+					Links.Tournaments.Year.Players.get(tournament.year)
+				]}
+			/>
+
 			{/* Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
 					<Users className="h-8 w-8 text-primary" />
 					<div>
 						<h1 className="text-3xl font-bold tracking-tight">Tournament Players</h1>
-						<p className="text-xl text-muted-foreground">{name}</p>
+						<p className="text-xl text-muted-foreground">{tournament.name}</p>
 					</div>
 				</div>
 			</div>

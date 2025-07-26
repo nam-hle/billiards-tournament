@@ -11,8 +11,10 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
 
 import { assert } from "@/utils";
+import { Links } from "@/utils/links";
 import { toLabel } from "@/utils/strings";
 import { formatDate, formatTime } from "@/utils/date-time";
 import { TournamentRepository } from "@/repositories/tournament.repository";
@@ -157,6 +159,8 @@ export default async function TournamentOverviewPage({ params }: Props) {
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
+			<PageBreadcrumb items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, data.overview.name)]} />
+
 			{/* Tournament Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
@@ -227,7 +231,7 @@ export default async function TournamentOverviewPage({ params }: Props) {
 					<CardHeader>
 						<div className="flex items-center justify-between">
 							<CardTitle className="flex items-center gap-2">
-								<Target className="h-5 w-5" />
+								<Users className="h-5 w-5" />
 								Groups Overview
 							</CardTitle>
 							<Button asChild size="sm" variant="outline">

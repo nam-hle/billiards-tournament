@@ -9,6 +9,7 @@ interface Props {
 export default async function TournamentSchedulePage({ params }: Props) {
 	const { year } = await params;
 	const schedule = await new TournamentRepository().getSchedule(year);
+	const tournament = await new TournamentRepository().getByYear(year);
 
-	return <SchedulePageClient schedule={schedule} />;
+	return <SchedulePageClient schedule={schedule} tournament={tournament} />;
 }

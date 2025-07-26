@@ -1,10 +1,13 @@
-import { Crown, Trophy, MapPin, Calendar } from "lucide-react";
+import React from "react";
+import { Crown, Trophy } from "lucide-react";
 
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 
+import { PageBreadcrumb } from "@/components/page-breadcrumb";
 import { TournamentBracket, QualifiedPlayersList } from "@/components/pages/tournament-knockout-page";
 
+import { Links } from "@/utils/links";
 import { KnockoutMatch, CompletedMatch } from "@/interfaces";
 import { MatchRepository } from "@/repositories/match.repository";
 import { GroupRepository } from "@/repositories/group.repository";
@@ -28,26 +31,21 @@ export default async function TournamentKnockoutPage({ params }: Props) {
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
+			<PageBreadcrumb
+				items={[
+					Links.Tournaments.get(),
+					Links.Tournaments.Year.get(tournament.year, tournament.name),
+					Links.Tournaments.Year.Knockout.get(tournament.year)
+				]}
+			/>
+
 			{/* Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
 					<Crown className="h-8 w-8 text-yellow-600" />
 					<div>
 						<h1 className="text-3xl font-bold tracking-tight">Knockout Phase</h1>
-						<p className="text-xl text-muted-foreground">
-							{tournament.name} - {tournament.year}
-						</p>
-					</div>
-				</div>
-
-				<div className="flex justify-center gap-8 text-sm text-muted-foreground">
-					<div className="flex items-center gap-1">
-						<Calendar className="h-4 w-4" />
-						Starts {new Date(tournament.startDate).toLocaleDateString()}
-					</div>
-					<div className="flex items-center gap-1">
-						<MapPin className="h-4 w-4" />
-						{tournament.venue}
+						<p className="text-xl text-muted-foreground">{tournament.name}</p>
 					</div>
 				</div>
 			</div>
