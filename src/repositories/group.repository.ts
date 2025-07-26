@@ -189,6 +189,7 @@ export class GroupRepository extends BaseRepository {
 
 		for (let iteration = 0; iteration < GroupRepository.SIMULATION_ITERATION; iteration++) {
 			if (iteration % 1000 === 0) {
+				// eslint-disable-next-line no-console
 				console.log(`Simulation iteration ${iteration} for group ${params.groupId} of year ${params.year}`);
 			}
 
