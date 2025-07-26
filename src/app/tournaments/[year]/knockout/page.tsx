@@ -13,6 +13,12 @@ import { MatchRepository } from "@/repositories/match.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 
+export async function generateStaticParams() {
+	const tournaments = await new TournamentRepository().getAll();
+
+	return tournaments.map((tournament) => ({ year: tournament.year }));
+}
+
 interface Props {
 	params: Promise<{ year: string }>;
 }

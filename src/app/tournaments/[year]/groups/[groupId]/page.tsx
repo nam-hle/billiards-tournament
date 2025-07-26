@@ -19,6 +19,16 @@ import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 import { Match, CompletedMatch, ScheduledMatch, DefinedPlayersMatch } from "@/interfaces";
 
+export async function generateStaticParams({ params }: { params: { year: string } }) {
+	if (params.year === undefined) {
+		return [];
+	}
+
+	const groups = await new GroupRepository().getByYear({ year: params.year });
+
+	return groups.map((group) => ({ groupId: group.id }));
+}
+
 interface Props {
 	params: Promise<{ year: string; groupId: string }>;
 }

@@ -14,6 +14,12 @@ import { formatDate } from "@/utils/date-time";
 import { PlayerRepository } from "@/repositories/player.repository";
 import { CompletedMatch, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
 
+export async function generateStaticParams() {
+	const players = await new PlayerRepository().getAll();
+
+	return players.map((player) => ({ playerId: player.id }));
+}
+
 interface Props {
 	params: Promise<{ playerId: string }>;
 }

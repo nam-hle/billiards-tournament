@@ -20,6 +20,12 @@ import { formatDate, formatTime } from "@/utils/date-time";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 import { DefinedPlayersMatch, type TournamentStatus, type TournamentOverview } from "@/interfaces";
 
+export async function generateStaticParams() {
+	const tournaments = await new TournamentRepository().getAll();
+
+	return tournaments.map((tournament) => ({ year: tournament.year }));
+}
+
 interface Props {
 	params: Promise<{ year: string }>;
 }
