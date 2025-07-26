@@ -4,6 +4,7 @@ import "./globals.css";
 import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { Application } from "@/components/application";
 
@@ -45,6 +46,7 @@ export default async function RootLayout({
 			</head>
 			<body suppressHydrationWarning className={interSans.variable}>
 				<Application tournaments={tournamentOverviews}>{children}</Application>
+				<Analytics />
 			</body>
 		</html>
 	);
