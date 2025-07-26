@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Users, Medal, Trophy, Search, Filter, Target } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Input } from "@/components/shadcn/input";
-import { Button } from "@/components/shadcn/button";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
@@ -14,12 +12,11 @@ import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@
 
 import { PlayerDisplay } from "@/components/player-display";
 
-import { toLabel, getStatusColor } from "@/utils/strings";
 import { type Group, type PlayerTournamentStat } from "@/interfaces";
+import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
 
 namespace PlayersPageClient {
 	export interface Props {
-		year: string;
 		name: string;
 		groups: Group[];
 		players: PlayerTournamentStat[];
@@ -27,7 +24,7 @@ namespace PlayersPageClient {
 }
 
 export function PlayersPageClient(props: PlayersPageClient.Props) {
-	const { year, name, groups, players } = props;
+	const { name, groups, players } = props;
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedGroup, setSelectedGroup] = useState("all");
 	const [selectedStatus, setSelectedStatus] = useState("all");
@@ -42,9 +39,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 
 			return matchesSearch && matchesGroup && matchesStatus;
 		})
-		.sort((a, b) => {
-			return b.wins - a.wins || a.name.localeCompare(b.name);
-		});
+		.sort((a, b) => b.elo - a.elo);
 
 	const totalPlayers = players.length;
 	const activePlayers = players.filter((p) => p.status === "active").length;
@@ -181,7 +176,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 			</Card>
 
 			{/* Players Display */}
-			<PlayersTable year={year} players={filteredPlayers} />
+			<PlayersTable players={filteredPlayers} />
 
 			{filteredPlayers.length === 0 && (
 				<div className="py-12 text-center">
@@ -194,7 +189,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 	);
 }
 
-function PlayersTable({ year, players }: { year: string; players: PlayerTournamentStat[] }) {
+function PlayersTable({ players }: { players: PlayerTournamentStat[] }) {
 	return (
 		<Card>
 			<CardContent className="p-0">
@@ -209,7 +204,6 @@ function PlayersTable({ year, players }: { year: string; players: PlayerTourname
 							<TableHead className="text-center">Losses</TableHead>
 							<TableHead className="text-center">Win Rate</TableHead>
 							<TableHead className="text-center">Status</TableHead>
-							<TableHead className="w-[100px]">Actions</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -239,14 +233,9 @@ function PlayersTable({ year, players }: { year: string; players: PlayerTourname
 											{player.losses}
 										</Badge>
 									</TableCell>
-									<TableCell className="text-center">{player.winRate.toFixed(1)}%</TableCell>
+									<TableCell className="text-center">{formatRatio(player.winRate)}</TableCell>
 									<TableCell className="text-center">
 										<Badge className={getStatusColor(player.status)}>{toLabel(player.status)}</Badge>
-									</TableCell>
-									<TableCell>
-										<Button asChild size="sm" variant="outline">
-											<Link href={`/tournaments/${year}/players/${player.id}`}>View</Link>
-										</Button>
 									</TableCell>
 								</TableRow>
 							))}

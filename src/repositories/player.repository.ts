@@ -59,6 +59,8 @@ export class PlayerRepository extends BaseRepository {
 			wins,
 			group,
 			losses,
+			elo: await this.getEloRating(player.id),
+
 			status: "active", // TODO: Determine status based on matches
 			playedMatches: completedMatches.length,
 			winRate: completedMatches.length > 0 ? (wins / completedMatches.length) * 100 : NaN

@@ -9,6 +9,8 @@ export interface Player {
 }
 
 export interface PlayerTournamentStat extends Player {
+	elo: number;
+
 	group: Group;
 
 	wins: number;
