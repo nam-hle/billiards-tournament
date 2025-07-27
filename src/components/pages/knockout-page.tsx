@@ -20,7 +20,7 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 						{/* Match Header */}
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2">
-								<Badge variant="secondary" className="text-xs">
+								<Badge variant="outline" className="text-xs">
 									{Match.formatId(match)}
 								</Badge>
 								<Badge variant="outline" className="text-xs">
@@ -35,6 +35,7 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 							{/* Player 1 */}
 							<div className="flex items-center justify-between">
 								<PlayerDisplay
+									fallbackName="TBD"
 									avatarClassName="h-6 w-6"
 									containerClassName="gap-2"
 									player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
@@ -48,6 +49,7 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 							{/* Player 2 */}
 							<div className="flex items-center justify-between">
 								<PlayerDisplay
+									fallbackName="TBD"
 									avatarClassName="h-6 w-6"
 									containerClassName="gap-2"
 									player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}

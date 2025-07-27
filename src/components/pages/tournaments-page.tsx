@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import React, { useState } from "react";
 import { Users, Search, Trophy, Filter, Calendar } from "lucide-react";
 
@@ -82,7 +83,13 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 					<Link key={tournament.id} href={`/tournaments/${tournament.year}`}>
 						<Card className="cursor-pointer overflow-hidden transition-shadow hover:shadow-lg">
 							<div className="aspect-video overflow-hidden">
-								<img alt={tournament.name} src="/placeholder.svg" className="h-full w-full object-cover transition-transform hover:scale-105" />
+								<Image
+									width={500}
+									height={400}
+									alt={tournament.name}
+									src={tournament.image}
+									className="h-full w-full object-cover transition-transform hover:scale-105"
+								/>
 							</div>
 							<CardHeader className="pb-3">
 								<div className="flex items-start justify-between gap-2">

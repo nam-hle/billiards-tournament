@@ -17,7 +17,8 @@
 					"bestsOf": 2,
 					"count": 2
 				}
-			]
+			],
+			"image": "/tournament-2025.jpg"
 		},
 		{
 			"id": "2024",
@@ -31,7 +32,8 @@
 				{
 					"top": 2
 				}
-			]
+			],
+			"image": "/tournament-2024.jpg"
 		}
 	]
 }

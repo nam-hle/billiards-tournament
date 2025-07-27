@@ -18,6 +18,7 @@ export interface Tournament {
 	name: string;
 	year: string;
 	venue: string;
+	image: string;
 	description: string;
 
 	endDate: string;
