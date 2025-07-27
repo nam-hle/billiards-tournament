@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Users, Medal, Trophy, Search, Filter, Target } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
@@ -200,6 +201,8 @@ export function TournamentPlayersPageClient(props: TournamentPlayersPageClient.P
 }
 
 function PlayersTable({ players }: { players: PlayerTournamentStat[] }) {
+	const router = useRouter();
+
 	return (
 		<Card>
 			<CardContent className="p-0">
@@ -220,7 +223,10 @@ function PlayersTable({ players }: { players: PlayerTournamentStat[] }) {
 						{players
 							.sort((a, b) => b.wins - a.wins || b.winRate - a.winRate)
 							.map((player, index) => (
-								<TableRow key={player.id}>
+								<TableRow
+									key={player.id}
+									className="cursor-pointer"
+									onClick={() => router.push(Links.Players.Player.get(player.id, player.name).href)}>
 									<TableCell>
 										<Badge variant={index < 3 ? "default" : "outline"} className="flex h-6 w-6 items-center justify-center p-0 text-xs">
 											{index + 1}

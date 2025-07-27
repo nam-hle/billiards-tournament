@@ -18,8 +18,8 @@ import { formatDate, formatTime } from "@/utils/date-time";
 import { toLabel, formatRatio, getAbbrName, getStatusColor } from "@/utils/strings";
 import {
 	Match,
+	DateTime,
 	type Player,
-	type DateTime,
 	ScheduledMatch,
 	CompletedMatch,
 	type PlayerStat,
@@ -39,7 +39,7 @@ function CountdownTimer({ targetDate }: { targetDate: DateTime }) {
 	useEffect(() => {
 		const timer = setInterval(() => {
 			const now = new Date().getTime();
-			const target = new Date(`${targetDate.date}T${targetDate.time}`).getTime();
+			const target = DateTime.toDate(targetDate).getTime();
 			const difference = target - now;
 
 			if (difference > 0) {
@@ -137,7 +137,7 @@ function MatchResult({ match }: { match: MatchDetails }) {
 	);
 }
 
-export function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?: boolean; isPlayer1?: boolean }) {
+function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?: boolean; isPlayer1?: boolean }) {
 	return (
 		<Card className={isWinner ? "bg-green-50 ring-2 ring-green-400" : ""}>
 			<CardContent className="pt-6">
@@ -186,7 +186,7 @@ export function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?
 	);
 }
 
-export function WinPrediction(props: { match: MatchDetails }) {
+function WinPrediction(props: { match: MatchDetails }) {
 	const { player2, player1, prediction } = props.match;
 
 	if (!prediction || !player1 || !player2) {
@@ -306,7 +306,7 @@ export function HeadToHeadHistory({
 	);
 }
 
-export function RecentForm({ player }: { player: PlayerStat }) {
+function RecentForm({ player }: { player: PlayerStat }) {
 	return (
 		<Card>
 			<CardHeader>
@@ -370,7 +370,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 				<CardContent className="pt-6">
 					<div className="space-y-4 text-center">
 						<div className="flex items-center justify-center space-x-2">
-							<h1 className="text-2xl font-bold">Match {match.id}</h1>
+							<h1 className="text-2xl font-bold">Match {Match.formatId(match)}</h1>
 						</div>
 
 						<div className="flex justify-center gap-2 text-sm">
@@ -414,7 +414,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 				</Card>
 			)}
 
-			{match.player1 && match.player2 && (
+			{match.player1 && match.player2 && isPending && (
 				<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 					<PlayerCard
 						isPlayer1

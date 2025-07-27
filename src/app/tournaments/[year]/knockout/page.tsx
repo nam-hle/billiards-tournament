@@ -5,7 +5,7 @@ import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 
 import { PageBreadcrumb } from "@/components/page-breadcrumb";
-import { TournamentBracket, QualifiedPlayersList } from "@/components/pages/tournament-knockout-page";
+import { TournamentBracket, QualifiedPlayersList } from "@/components/pages/knockout-page";
 
 import { Links } from "@/utils/links";
 import { KnockoutMatch, CompletedMatch } from "@/interfaces";

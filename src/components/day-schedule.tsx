@@ -1,4 +1,5 @@
 import { Calendar } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Card, CardContent } from "@/components/shadcn/card";
@@ -6,11 +7,14 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 
 import { PlayerDisplay } from "@/components/player-display";
 
+import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
 import { formatDate, formatTime } from "@/utils/date-time";
 import { Match, type Group, CompletedMatch, DefinedPlayersMatch } from "@/interfaces";
 
 export function DaySchedule({ date, matches }: { date: string; matches: Match[]; groups: Pick<Group, "id" | "name">[] }) {
+	const router = useRouter();
+
 	if (matches.length === 0) {
 		return (
 			<div className="py-8 text-center text-muted-foreground">
@@ -37,6 +41,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 					<Table>
 						<TableHeader>
 							<TableRow>
+								<TableHead className="w-[80px]">ID</TableHead>
 								{date === "upcoming" ? <TableHead className="w-[140px]">Date</TableHead> : null}
 								<TableHead className="w-[100px]">Time</TableHead>
 								<TableHead className="w-[140px] text-center">Type</TableHead>
@@ -54,7 +59,11 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 									const winner = winnerId !== undefined ? (match.player1Id === winnerId ? "player1" : "player2") : null;
 
 									return (
-										<TableRow key={match.id}>
+										<TableRow
+											key={match.id}
+											className="cursor-pointer hover:bg-muted"
+											onClick={() => router.push(Links.Matches.Match.get(match.id).href)}>
+											<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
 											{date === "upcoming" ? (
 												<TableCell className="font-mono text-sm">
 													{match.scheduledAt ? formatDate(match.scheduledAt.date, { month: "short", day: "numeric", weekday: "short" }) : "-"}

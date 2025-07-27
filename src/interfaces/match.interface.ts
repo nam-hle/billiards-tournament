@@ -148,4 +148,8 @@ export namespace Match {
 
 		return { score1, score2, loserId, winnerId };
 	}
+
+	export function formatId(match: Match): string {
+		return `#${match.id}`;
+	}
 }

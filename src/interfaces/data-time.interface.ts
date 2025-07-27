@@ -1,3 +1,5 @@
+import { parse } from "date-fns";
+
 export interface DateTime {
 	readonly date: string;
 	readonly time: string;
@@ -10,5 +12,9 @@ export namespace DateTime {
 
 			return order === "asc" ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
 		};
+	}
+
+	export function toDate(dateTime: DateTime): Date {
+		return parse(`${dateTime.date} ${dateTime.time}`, "yyyy-MM-dd HH:mm", new Date());
 	}
 }

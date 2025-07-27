@@ -18,7 +18,7 @@ import { Links } from "@/utils/links";
 import { toLabel } from "@/utils/strings";
 import { formatDate, formatTime } from "@/utils/date-time";
 import { TournamentRepository } from "@/repositories/tournament.repository";
-import { DefinedPlayersMatch, type TournamentStatus, type TournamentOverview } from "@/interfaces";
+import { Match, DefinedPlayersMatch, type TournamentStatus, type TournamentOverview } from "@/interfaces";
 
 export async function generateStaticParams() {
 	const tournaments = await new TournamentRepository().getAll();
@@ -351,9 +351,16 @@ export default async function TournamentOverviewPage({ params }: Props) {
 								const time = formatTime(scheduledAt.time);
 
 								return (
-									<div key={id} className="flex items-center justify-between rounded-lg border p-3">
+									<Link
+										key={id}
+										passHref
+										href={Links.Matches.Match.get(match.id).href}
+										className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent">
 										<div className="space-y-1">
 											<div className="flex items-center gap-2">
+												<Badge variant="secondary" className="text-xs">
+													{Match.formatId(match)}
+												</Badge>
 												<Badge variant="outline" className="text-xs">
 													{name}
 												</Badge>
@@ -372,7 +379,7 @@ export default async function TournamentOverviewPage({ params }: Props) {
 												{score1} : {score2}
 											</Badge>
 										</div>
-									</div>
+									</Link>
 								);
 							})}
 						</div>
@@ -397,7 +404,11 @@ export default async function TournamentOverviewPage({ params }: Props) {
 								const time = formatTime(scheduledAt.time);
 
 								return (
-									<div key={match.id} className="flex items-center justify-between rounded-lg border p-3">
+									<Link
+										passHref
+										key={match.id}
+										href={Links.Matches.Match.get(match.id).href}
+										className="flex items-center justify-between rounded-lg border p-3">
 										<div className="space-y-1">
 											<div className="flex items-center gap-2">
 												<Badge variant="outline" className="text-xs">
@@ -413,7 +424,7 @@ export default async function TournamentOverviewPage({ params }: Props) {
 												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}</span>
 											</div>
 										</div>
-									</div>
+									</Link>
 								);
 							})}
 						</div>
