@@ -21,7 +21,7 @@ import {
 } from "@/interfaces";
 
 export class GroupRepository extends BaseRepository {
-	private static SIMULATION_ITERATION = 10_000;
+	private static SIMULATION_ITERATION = 5_000;
 
 	async getByYear(params: { year: string }): Promise<Group[]> {
 		return this.dataSource.getGroups(params);

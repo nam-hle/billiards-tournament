@@ -124,7 +124,7 @@ export class PlayerRepository extends BaseRepository {
 			totalTournaments: achievements.length,
 			totalMatches: completedMatches.length,
 			elo: await this.getEloRating(playerId),
-			recentMatches: completedMatches.slice(-10),
+			recentMatches: completedMatches.slice(-5),
 			overallWinRate: totalWins / completedMatches.length,
 			achievements: await this.getTournamentResults({ playerId }),
 			racksWinRate: totalRacksWins / (totalRacksWins + totalRacksLost)

@@ -1,10 +1,27 @@
 import Chance from "chance";
 
 import { Elo } from "@/utils/elo";
+import { type PlayerStat } from "@/interfaces/player.interface";
 import { type DateTime } from "@/interfaces/data-time.interface";
+import { type Tournament } from "@/interfaces/tournament.interface";
 import { CompletedMatch } from "@/interfaces/completed-match.interface";
 import { ScheduledMatch } from "@/interfaces/scheduled-match.interface";
 import { DefinedPlayersMatch } from "@/interfaces/defined-players-match.interface";
+
+export type CompletedMatchWithTournament = CompletedMatch & { tournament: Tournament };
+
+export type MatchDetails = Match & {
+	readonly player1?: PlayerStat;
+	readonly player2?: PlayerStat;
+	readonly tournament: Tournament;
+	readonly lastMatch?: CompletedMatchWithTournament;
+	readonly recentMatches: CompletedMatchWithTournament[];
+	readonly headToHeadMatches: CompletedMatchWithTournament[];
+	readonly prediction?: {
+		player1WinChance: number;
+		player2WinChance: number;
+	};
+};
 
 export interface BaseMatch {
 	id: string;

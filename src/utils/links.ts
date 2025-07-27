@@ -1,4 +1,10 @@
 export const Links = {
+	Matches: {
+		get: () => ({ label: `Matches`, href: `/matches` }),
+		Match: {
+			get: (matchId: string) => ({ label: `Match ${matchId}`, href: `/matches/${matchId}` })
+		}
+	},
 	Players: {
 		get: () => ({ label: `Players`, href: `/players` }),
 		Player: {

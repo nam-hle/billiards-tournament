@@ -2,217 +2,217 @@
 	"$schema": "../../schemas/matches.schema.json",
 	"data": [
 		{
-			"id": "25A00",
+			"id": "47",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "nhle",
 			"player2Id": "hqtran"
 		},
 		{
-			"id": "25A01",
+			"id": "48",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "atvo",
 			"player2Id": "nhle"
 		},
 		{
-			"id": "25A02",
+			"id": "49",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "nhle",
 			"player2Id": "dple"
 		},
 		{
-			"id": "25A03",
+			"id": "50",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "hqnguyen",
 			"player2Id": "nhle"
 		},
 		{
-			"id": "25A04",
+			"id": "51",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "hqtran",
 			"player2Id": "atvo"
 		},
 		{
-			"id": "25A05",
+			"id": "52",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "dple",
 			"player2Id": "hqtran"
 		},
 		{
-			"id": "25A06",
+			"id": "53",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "hqtran",
 			"player2Id": "hqnguyen"
 		},
 		{
-			"id": "25A07",
+			"id": "54",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "atvo",
 			"player2Id": "dple"
 		},
 		{
-			"id": "25A08",
+			"id": "55",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "hqnguyen",
 			"player2Id": "atvo"
 		},
 		{
-			"id": "25A09",
+			"id": "56",
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "dple",
 			"player2Id": "hqnguyen"
 		},
 		{
-			"id": "25B10",
+			"id": "57",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "bvphan",
 			"player2Id": "tmdo"
 		},
 		{
-			"id": "25B11",
+			"id": "58",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "qanguyen",
 			"player2Id": "bvphan"
 		},
 		{
-			"id": "25B12",
+			"id": "59",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "bvphan",
 			"player2Id": "hnnguyen"
 		},
 		{
-			"id": "25B13",
+			"id": "60",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "mbnguyen",
 			"player2Id": "bvphan"
 		},
 		{
-			"id": "25B14",
+			"id": "61",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "tmdo",
 			"player2Id": "qanguyen"
 		},
 		{
-			"id": "25B15",
+			"id": "62",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "hnnguyen",
 			"player2Id": "tmdo"
 		},
 		{
-			"id": "25B16",
+			"id": "63",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "tmdo",
 			"player2Id": "mbnguyen"
 		},
 		{
-			"id": "25B17",
+			"id": "64",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "qanguyen",
 			"player2Id": "hnnguyen"
 		},
 		{
-			"id": "25B18",
+			"id": "65",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "mbnguyen",
 			"player2Id": "qanguyen"
 		},
 		{
-			"id": "25B19",
+			"id": "66",
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "hnnguyen",
 			"player2Id": "mbnguyen"
 		},
 		{
-			"id": "25C20",
+			"id": "67",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "tttran",
 			"player2Id": "bvqhuynh"
 		},
 		{
-			"id": "25C21",
+			"id": "68",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "shvu",
 			"player2Id": "tttran"
 		},
 		{
-			"id": "25C22",
+			"id": "69",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "tttran",
 			"player2Id": "thnguyen"
 		},
 		{
-			"id": "25C23",
+			"id": "70",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "ltnguyen",
 			"player2Id": "tttran"
 		},
 		{
-			"id": "25C24",
+			"id": "71",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "bvqhuynh",
 			"player2Id": "shvu"
 		},
 		{
-			"id": "25C25",
+			"id": "72",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "thnguyen",
 			"player2Id": "bvqhuynh"
 		},
 		{
-			"id": "25C26",
+			"id": "73",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "bvqhuynh",
 			"player2Id": "ltnguyen"
 		},
 		{
-			"id": "25C27",
+			"id": "74",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "shvu",
 			"player2Id": "thnguyen"
 		},
 		{
-			"id": "25C28",
+			"id": "75",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "ltnguyen",
 			"player2Id": "shvu"
 		},
 		{
-			"id": "25C29",
+			"id": "76",
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "thnguyen",
 			"player2Id": "ltnguyen"
 		},
 		{
-			"id": "25QF00",
+			"id": "77",
 			"type": "quarter-final",
 			"order": 1,
 			"scheduledAt": {
@@ -221,7 +221,7 @@
 			}
 		},
 		{
-			"id": "25QF01",
+			"id": "78",
 			"type": "quarter-final",
 			"order": 2,
 			"scheduledAt": {
@@ -230,7 +230,7 @@
 			}
 		},
 		{
-			"id": "25QF02",
+			"id": "79",
 			"type": "quarter-final",
 			"order": 3,
 			"scheduledAt": {
@@ -239,7 +239,7 @@
 			}
 		},
 		{
-			"id": "25QF03",
+			"id": "80",
 			"type": "quarter-final",
 			"order": 4,
 			"scheduledAt": {
@@ -248,7 +248,7 @@
 			}
 		},
 		{
-			"id": "25SF00",
+			"id": "81",
 			"type": "semi-final",
 			"order": 1,
 			"scheduledAt": {
@@ -257,7 +257,7 @@
 			}
 		},
 		{
-			"id": "25SF01",
+			"id": "82",
 			"type": "semi-final",
 			"order": 2,
 			"scheduledAt": {
@@ -266,7 +266,7 @@
 			}
 		},
 		{
-			"id": "25FN00",
+			"id": "83",
 			"type": "final",
 			"order": 0,
 			"scheduledAt": {
