@@ -15,8 +15,7 @@ import { ScheduleFilters } from "@/components/schedule-filters";
 
 import { Links } from "@/utils/links";
 import { ALL_FILTER } from "@/constants";
-import { formatDate } from "@/utils/date-time";
-import { Match, GroupMatch, ScheduledMatch, CompletedMatch, type Tournament, type TournamentSchedule } from "@/interfaces";
+import { Match, ISOTime, GroupMatch, ScheduledMatch, CompletedMatch, type Tournament, type TournamentSchedule } from "@/interfaces";
 
 const GROUP_QUERY_KEY = "group";
 const STATUS_QUERY_KEY = "status";
@@ -60,22 +59,18 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 	});
 
 	// Group matches by date
-	const matchesByDate = filteredMatches.reduce(
-		(acc, match) => {
-			if (!ScheduledMatch.isInstance(match)) {
-				return acc;
-			}
-
-			if (!acc[match.scheduledAt.date]) {
-				acc[match.scheduledAt.date] = [];
-			}
-
-			acc[match.scheduledAt.date].push(match);
-
+	const matchesByDate = filteredMatches.reduce<Record<string, ScheduledMatch[]>>((acc, match) => {
+		if (!ScheduledMatch.isInstance(match)) {
 			return acc;
-		},
-		{} as Record<string, ScheduledMatch[]>
-	);
+		}
+
+		const date = ISOTime.getDate(match.scheduledAt);
+
+		acc[date] ??= [];
+		acc[date].push(match);
+
+		return acc;
+	}, {});
 
 	// const unscheduledMatches = filteredMatches.filter((match) => !match.scheduledAt);
 
@@ -197,7 +192,7 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 
 						<div className="text-center">
 							<p className="text-sm text-muted-foreground">Viewing</p>
-							<p className="font-semibold">{formatDate(currentDate)}</p>
+							<p className="font-semibold">{ISOTime.formatDate(currentDate)}</p>
 						</div>
 
 						<Button variant="outline" onClick={() => navigateDate("next")} disabled={currentDateIndex >= dates.length - 1}>

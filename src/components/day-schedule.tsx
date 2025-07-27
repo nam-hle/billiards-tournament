@@ -9,8 +9,7 @@ import { PlayerDisplay } from "@/components/player-display";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { formatDate, formatTime } from "@/utils/date-time";
-import { Match, type Group, CompletedMatch, DefinedPlayersMatch } from "@/interfaces";
+import { Match, ISOTime, type Group, CompletedMatch, DefinedPlayersMatch } from "@/interfaces";
 
 export function DaySchedule({ date, matches }: { date: string; matches: Match[]; groups: Pick<Group, "id" | "name">[] }) {
 	const router = useRouter();
@@ -29,7 +28,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 			<div className="mb-6 flex items-center gap-2">
 				<Calendar className="h-5 w-5 text-primary" />
 				<h3 className="text-lg font-semibold">
-					{date === "unscheduled" ? "Unscheduled Matches" : date === "upcoming" ? "Upcoming Matches" : formatDate(date)}
+					{date === "unscheduled" ? "Unscheduled Matches" : date === "upcoming" ? "Upcoming Matches" : ISOTime.formatDate(date)}
 				</h3>
 				<Badge className="ml-2" variant="secondary">
 					{matches.length} {matches.length === 1 ? "match" : "matches"}
@@ -65,11 +64,9 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 											onClick={() => router.push(Links.Matches.Match.get(match.id).href)}>
 											<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
 											{date === "upcoming" ? (
-												<TableCell className="font-mono text-sm">
-													{match.scheduledAt ? formatDate(match.scheduledAt.date, { month: "short", day: "numeric", weekday: "short" }) : "-"}
-												</TableCell>
+												<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { year: undefined })}</TableCell>
 											) : null}
-											<TableCell className="font-mono text-sm">{match.scheduledAt ? formatTime(match.scheduledAt.time) : "-"}</TableCell>
+											<TableCell className="font-mono text-sm">{ISOTime.formatTime(match.scheduledAt)}</TableCell>
 											<TableCell className="text-center">
 												<div className="space-y-1">
 													<Badge variant="outline" className="text-xs">

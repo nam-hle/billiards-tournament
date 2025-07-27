@@ -6,7 +6,7 @@ import { MatchRepository } from "@/repositories/match.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 import {
 	Match,
-	DateTime,
+	ISOTime,
 	type Player,
 	CompletedMatch,
 	ScheduledMatch,
@@ -142,7 +142,7 @@ export class PlayerRepository extends BaseRepository {
 			completedMatches.push(...matches.filter(CompletedMatch.isInstance).filter((match) => Match.hasPlayer(match, playerId)));
 		}
 
-		const comparator = DateTime.createComparator(order);
+		const comparator = ISOTime.createComparator(order);
 
 		const sortedCompletedMatches = completedMatches.sort((matchA, matchB) => comparator(matchA.scheduledAt, matchB.scheduledAt));
 

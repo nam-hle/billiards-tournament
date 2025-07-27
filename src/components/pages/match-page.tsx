@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Zap, Clock, MapPin, Trophy, History, Percent, Calendar } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
@@ -11,14 +11,14 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { CountdownTimer } from "@/components/countdown-timer";
 
 import { cn } from "@/utils/cn";
 import { Links } from "@/utils/links";
-import { formatDate, formatTime } from "@/utils/date-time";
 import { toLabel, formatRatio, getAbbrName, getStatusColor } from "@/utils/strings";
 import {
 	Match,
-	DateTime,
+	ISOTime,
 	type Player,
 	ScheduledMatch,
 	CompletedMatch,
@@ -27,57 +27,6 @@ import {
 	DefinedPlayersMatch,
 	type CompletedMatchWithTournament
 } from "@/interfaces";
-
-function CountdownTimer({ targetDate }: { targetDate: DateTime }) {
-	const [timeLeft, setTimeLeft] = useState({
-		days: 0,
-		hours: 0,
-		minutes: 0,
-		seconds: 0
-	});
-
-	useEffect(() => {
-		const timer = setInterval(() => {
-			const now = new Date().getTime();
-			const target = DateTime.toDate(targetDate).getTime();
-			const difference = target - now;
-
-			if (difference > 0) {
-				setTimeLeft({
-					days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-					seconds: Math.floor((difference % (1000 * 60)) / 1000),
-					minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
-					hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-				});
-			} else {
-				setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-			}
-		}, 1000);
-
-		return () => clearInterval(timer);
-	}, [targetDate]);
-
-	return (
-		<div className="grid grid-cols-4 gap-4 text-center">
-			<div className="rounded-lg bg-primary/10 p-3">
-				<div className="text-2xl font-bold text-primary">{timeLeft.days}</div>
-				<div className="text-xs text-muted-foreground">Days</div>
-			</div>
-			<div className="rounded-lg bg-primary/10 p-3">
-				<div className="text-2xl font-bold text-primary">{timeLeft.hours}</div>
-				<div className="text-xs text-muted-foreground">Hours</div>
-			</div>
-			<div className="rounded-lg bg-primary/10 p-3">
-				<div className="text-2xl font-bold text-primary">{timeLeft.minutes}</div>
-				<div className="text-xs text-muted-foreground">Minutes</div>
-			</div>
-			<div className="rounded-lg bg-primary/10 p-3">
-				<div className="text-2xl font-bold text-primary">{timeLeft.seconds}</div>
-				<div className="text-xs text-muted-foreground">Seconds</div>
-			</div>
-		</div>
-	);
-}
 
 function MatchResult({ match }: { match: MatchDetails }) {
 	if (!CompletedMatch.isInstance(match) || !match.player1 || !match.player2) {
@@ -274,7 +223,7 @@ export function HeadToHeadHistory({
 							</div>
 							<div className="text-sm text-muted-foreground">
 								{CompletedMatch.getWinnerId(lastMatch) === player1.id ? player1.name : player2.name} won •{" "}
-								{formatDate(lastMatch.scheduledAt.date, { weekday: undefined })}
+								{ISOTime.formatDate(lastMatch.scheduledAt, { weekday: undefined })}
 							</div>
 						</div>
 					</div>
@@ -294,7 +243,7 @@ export function HeadToHeadHistory({
 										<Badge className="mb-1" variant="outline">
 											{`${match.score1}-${match.score2}`}
 										</Badge>
-										<div className="text-xs text-muted-foreground">{formatDate(match.scheduledAt.date, { weekday: undefined })}</div>
+										<div className="text-xs text-muted-foreground">{ISOTime.formatDate(match.scheduledAt, { weekday: undefined })}</div>
 									</div>
 								</div>
 							))}
@@ -326,7 +275,7 @@ function RecentForm({ player }: { player: PlayerStat }) {
 					<TableBody>
 						{player.recentMatches.slice(0, 5).map((match, index) => (
 							<TableRow key={index}>
-								<TableCell className="font-mono text-sm">{formatDate(match.scheduledAt.date, { weekday: undefined })}</TableCell>
+								<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { weekday: undefined })}</TableCell>
 								<TableCell className="font-medium">{DefinedPlayersMatch.getOpponentName(match, player.id)}</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="font-mono">
@@ -356,9 +305,6 @@ namespace MatchDetailsPage {
 }
 
 export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
-	const date = ScheduledMatch.isInstance(match) ? formatDate(match.scheduledAt.date) : undefined;
-	const time = ScheduledMatch.isInstance(match) ? formatTime(match.scheduledAt.time) : undefined;
-
 	const isPending = !CompletedMatch.isInstance(match);
 
 	return (
@@ -382,11 +328,11 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 						<div className="flex justify-center gap-8 text-sm text-muted-foreground">
 							<div className="flex items-center gap-1">
 								<Calendar className="h-4 w-4" />
-								{date ?? "Undetermined"}
+								{ISOTime.formatDate(match.scheduledAt)}
 							</div>
 							<div className="flex items-center gap-1">
 								<Clock className="h-4 w-4" />
-								{time ?? "Undetermined"}
+								{ISOTime.formatTime(match.scheduledAt)}
 							</div>
 							<div className="flex items-center gap-1">
 								<MapPin className="h-4 w-4" />
@@ -409,7 +355,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<CountdownTimer targetDate={match.scheduledAt} />
+						<CountdownTimer targetTime={match.scheduledAt} />
 					</CardContent>
 				</Card>
 			)}

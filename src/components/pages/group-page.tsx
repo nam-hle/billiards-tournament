@@ -14,7 +14,6 @@ import { PlayerDisplay } from "@/components/player-display";
 import { PageBreadcrumb } from "@/components/page-breadcrumb";
 
 import { Links } from "@/utils/links";
-import { formatDateTime } from "@/utils/date-time";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
 import {
 	Match,
@@ -47,7 +46,7 @@ export function GroupPage(props: {
 					Links.Tournaments.get(),
 					Links.Tournaments.Year.get(year, tournament.name),
 					Links.Tournaments.Year.Groups.get(year),
-					Links.Tournaments.Year.Groups.Group.get(year, groupId, group.name)
+					Links.Tournaments.Year.Groups.Group.get(year, groupId)
 				]}
 			/>
 
@@ -92,7 +91,7 @@ export function GroupPage(props: {
 								<TableRow
 									key={standing.playerId}
 									className={clsx({
-										"bg-blue-100 transition-colors hover:bg-blue-200": advancedPlayerIds.includes(standing.playerId)
+										"bg-secondary/95 transition-colors": advancedPlayerIds.includes(standing.playerId)
 									})}>
 									<TableCell className="font-medium">
 										<div className="flex items-center gap-2">
@@ -179,7 +178,18 @@ export function GroupPage(props: {
 										className="cursor-pointer hover:bg-muted"
 										onClick={() => router.push(Links.Matches.Match.get(match.id).href)}>
 										<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
-										<TableCell className="font-mono text-sm">{ScheduledMatch.isInstance(match) ? formatDateTime(match.scheduledAt) : "-"}</TableCell>
+										<TableCell className="font-mono text-sm">
+											{ScheduledMatch.isInstance(match)
+												? new Date(match.scheduledAt).toLocaleDateString("en-US", {
+														hour12: false,
+														day: "2-digit",
+														hour: "2-digit",
+														month: "2-digit",
+														weekday: "short",
+														minute: "2-digit"
+													})
+												: "TBD"}
+										</TableCell>
 										<TableCell>
 											<PlayerDisplay
 												showAvatar={false}

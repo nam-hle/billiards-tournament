@@ -1,8 +1,8 @@
 import Chance from "chance";
 
 import { Elo } from "@/utils/elo";
+import { type ISOTime } from "@/interfaces/iso-time.interface";
 import { type PlayerStat } from "@/interfaces/player.interface";
-import { type DateTime } from "@/interfaces/data-time.interface";
 import { type Tournament } from "@/interfaces/tournament.interface";
 import { CompletedMatch } from "@/interfaces/completed-match.interface";
 import { ScheduledMatch } from "@/interfaces/scheduled-match.interface";
@@ -27,7 +27,7 @@ export interface BaseMatch {
 	id: string;
 
 	type: string;
-	scheduledAt?: DateTime;
+	scheduledAt?: ISOTime;
 
 	score1?: number;
 	score2?: number;

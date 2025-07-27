@@ -13,9 +13,8 @@ import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@
 import { PageBreadcrumb } from "@/components/page-breadcrumb";
 
 import { Links } from "@/utils/links";
-import { formatDate } from "@/utils/date-time";
 import { getStatusColor } from "@/utils/strings";
-import { type TournamentOverview } from "@/interfaces";
+import { ISOTime, type TournamentOverview } from "@/interfaces";
 
 export namespace TournamentsPage {
 	export interface Props {
@@ -97,7 +96,7 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 									<div className="flex items-center gap-4 text-sm text-gray-600">
 										<div className="flex items-center gap-1">
 											<Calendar className="h-4 w-4" />
-											<span>{formatDate(tournament.startDate)}</span>
+											<span>{ISOTime.formatDate(tournament.startDate)}</span>
 										</div>
 										<div className="flex items-center gap-1">
 											<Users className="h-4 w-4" />

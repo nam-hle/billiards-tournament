@@ -10,7 +10,7 @@ import { TournamentRepository } from "@/repositories/tournament.repository";
 import {
 	Match,
 	type Group,
-	type DateTime,
+	type ISOTime,
 	GroupStanding,
 	CompletedMatch,
 	type GroupMatch,
@@ -202,7 +202,7 @@ export class GroupRepository extends BaseRepository {
 					player1Rating: eloRatings[match.player1Id] ?? Elo.DEFAULT_RATING
 				});
 
-				return { ...match, score1, score2, scheduledAt: {} as DateTime };
+				return { ...match, score1, score2, scheduledAt: "" as ISOTime };
 			});
 
 			const allMatches = [...completedMatches, ...simulatedMatches];

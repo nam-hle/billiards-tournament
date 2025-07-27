@@ -13,8 +13,7 @@ import { PageBreadcrumb } from "@/components/page-breadcrumb";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
-import { formatDate } from "@/utils/date-time";
-import { Match, CompletedMatch, type PlayerStat, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, type PlayerStat, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
 
 function RecentMatches({ matches, playerId }: { playerId: string; matches: CompletedMatch[] }) {
 	const router = useRouter();
@@ -42,7 +41,7 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 						{matches.map((match) => (
 							<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(Links.Matches.Match.get(match.id).href)}>
 								<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
-								<TableCell className="font-mono text-sm">{formatDate(match.scheduledAt.date)}</TableCell>
+								<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt)}</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="text-xs">
 										{match.name}

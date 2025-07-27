@@ -9,13 +9,9 @@ import { PlayerDisplay } from "@/components/player-display";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { formatDate, formatTime } from "@/utils/date-time";
-import { Match, CompletedMatch, ScheduledMatch, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
 
 function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: KnockoutMatch }) {
-	const date = ScheduledMatch.isInstance(match) ? formatDate(match.scheduledAt.date) : "TBD";
-	const time = ScheduledMatch.isInstance(match) ? formatTime(match.scheduledAt.time) : "TBD";
-
 	return (
 		<Link passHref href={Links.Matches.Match.get(match.id).href}>
 			<Card className={`${isFinal ? "bg-yellow-50 ring-2 ring-yellow-400" : ""} transition-shadow hover:shadow-md`}>
@@ -68,7 +64,7 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 							<div className="flex items-center gap-4 border-t pt-2 text-xs text-muted-foreground">
 								<div className="flex items-center gap-1">
 									<Calendar className="h-3 w-3" />
-									{date} at {time}
+									{ISOTime.formatDateTime(match.scheduledAt)}
 								</div>
 							</div>
 						)}
