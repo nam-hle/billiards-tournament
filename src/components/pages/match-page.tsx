@@ -65,7 +65,7 @@ function CountdownTimer({ targetDate }: { targetDate: string }) {
 	);
 }
 
-export function PlayerCard({ player, isPlayer1 = true }: { player: Player; isPlayer1?: boolean }) {
+export function PlayerCard({ player }: { player: Player; isPlayer1?: boolean }) {
 	return (
 		<Card>
 			<CardContent className="pt-6">

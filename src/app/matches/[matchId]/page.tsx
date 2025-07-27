@@ -230,7 +230,7 @@ class MatchDetailsRepository {
 	}
 }
 
-export default async function ({ params }: Props) {
+export default async function MatchPage({ params }: Props) {
 	const { year, matchId } = await params;
 	const repo = new MatchDetailsRepository();
 	const match = await repo.getMatchDetails(year, matchId);
