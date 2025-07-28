@@ -39,7 +39,7 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 					</TableHeader>
 					<TableBody>
 						{matches.map((match) => (
-							<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(Links.Matches.Match.get(match.id).href)}>
+							<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
 								<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
 								<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt)}</TableCell>
 								<TableCell className="text-center">

@@ -114,10 +114,7 @@ function PlayersTable({ players }: { players: PlayerStat[] }) {
 						{players
 							.sort((a, b) => b.eloRating - a.eloRating)
 							.map((player, index) => (
-								<TableRow
-									key={player.id}
-									className="cursor-pointer"
-									onClick={() => router.push(Links.Players.Player.get(player.id, player.name).href)}>
+								<TableRow key={player.id} className="cursor-pointer" onClick={() => router.push(`/players/${player.id}`)}>
 									<TableCell>
 										<Badge variant={index < 3 ? "default" : "outline"} className="flex h-6 w-6 items-center justify-center p-0 text-xs">
 											{index + 1}

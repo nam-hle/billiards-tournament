@@ -7,13 +7,12 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 
 import { PlayerDisplay } from "@/components/player-display";
 
-import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
 import { Match, ISOTime, CompletedMatch, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
 
 function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: KnockoutMatch }) {
 	return (
-		<Link passHref href={Links.Matches.Match.get(match.id).href}>
+		<Link passHref href={`/matches/${match.id}`}>
 			<Card className={`${isFinal ? "bg-yellow-50 ring-2 ring-yellow-400" : ""} transition-shadow hover:shadow-md`}>
 				<CardContent className="p-4">
 					<div className="space-y-3">

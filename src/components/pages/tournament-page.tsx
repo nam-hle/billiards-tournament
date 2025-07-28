@@ -41,7 +41,7 @@ function NavigationCards({ year }: { year: string }) {
 			color: "bg-purple-100 text-purple-600",
 			description: "Player profiles and statistics"
 		}
-	];
+	] as const;
 
 	return (
 		<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -240,7 +240,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 					<CardContent>
 						<div className="space-y-4">
 							{groups.map((group) => (
-								<Link passHref key={group.id} className="flex" href={Links.Tournaments.Year.Groups.Group.get(year, group.id).href}>
+								<Link passHref key={group.id} className="flex" href={`/tournaments/${year}/groups/${group.id}`}>
 									<div className="flex w-full items-center justify-between rounded-lg border p-3 hover:bg-accent">
 										<div className="flex items-center gap-3">
 											<Badge variant="outline">{group.name}</Badge>
@@ -342,7 +342,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 									<Link
 										key={id}
 										passHref
-										href={Links.Matches.Match.get(match.id).href}
+										href={`/matches/${match.id}`}
 										className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent">
 										<div className="space-y-1">
 											<div className="flex items-center gap-2">
@@ -388,7 +388,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 									<Link
 										passHref
 										key={match.id}
-										href={Links.Matches.Match.get(match.id).href}
+										href={`/matches/${match.id}`}
 										className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent">
 										<div className="w-full space-y-1">
 											<div className="flex items-center gap-2">

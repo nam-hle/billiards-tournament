@@ -25,7 +25,7 @@ const mainPages = [
 		label: "Players",
 		href: "/players"
 	}
-];
+] as const;
 
 const isTournamentPath = match("/tournaments/:year", { end: false });
 

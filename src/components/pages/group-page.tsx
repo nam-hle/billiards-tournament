@@ -173,10 +173,7 @@ export function GroupPage(props: {
 								const status = Match.getStatus(match);
 
 								return (
-									<TableRow
-										key={match.id}
-										className="cursor-pointer hover:bg-muted"
-										onClick={() => router.push(Links.Matches.Match.get(match.id).href)}>
+									<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
 										<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
 										<TableCell className="font-mono text-sm">
 											{ScheduledMatch.isInstance(match)

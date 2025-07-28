@@ -7,7 +7,6 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 
 import { PlayerDisplay } from "@/components/player-display";
 
-import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
 import { Match, ISOTime, type Group, CompletedMatch, DefinedPlayersMatch } from "@/interfaces";
 
@@ -58,10 +57,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 									const winner = winnerId !== undefined ? (match.player1Id === winnerId ? "player1" : "player2") : null;
 
 									return (
-										<TableRow
-											key={match.id}
-											className="cursor-pointer hover:bg-muted"
-											onClick={() => router.push(Links.Matches.Match.get(match.id).href)}>
+										<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
 											<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
 											{date === "upcoming" ? (
 												<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { year: undefined })}</TableCell>

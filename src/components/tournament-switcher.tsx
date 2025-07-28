@@ -1,5 +1,6 @@
 "use client";
 
+import { type Route } from "next";
 import React, { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Check, Users, Trophy, ChevronsUpDown } from "lucide-react";
@@ -36,7 +37,7 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 				return segmentIndex === 2 ? tournament.year : segment;
 			})
 			.join("/");
-		router.push(nextUrl);
+		router.push(nextUrl as Route<string>);
 	};
 
 	const filteredTournaments = tournaments.filter(
