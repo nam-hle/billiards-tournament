@@ -38,11 +38,11 @@ export namespace ISOTime {
 		return new Date(isoTime).toLocaleTimeString("en-US", { hour12: true, hour: "2-digit", minute: "2-digit" });
 	};
 
-	export const formatDateTime = (isoTime: ISOTime | undefined, options?: { fallback?: string }) => {
+	export const formatDateTime = (isoTime: ISOTime | undefined, options?: Intl.DateTimeFormatOptions & { fallback?: string }) => {
 		if (!isoTime) {
 			return options?.fallback || "TBD";
 		}
 
-		return `${formatDate(isoTime)} at ${formatTime(isoTime)}`;
+		return `${formatDate(isoTime, options)} at ${formatTime(isoTime, options)}`;
 	};
 }

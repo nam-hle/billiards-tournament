@@ -65,11 +65,12 @@ export class MatchRepository extends BaseRepository {
 		return completedMatches;
 	}
 
-	async getAll(): Promise<Match[]> {
-		const matches: Match[] = [];
+	async getAll(): Promise<(Match & { tournament: Tournament })[]> {
+		const matches: (Match & { tournament: Tournament })[] = [];
 
 		for (const tournament of await new TournamentRepository().getAll()) {
-			matches.push(...(await this.getAllByYear({ year: tournament.year })));
+			const tournamentMatches = await this.getAllByYear({ year: tournament.year });
+			matches.push(...tournamentMatches.map((match) => ({ ...match, tournament })));
 		}
 
 		return matches;

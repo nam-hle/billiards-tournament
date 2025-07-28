@@ -25,6 +25,11 @@ const mainPages = [
 		icon: Users,
 		label: "Players",
 		href: "/players"
+	},
+	{
+		icon: Menu,
+		label: "Matches",
+		href: "/matches"
 	}
 ] as const;
 
@@ -131,7 +136,8 @@ const MainTabs = () => {
 function useMainTabs(): Tab[] {
 	return [
 		{ label: "Tournaments", ...createHrefAndMatcher("/tournaments") },
-		{ label: "Players", ...createHrefAndMatcher("/players") }
+		{ label: "Players", ...createHrefAndMatcher("/players") },
+		{ label: "Matches", ...createHrefAndMatcher("/matches") }
 	] as const;
 
 	function createHrefAndMatcher(href: string) {

@@ -30,8 +30,9 @@ export function getAbbrName(name: string) {
 export function getStatusColor(status: string): string {
 	switch (status) {
 		case "upcoming":
-		case "scheduling":
 			return "bg-orange-100 text-orange-800 hover:bg-orange-300 hover:text-orange-900";
+		case "scheduling":
+			return "bg-pink-100 text-pink-800 hover:bg-pink-300 hover:text-pink-900";
 		case "active":
 		case "ongoing":
 		case "in-progress":
