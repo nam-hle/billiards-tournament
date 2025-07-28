@@ -29,7 +29,6 @@ const mainPages = [
 ] as const;
 
 export const NavigationBar: React.FC<{ tournaments: TournamentOverview[] }> = ({ tournaments }) => {
-	const [isOpen, setIsOpen] = useState(false);
 	const pathname = usePathname();
 
 	const inSpecificTournament = match("/tournaments/:year", { end: false })(pathname);
@@ -41,38 +40,7 @@ export const NavigationBar: React.FC<{ tournaments: TournamentOverview[] }> = ({
 
 				<MainTabs />
 
-				<Sheet open={isOpen} onOpenChange={setIsOpen}>
-					<SheetTrigger asChild>
-						<Button size="icon" variant="ghost" className="ml-auto md:hidden">
-							<Menu className="h-4 w-4" />
-							<span className="sr-only">Toggle navigation menu</span>
-						</Button>
-					</SheetTrigger>
-					<SheetContent side="left" className="w-[300px] sm:w-[400px]">
-						<div className="flex flex-col space-y-4">
-							<div className="flex items-center space-x-2 border-b pb-4">
-								<Trophy className="h-6 w-6 text-primary" />
-								<span className="text-lg font-semibold">TournamentPro</span>
-							</div>
-							<nav className="flex flex-col space-y-2">
-								{mainPages.map((item) => {
-									const Icon = item.icon;
-
-									return (
-										<Link
-											key={item.href}
-											href={item.href}
-											onClick={() => setIsOpen(false)}
-											className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-											<Icon className="h-4 w-4" />
-											<span>{item.label}</span>
-										</Link>
-									);
-								})}
-							</nav>
-						</div>
-					</SheetContent>
-				</Sheet>
+				<Sidebar />
 			</div>
 
 			{inSpecificTournament && (
@@ -84,6 +52,45 @@ export const NavigationBar: React.FC<{ tournaments: TournamentOverview[] }> = ({
 				</div>
 			)}
 		</header>
+	);
+};
+
+const Sidebar = () => {
+	const [isOpen, setIsOpen] = useState(false);
+
+	return (
+		<Sheet open={isOpen} onOpenChange={setIsOpen}>
+			<SheetTrigger asChild>
+				<Button size="icon" variant="ghost" className="ml-auto md:hidden">
+					<Menu className="h-4 w-4" />
+					<span className="sr-only">Toggle navigation menu</span>
+				</Button>
+			</SheetTrigger>
+			<SheetContent side="left" className="w-[300px] sm:w-[400px]">
+				<div className="flex flex-col space-y-4">
+					<div className="flex items-center space-x-2 border-b pb-4">
+						<Trophy className="h-6 w-6 text-primary" />
+						<span className="text-lg font-semibold">TournamentPro</span>
+					</div>
+					<nav className="flex flex-col space-y-2">
+						{mainPages.map((item) => {
+							const Icon = item.icon;
+
+							return (
+								<Link
+									key={item.href}
+									href={item.href}
+									onClick={() => setIsOpen(false)}
+									className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+									<Icon className="h-4 w-4" />
+									<span>{item.label}</span>
+								</Link>
+							);
+						})}
+					</nav>
+				</div>
+			</SheetContent>
+		</Sheet>
 	);
 };
 
@@ -114,7 +121,11 @@ function useTournamentTabs(): Tab[] {
 const MainTabs = () => {
 	const tabs = useMainTabs();
 
-	return <Tabs tabs={tabs} />;
+	return (
+		<nav className="hidden items-center space-x-4 md:flex">
+			<Tabs tabs={tabs} />
+		</nav>
+	);
 };
 
 function useMainTabs(): Tab[] {
