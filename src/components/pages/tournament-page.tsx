@@ -393,6 +393,9 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 										<div className="w-full space-y-1">
 											<div className="flex items-center gap-2">
 												<Badge variant="outline" className="text-xs">
+													{Match.formatId(match)}
+												</Badge>
+												<Badge variant="outline" className="text-xs">
 													{match.name}
 												</Badge>
 												<span className="text-xs text-muted-foreground">{ISOTime.formatDateTime(match.scheduledAt)}</span>

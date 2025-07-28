@@ -10,33 +10,13 @@ import { Card, CardContent } from "@/components/shadcn/card";
 
 import { useHomePage } from "@/hooks";
 
-interface Tab<T extends string> {
+export interface Tab {
 	label: string;
-	href: Route<T>;
+	href: Route<string>;
 	match: (path: string) => boolean;
 }
 
-function useTabs(): Tab<string>[] {
-	const pathname = usePathname();
-
-	if (/^\/tournaments\/\d+($|\/)/.test(pathname)) {
-		const basePath = pathname.split("/").slice(0, 3).join("/");
-
-		return [
-			// TODO: Reduce duplications
-			{ label: "Overview", href: basePath as Route<string>, match: (path) => path === basePath },
-			{ label: "Players", href: `${basePath}/players` as Route<string>, match: (path) => path.startsWith(`${basePath}/players`) },
-			{ label: "Schedule", href: `${basePath}/schedule` as Route<string>, match: (path) => path.startsWith(`${basePath}/schedule`) },
-			{ label: "Groups", href: `${basePath}/groups` as Route<string>, match: (path) => path.startsWith(`${basePath}/groups`) },
-			{ label: "Knockout", href: `${basePath}/knockout` as Route<string>, match: (path) => path.startsWith(`${basePath}/knockout`) }
-		] as const;
-	}
-
-	return [];
-}
-
-export const Tabs = () => {
-	const tabs = useTabs();
+export const Tabs: React.FC<{ tabs: Tab[] }> = ({ tabs }) => {
 	const isHomePage = useHomePage();
 	const pathname = usePathname();
 
