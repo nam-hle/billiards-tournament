@@ -42,7 +42,7 @@ export function TournamentPlayersPageClient(props: TournamentPlayersPageClient.P
 
 			return matchesSearch && matchesGroup && matchesStatus;
 		})
-		.sort((a, b) => b.elo - a.elo);
+		.sort((a, b) => b.eloRating - a.eloRating);
 
 	const totalPlayers = players.length;
 	const activePlayers = players.filter((p) => p.status === "active").length;

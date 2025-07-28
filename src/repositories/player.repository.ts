@@ -53,13 +53,14 @@ export class PlayerRepository extends BaseRepository {
 
 		const wins = completedMatches.filter((match) => CompletedMatch.getWinnerId(match) === id).length;
 		const losses = completedMatches.length - wins;
+		const { eloRating } = await this.getEloRating(player.id);
 
 		return {
 			...player,
 			wins,
 			group,
 			losses,
-			elo: await this.getEloRating(player.id),
+			eloRating,
 
 			status: "active", // TODO: Determine status based on matches
 			playedMatches: completedMatches.length,
@@ -108,22 +109,23 @@ export class PlayerRepository extends BaseRepository {
 		const semiFinals = achievements.filter((achievement) => achievement.type === "semi-finalist").length;
 		const quarterFinals = achievements.filter((achievement) => achievement.type === "quarter-finalist").length;
 		const runnerUps = achievements.filter((achievement) => achievement.type === "runner-up").length;
-		const bestRanking = championships > 0 ? 1 : runnerUps > 0 ? 2 : semiFinals > 0 ? 3 : quarterFinals > 0 ? 5 : -1;
+		const { rank, eloRating } = await this.getEloRating(player.id);
 
 		return {
 			...player,
+			rank,
 			maxStreak,
 			totalWins,
 			runnerUps,
+			eloRating,
 			semiFinals,
 			totalLosses,
-			bestRanking,
 			championships,
 			quarterFinals,
 
 			totalTournaments: achievements.length,
 			totalMatches: completedMatches.length,
-			elo: await this.getEloRating(playerId),
+
 			recentMatches: completedMatches.slice(-5),
 			overallWinRate: totalWins / completedMatches.length,
 			achievements: await this.getTournamentResults({ playerId }),
@@ -167,10 +169,17 @@ export class PlayerRepository extends BaseRepository {
 		return results;
 	}
 
-	async getEloRating(playerId: string): Promise<number> {
-		const ratings = await this.getEloRatings();
+	async getEloRating(playerId: string): Promise<{ rank: number; eloRating: number }> {
+		const eloRatings = await this.getEloRatings();
 
-		return ratings[playerId] ?? Elo.DEFAULT_RATING;
+		const eloRating = eloRatings[playerId] ?? Elo.DEFAULT_RATING;
+
+		const rank =
+			Object.values(eloRatings)
+				.sort((a, b) => (b ?? Elo.DEFAULT_RATING) - (a ?? Elo.DEFAULT_RATING))
+				.indexOf(eloRating) + 1;
+
+		return { rank, eloRating };
 	}
 
 	async getEloRatings(): Promise<Record<string, number | undefined>> {

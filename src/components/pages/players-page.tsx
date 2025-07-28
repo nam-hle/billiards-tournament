@@ -29,7 +29,9 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 	// const [sortBy, setSortBy] = useState("points");
 
 	// Filter and sort players
-	const filteredPlayers = players.filter((player) => player.name.toLowerCase().includes(searchTerm.toLowerCase())).sort((a, b) => b.elo - a.elo);
+	const filteredPlayers = players
+		.filter((player) => player.name.toLowerCase().includes(searchTerm.toLowerCase()))
+		.sort((a, b) => b.eloRating - a.eloRating);
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
@@ -110,7 +112,7 @@ function PlayersTable({ players }: { players: PlayerStat[] }) {
 					</TableHeader>
 					<TableBody>
 						{players
-							.sort((a, b) => b.elo - a.elo)
+							.sort((a, b) => b.eloRating - a.eloRating)
 							.map((player, index) => (
 								<TableRow
 									key={player.id}
@@ -136,7 +138,7 @@ function PlayersTable({ players }: { players: PlayerStat[] }) {
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">{formatRatio(player.overallWinRate)}</TableCell>
-									<TableCell className="text-center font-bold">{player.elo.toFixed(0)}</TableCell>
+									<TableCell className="text-center font-bold">{player.eloRating.toFixed(0)}</TableCell>
 								</TableRow>
 							))}
 					</TableBody>

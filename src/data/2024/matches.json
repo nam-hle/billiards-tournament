@@ -7,7 +7,7 @@
 			"groupId": "A",
 			"player1Id": "tmdo",
 			"player2Id": "hqtran",
-			"scheduledAt": "2024-08-10T05:00:00.000Z",
+			"scheduledAt": "2024-08-10T02:30:00.000Z",
 			"score1": 2,
 			"score2": 5
 		},
@@ -17,7 +17,7 @@
 			"groupId": "A",
 			"player1Id": "tmdo",
 			"player2Id": "lvluu",
-			"scheduledAt": "2024-08-14T05:45:00.000Z",
+			"scheduledAt": "2024-08-14T05:15:00.000Z",
 			"score1": 5,
 			"score2": 4
 		},
@@ -27,7 +27,7 @@
 			"groupId": "A",
 			"player1Id": "tmdo",
 			"player2Id": "hnnguyen",
-			"scheduledAt": "2024-08-13T06:30:00.000Z",
+			"scheduledAt": "2024-08-13T05:15:00.000Z",
 			"score1": 5,
 			"score2": 2
 		},
@@ -37,7 +37,7 @@
 			"groupId": "A",
 			"player1Id": "tmdo",
 			"player2Id": "bvqhuynh",
-			"scheduledAt": "2024-08-10T07:15:00.000Z",
+			"scheduledAt": "2024-08-10T01:30:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -47,7 +47,7 @@
 			"groupId": "A",
 			"player1Id": "hqtran",
 			"player2Id": "lvluu",
-			"scheduledAt": "2024-08-10T08:00:00.000Z",
+			"scheduledAt": "2024-08-10T01:30:00.000Z",
 			"score1": 3,
 			"score2": 5
 		},
@@ -57,7 +57,7 @@
 			"groupId": "A",
 			"player1Id": "hqtran",
 			"player2Id": "hnnguyen",
-			"scheduledAt": "2024-08-11T08:45:00.000Z",
+			"scheduledAt": "2024-08-11T03:45:00.000Z",
 			"score1": 5,
 			"score2": 1
 		},
@@ -67,7 +67,7 @@
 			"groupId": "A",
 			"player1Id": "hqtran",
 			"player2Id": "bvqhuynh",
-			"scheduledAt": "2024-08-11T09:30:00.000Z",
+			"scheduledAt": "2024-08-11T02:30:00.000Z",
 			"score1": 3,
 			"score2": 5
 		},
@@ -77,7 +77,7 @@
 			"groupId": "A",
 			"player1Id": "lvluu",
 			"player2Id": "hnnguyen",
-			"scheduledAt": "2024-08-11T10:15:00.000Z",
+			"scheduledAt": "2024-08-11T02:30:00.000Z",
 			"score1": 2,
 			"score2": 5
 		},
@@ -87,7 +87,7 @@
 			"groupId": "A",
 			"player1Id": "lvluu",
 			"player2Id": "bvqhuynh",
-			"scheduledAt": "2024-08-11T11:00:00.000Z",
+			"scheduledAt": "2024-08-11T01:30:00.000Z",
 			"score1": 5,
 			"score2": 3
 		},
@@ -97,7 +97,7 @@
 			"groupId": "A",
 			"player1Id": "hnnguyen",
 			"player2Id": "bvqhuynh",
-			"scheduledAt": "2024-08-13T11:45:00.000Z",
+			"scheduledAt": "2024-08-13T01:30:00.000Z",
 			"score1": 5,
 			"score2": 3
 		},
@@ -107,7 +107,7 @@
 			"groupId": "B",
 			"player1Id": "tttran",
 			"player2Id": "dxnguyen",
-			"scheduledAt": "2024-08-10T12:30:00.000Z",
+			"scheduledAt": "2024-08-10T01:30:00.000Z",
 			"score1": 5,
 			"score2": 1
 		},
@@ -117,7 +117,7 @@
 			"groupId": "B",
 			"player1Id": "tttran",
 			"player2Id": "ewilton",
-			"scheduledAt": "2024-08-13T13:15:00.000Z",
+			"scheduledAt": "2024-08-13T05:30:00.000Z",
 			"score1": 5,
 			"score2": 4
 		},
@@ -127,7 +127,7 @@
 			"groupId": "B",
 			"player1Id": "tttran",
 			"player2Id": "benvphan",
-			"scheduledAt": "2024-08-10T14:00:00.000Z",
+			"scheduledAt": "2024-08-10T02:30:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -137,7 +137,7 @@
 			"groupId": "B",
 			"player1Id": "tttran",
 			"player2Id": "mbnguyen",
-			"scheduledAt": "2024-08-18T14:45:00.000Z",
+			"scheduledAt": "2024-08-18T01:30:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -147,7 +147,7 @@
 			"groupId": "B",
 			"player1Id": "dxnguyen",
 			"player2Id": "ewilton",
-			"scheduledAt": "2024-08-21T15:30:00.000Z",
+			"scheduledAt": "2024-08-15T05:15:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -157,7 +157,7 @@
 			"groupId": "B",
 			"player1Id": "dxnguyen",
 			"player2Id": "benvphan",
-			"scheduledAt": "2024-08-21T16:15:00.000Z",
+			"scheduledAt": "2024-08-11T01:30:00.000Z",
 			"score1": 5,
 			"score2": 2
 		},
@@ -167,7 +167,7 @@
 			"groupId": "B",
 			"player1Id": "dxnguyen",
 			"player2Id": "mbnguyen",
-			"scheduledAt": "2024-08-21T17:00:00.000Z",
+			"scheduledAt": "2024-08-18T02:30:00.000Z",
 			"score1": 5,
 			"score2": 1
 		},
@@ -177,7 +177,7 @@
 			"groupId": "B",
 			"player1Id": "ewilton",
 			"player2Id": "benvphan",
-			"scheduledAt": "2024-08-21T17:45:00.000Z",
+			"scheduledAt": "2024-08-19T05:15:00.000Z",
 			"score1": 5,
 			"score2": 4
 		},
@@ -187,7 +187,7 @@
 			"groupId": "B",
 			"player1Id": "ewilton",
 			"player2Id": "mbnguyen",
-			"scheduledAt": "2024-08-11T18:30:00.000Z",
+			"scheduledAt": "2024-08-12T05:00:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -197,7 +197,7 @@
 			"groupId": "B",
 			"player1Id": "benvphan",
 			"player2Id": "mbnguyen",
-			"scheduledAt": "2024-08-12T19:15:00.000Z",
+			"scheduledAt": "2024-08-13T06:00:00.000Z",
 			"score1": 5,
 			"score2": 4
 		},
@@ -207,7 +207,7 @@
 			"groupId": "C",
 			"player1Id": "bvphan",
 			"player2Id": "hqnguyen",
-			"scheduledAt": "2024-08-21T20:00:00.000Z",
+			"scheduledAt": "2024-08-22T05:15:00.000Z",
 			"score1": 5,
 			"score2": 2
 		},
@@ -217,7 +217,7 @@
 			"groupId": "C",
 			"player1Id": "bvphan",
 			"player2Id": "thnguyen",
-			"scheduledAt": "2024-08-20T20:45:00.000Z",
+			"scheduledAt": "2024-08-21T05:00:00.000Z",
 			"score1": 5,
 			"score2": 1
 		},
@@ -227,7 +227,7 @@
 			"groupId": "C",
 			"player1Id": "bvphan",
 			"player2Id": "atvo",
-			"scheduledAt": "2024-08-19T21:30:00.000Z",
+			"scheduledAt": "2024-08-20T05:15:00.000Z",
 			"score1": 5,
 			"score2": 4
 		},
@@ -237,7 +237,7 @@
 			"groupId": "C",
 			"player1Id": "bvphan",
 			"player2Id": "lhpham",
-			"scheduledAt": "2024-08-18T22:15:00.000Z",
+			"scheduledAt": "2024-08-10T05:30:00.000Z",
 			"score1": 5,
 			"score2": 3
 		},
@@ -247,7 +247,7 @@
 			"groupId": "C",
 			"player1Id": "hqnguyen",
 			"player2Id": "thnguyen",
-			"scheduledAt": "2024-08-09T23:00:00.000Z",
+			"scheduledAt": "2024-08-10T02:30:00.000Z",
 			"score1": 5,
 			"score2": 1
 		},
@@ -257,7 +257,7 @@
 			"groupId": "C",
 			"player1Id": "hqnguyen",
 			"player2Id": "atvo",
-			"scheduledAt": "2024-08-09T23:45:00.000Z",
+			"scheduledAt": "2024-08-10T01:30:00.000Z",
 			"score1": 5,
 			"score2": 1
 		},
@@ -267,7 +267,7 @@
 			"groupId": "C",
 			"player1Id": "hqnguyen",
 			"player2Id": "lhpham",
-			"scheduledAt": "2024-08-10T00:30:00.000Z",
+			"scheduledAt": "2024-08-10T03:30:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -277,7 +277,7 @@
 			"groupId": "C",
 			"player1Id": "thnguyen",
 			"player2Id": "atvo",
-			"scheduledAt": "2024-08-10T01:15:00.000Z",
+			"scheduledAt": "2024-08-12T05:00:00.000Z",
 			"score1": 5,
 			"score2": 3
 		},
@@ -287,7 +287,7 @@
 			"groupId": "C",
 			"player1Id": "thnguyen",
 			"player2Id": "lhpham",
-			"scheduledAt": "2024-08-10T02:00:00.000Z",
+			"scheduledAt": "2024-08-10T01:30:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -297,7 +297,7 @@
 			"groupId": "C",
 			"player1Id": "atvo",
 			"player2Id": "lhpham",
-			"scheduledAt": "2024-08-10T02:45:00.000Z",
+			"scheduledAt": "2024-08-10T02:30:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -307,7 +307,7 @@
 			"groupId": "D",
 			"player1Id": "nhle",
 			"player2Id": "ltnguyen",
-			"scheduledAt": "2024-08-11T03:30:00.000Z",
+			"scheduledAt": "2024-08-13T05:15:00.000Z",
 			"score1": 5,
 			"score2": 2
 		},
@@ -317,7 +317,7 @@
 			"groupId": "D",
 			"player1Id": "nhle",
 			"player2Id": "tuanttran",
-			"scheduledAt": "2024-08-14T04:15:00.000Z",
+			"scheduledAt": "2024-08-14T05:15:00.000Z",
 			"score1": 5,
 			"score2": 4
 		},
@@ -327,7 +327,7 @@
 			"groupId": "D",
 			"player1Id": "nhle",
 			"player2Id": "shvu",
-			"scheduledAt": "2024-08-10T05:00:00.000Z",
+			"scheduledAt": "2024-08-10T02:30:00.000Z",
 			"score1": 5,
 			"score2": 4
 		},
@@ -337,7 +337,7 @@
 			"groupId": "D",
 			"player1Id": "nhle",
 			"player2Id": "dqtrinh",
-			"scheduledAt": "2024-08-13T05:45:00.000Z",
+			"scheduledAt": "2024-08-13T05:15:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -347,7 +347,7 @@
 			"groupId": "D",
 			"player1Id": "ltnguyen",
 			"player2Id": "tuanttran",
-			"scheduledAt": "2024-08-10T06:30:00.000Z",
+			"scheduledAt": "2024-08-10T01:30:00.000Z",
 			"score1": 5,
 			"score2": 1
 		},
@@ -357,7 +357,7 @@
 			"groupId": "D",
 			"player1Id": "ltnguyen",
 			"player2Id": "shvu",
-			"scheduledAt": "2024-08-11T07:15:00.000Z",
+			"scheduledAt": "2024-08-11T01:30:00.000Z",
 			"score1": 5,
 			"score2": 2
 		},
@@ -367,7 +367,7 @@
 			"groupId": "D",
 			"player1Id": "ltnguyen",
 			"player2Id": "dqtrinh",
-			"scheduledAt": "2024-08-13T08:00:00.000Z",
+			"scheduledAt": "2024-08-13T11:00:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -377,7 +377,7 @@
 			"groupId": "D",
 			"player1Id": "tuanttran",
 			"player2Id": "shvu",
-			"scheduledAt": "2024-08-15T08:45:00.000Z",
+			"scheduledAt": "2024-08-15T05:00:00.000Z",
 			"score1": 5,
 			"score2": 0
 		},
@@ -387,7 +387,7 @@
 			"groupId": "D",
 			"player1Id": "tuanttran",
 			"player2Id": "dqtrinh",
-			"scheduledAt": "2024-08-22T09:30:00.000Z",
+			"scheduledAt": "2024-08-22T01:30:00.000Z",
 			"score1": 2,
 			"score2": 5
 		},
@@ -397,7 +397,7 @@
 			"groupId": "D",
 			"player1Id": "shvu",
 			"player2Id": "dqtrinh",
-			"scheduledAt": "2024-08-21T10:15:00.000Z",
+			"scheduledAt": "2024-08-21T11:15:00.000Z",
 			"score1": 5,
 			"score2": 4
 		},
@@ -440,7 +440,7 @@
 		{
 			"id": "44",
 			"type": "semi-final",
-			"scheduledAt": "2024-08-24T01:30:00.000Z",
+			"scheduledAt": "2024-08-24T03:00:00.000Z",
 			"player1Id": "tmdo",
 			"player2Id": "bvphan",
 			"score1": 6,
@@ -449,7 +449,7 @@
 		{
 			"id": "45",
 			"type": "semi-final",
-			"scheduledAt": "2024-08-24T01:30:00.000Z",
+			"scheduledAt": "2024-08-24T03:00:00.000Z",
 			"player1Id": "tttran",
 			"player2Id": "nhle",
 			"score1": 6,

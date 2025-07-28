@@ -146,7 +146,10 @@ export class MatchRepository extends BaseRepository {
 
 		const prediction =
 			player1 && player2
-				? { player1WinChance: Elo.expectedScore(player1.elo, player2.elo), player2WinChance: Elo.expectedScore(player2.elo, player1.elo) }
+				? {
+						player1WinChance: Elo.expectedScore(player1.eloRating, player2.eloRating),
+						player2WinChance: Elo.expectedScore(player2.eloRating, player1.eloRating)
+					}
 				: undefined;
 
 		const headToHeadMatches = player1 && player2 ? await this.getHeadToHeadMatches({ player1Id: player1.id, player2Id: player2.id }) : [];

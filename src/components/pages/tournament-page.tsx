@@ -169,6 +169,9 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 				</div>
 			</div>
 
+			{/* Tournament Stats */}
+			<TournamentStats overview={overview} />
+
 			{/* Countdown Timer */}
 			{overview.status === "upcoming" && (
 				<Card>
@@ -183,9 +186,6 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 					</CardContent>
 				</Card>
 			)}
-
-			{/* Tournament Stats */}
-			<TournamentStats overview={overview} />
 
 			{/* Tournament Progress */}
 			{overview.status === "ongoing" && (

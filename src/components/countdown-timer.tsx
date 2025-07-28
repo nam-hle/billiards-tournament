@@ -26,19 +26,19 @@ export function CountdownTimer({ targetTime }: { targetTime: ISOTime }) {
 
 	return (
 		<div className="grid grid-cols-4 gap-4 text-center">
-			<div className="rounded-lg bg-primary/10 p-3">
+			<div className="rounded-lg border p-3">
 				<div className="text-2xl font-bold text-primary">{timeLeft.days}</div>
 				<div className="text-xs text-muted-foreground">Days</div>
 			</div>
-			<div className="rounded-lg bg-primary/10 p-3">
+			<div className="rounded-lg border p-3">
 				<div className="text-2xl font-bold text-primary">{timeLeft.hours}</div>
 				<div className="text-xs text-muted-foreground">Hours</div>
 			</div>
-			<div className="rounded-lg bg-primary/10 p-3">
+			<div className="rounded-lg border p-3">
 				<div className="text-2xl font-bold text-primary">{timeLeft.minutes}</div>
 				<div className="text-xs text-muted-foreground">Minutes</div>
 			</div>
-			<div className="rounded-lg bg-primary/10 p-3">
+			<div className="rounded-lg border p-3">
 				<div className="text-2xl font-bold text-primary">{timeLeft.seconds}</div>
 				<div className="text-xs text-muted-foreground">Seconds</div>
 			</div>

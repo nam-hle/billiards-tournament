@@ -9,7 +9,7 @@ export interface Player {
 }
 
 export interface PlayerTournamentStat extends Player {
-	elo: number;
+	eloRating: number;
 
 	group: Group;
 
@@ -21,7 +21,8 @@ export interface PlayerTournamentStat extends Player {
 	status: "active" | "eliminated" | "qualified";
 }
 export interface PlayerStat extends Player {
-	elo: number;
+	rank: number;
+	eloRating: number;
 
 	totalWins: number;
 	totalLosses: number;
@@ -33,7 +34,6 @@ export interface PlayerStat extends Player {
 	maxStreak: number;
 	runnerUps: number;
 	semiFinals: number;
-	bestRanking: number;
 	championships: number;
 	quarterFinals: number;
 	totalTournaments: number;

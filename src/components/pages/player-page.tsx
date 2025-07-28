@@ -133,7 +133,7 @@ export function PlayerPage({ playerStat }: { playerStat: PlayerStat }) {
 				<div className="flex-1">
 					<div className="mb-1 flex items-center gap-3">
 						<h1 className="text-2xl font-bold">{playerStat.name}</h1>
-						<Badge variant="outline">Best Ranking: #{playerStat.bestRanking}</Badge>
+						<Badge variant="outline">#{playerStat.rank}</Badge>
 					</div>
 
 					<div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -157,7 +157,7 @@ export function PlayerPage({ playerStat }: { playerStat: PlayerStat }) {
 										<Gauge className="h-4 w-4 text-blue-600" />
 									</div>
 									<div>
-										<p className="text-2xl font-bold">{isNaN(playerStat.elo) ? "-" : playerStat.elo.toFixed(0)}</p>
+										<p className="text-2xl font-bold">{isNaN(playerStat.eloRating) ? "-" : playerStat.eloRating.toFixed(0)}</p>
 										<p className="text-xs text-muted-foreground">Elo rating</p>
 									</div>
 								</div>
