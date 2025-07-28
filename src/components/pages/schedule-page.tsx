@@ -48,7 +48,6 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 		},
 		[router, searchParams]
 	);
-
 	// Filter matches
 	const filteredMatches = schedule.matches.filter((match) => {
 		const groupMatch = selectedGroupId === "all" || (GroupMatch.isInstance(match) && match.groupId === selectedGroupId);
@@ -72,8 +71,6 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 		return acc;
 	}, {});
 
-	// const unscheduledMatches = filteredMatches.filter((match) => !match.scheduledAt);
-
 	const dates = Object.keys(matchesByDate).sort();
 	const currentDateIndex = dates.indexOf(currentDate);
 
@@ -86,9 +83,9 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 	};
 
 	const todayMatches = matchesByDate[currentDate] || [];
-	const upcomingMatches = schedule.matches.filter((match) => !CompletedMatch.isInstance(match));
-	const completedMatches = schedule.matches.filter((match) => CompletedMatch.isInstance(match));
-	const unscheduledMatches = schedule.matches.filter((match) => !ScheduledMatch.isInstance(match));
+	const upcomingMatches = filteredMatches.filter((match) => !CompletedMatch.isInstance(match));
+	const completedMatches = filteredMatches.filter((match) => CompletedMatch.isInstance(match));
+	const unscheduledMatches = filteredMatches.filter((match) => !ScheduledMatch.isInstance(match));
 
 	return (
 		<div className="container mx-auto space-y-8 py-8">
@@ -150,7 +147,7 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 								<Trophy className="h-4 w-4 text-gray-600" />
 							</div>
 							<div>
-								<p className="text-2xl font-bold">{schedule.matches.length}</p>
+								<p className="text-2xl font-bold">{filteredMatches.length}</p>
 								<p className="text-xs text-muted-foreground">Total Matches</p>
 							</div>
 						</div>
