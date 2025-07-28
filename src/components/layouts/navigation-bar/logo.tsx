@@ -8,8 +8,8 @@ export const Logo = () => {
 	return (
 		<Link href="/">
 			<div data-testid="logo" className="flex items-center">
-				<Image width={24} height={24} src="/logo.svg" alt="Application Logo" />
-				<span className="ml-2 text-xl font-semibold">mgm Billiards Club</span>
+				<Image width={24} height={24} src="/logo.svg" alt="mgm Billiards Club" />
+				<span className="ml-2 text-lg font-semibold md:text-xl">mgm Billiards Club</span>
 			</div>
 		</Link>
 	);

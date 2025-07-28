@@ -62,7 +62,7 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 					variant="ghost"
 					aria-expanded={open}
 					aria-label="Select tournament"
-					className="justify-between bg-background hover:bg-accent/50">
+					className="mr-2 justify-between bg-background px-3 py-2 pb-[0.52rem] hover:bg-[#0e0f1114] hover:dark:bg-[#ffffff1a]">
 					<div className="flex min-w-0 items-center gap-2">
 						<div className="flex min-w-0 flex-col items-start">
 							<span className="truncate text-sm font-medium">{currentTournament.name}</span>
