@@ -160,7 +160,8 @@
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "tttran",
-			"player2Id": "thnguyen"
+			"player2Id": "thnguyen",
+			"scheduledAt": "2025-08-03T01:45:00.000Z"
 		},
 		{
 			"id": "70",
