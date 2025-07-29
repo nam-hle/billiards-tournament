@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useState } from "react";
-import { Users, Search, Trophy, Filter, Calendar } from "lucide-react";
+import { Users, Search, Trophy, Filter, Target, Calendar } from "lucide-react";
 
 import { Input } from "@/components/shadcn/input";
 import { Badge } from "@/components/shadcn/badge";
@@ -105,6 +105,10 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 										<div className="flex items-center gap-1">
 											<Users className="h-4 w-4" />
 											<span>{tournament.totalPlayers}</span>
+										</div>
+										<div className="flex items-center gap-1">
+											<Target className="h-4 w-4" />
+											<span>{tournament.totalMatches}</span>
 										</div>
 									</div>
 								</div>

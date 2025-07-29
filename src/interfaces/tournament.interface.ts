@@ -1,5 +1,5 @@
+import { type Match } from "@/interfaces/match.interface";
 import { type Player } from "@/interfaces/player.interface";
-import { type Match, KnockoutMatch } from "@/interfaces/match.interface";
 import { type Group, type GroupSummary } from "@/interfaces/group.interface";
 import { type CompletedMatch } from "@/interfaces/completed-match.interface";
 import { type ScheduledMatch } from "@/interfaces/scheduled-match.interface";
@@ -18,23 +18,6 @@ export type QuarterFinalSelectionRule = {
 	player2Position: number;
 	targetQuarterFinalMatchOrder: number;
 };
-export namespace QuarterFinalSelectionRule {
-	export function computePlaceholderName(rules: QuarterFinalSelectionRule[], match: Match, player: "1" | "2") {
-		if (!KnockoutMatch.isInstance(match) || match.type !== "quarter-final") {
-			return undefined;
-		}
-
-		const rule = rules.find((r) => r.targetQuarterFinalMatchOrder === match.order);
-
-		if (!rule) {
-			return undefined;
-		}
-
-		const position = player === "1" ? rule.player1Position : rule.player2Position;
-
-		return `Quarter-finalist #${position}`;
-	}
-}
 
 export interface Tournament {
 	id: string;

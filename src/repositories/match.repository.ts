@@ -23,8 +23,8 @@ export class MatchRepository extends BaseRepository {
 					player1Name,
 					player2Name,
 					name: await this.computeMatchName(match, groups),
-					placeholder1: match.placeholder1 ?? (await this.computePlaceholder(params.year, match, 1)),
-					placeholder2: match.placeholder2 ?? (await this.computePlaceholder(params.year, match, 2))
+					placeholder1: await this.computePlaceholder(params.year, match, 1),
+					placeholder2: await this.computePlaceholder(params.year, match, 2)
 				};
 			})
 		);
@@ -33,6 +33,12 @@ export class MatchRepository extends BaseRepository {
 	async computePlaceholder(year: string, match: Match, player: 1 | 2) {
 		if (!KnockoutMatch.isInstance(match)) {
 			return undefined;
+		}
+
+		const configuredPlaceholder = match[`placeholder${player}`];
+
+		if (configuredPlaceholder) {
+			return configuredPlaceholder;
 		}
 
 		if (match.type === "quarter-final") {
