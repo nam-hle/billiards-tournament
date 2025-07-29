@@ -172,7 +172,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 
 			{/* Countdown Timer */}
 			{overview.status === "upcoming" && (
-				<Card>
+				<Card className="space-y-12 border-none py-8">
 					<CardHeader>
 						<CardTitle className="flex items-center justify-center gap-2 text-center">
 							<Zap className="h-5 w-5" />
