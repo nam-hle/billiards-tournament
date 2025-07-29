@@ -4,7 +4,7 @@ import { type Route } from "next";
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { match, compile } from "path-to-regexp";
-import { Menu, Users, Trophy } from "lucide-react";
+import { Menu, Users, Trophy, Target } from "lucide-react";
 
 import { Button } from "@/components/shadcn/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/shadcn/sheet";
@@ -27,7 +27,7 @@ const mainPages = [
 		href: "/players"
 	},
 	{
-		icon: Menu,
+		icon: Target,
 		label: "Matches",
 		href: "/matches"
 	}
@@ -73,10 +73,8 @@ const Sidebar = () => {
 			</SheetTrigger>
 			<SheetContent side="left" className="w-[300px] sm:w-[400px]">
 				<div className="flex flex-col space-y-4">
-					<div className="flex items-center space-x-2 border-b pb-4">
-						<Trophy className="h-6 w-6 text-primary" />
-						<span className="text-lg font-semibold">TournamentPro</span>
-					</div>
+					<Logo />
+
 					<nav className="flex flex-col space-y-2">
 						{mainPages.map((item) => {
 							const Icon = item.icon;
