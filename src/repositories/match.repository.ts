@@ -4,7 +4,7 @@ import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
-import { Match, ISOTime, type Group, GroupMatch, KnockoutMatch, CompletedMatch, ScheduledMatch, type Tournament, type MatchDetails } from "@/interfaces";
+import { Match, ISOTime, type Group, GroupMatch, KnockoutMatch, CompletedMatch, ScheduledMatch, type Tournament, type MatchDetails, DefinedPlayersMatch, type WithDefinedPlayers } from "@/interfaces";
 
 export class MatchRepository extends BaseRepository {
 	async getAllByYear(params: { year: string }): Promise<Match[]> {
@@ -204,10 +204,10 @@ export class MatchRepository extends BaseRepository {
 		return matches.sort(ScheduledMatch.ascendingComparator);
 	}
 
-	async getUpcomingMatchesByPlayer(playerId: string, limit?: number, order: "asc" | "desc" = "asc"): Promise<ScheduledMatch[]> {
+	async getUpcomingMatchesByPlayer(playerId: string, limit?: number, order: "asc" | "desc" = "asc"): Promise<WithDefinedPlayers<ScheduledMatch>[]> {
 		const upcomingMatches = await this.getAllUpcomingMatches();
 
-		const playerMatches = upcomingMatches.filter((match) => Match.hasPlayer(match, playerId));
+		const playerMatches = upcomingMatches.filter((match) => DefinedPlayersMatch.isInstance(match));
 
 		if (limit !== undefined) {
 			return playerMatches.slice(0, limit);

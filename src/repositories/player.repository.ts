@@ -11,7 +11,10 @@ import {
 	CompletedMatch,
 	ScheduledMatch,
 	type PlayerStat,
+	type WithScheduled,
+	DefinedPlayersMatch,
 	type PlayerAchievement,
+	type WithMatchPrediction,
 	type PlayerTournamentStat
 } from "@/interfaces";
 
@@ -190,11 +193,37 @@ export class PlayerRepository extends BaseRepository {
 		return elo.getRatings();
 	}
 
-	async getUpcomingMatches(playerId: string): Promise<ScheduledMatch[]> {
+	async getUpcomingMatches(playerId: string): Promise<WithScheduled<DefinedPlayersMatch>[]> {
 		const matches = await new MatchRepository().getUpcomingMatchesByPlayer(playerId);
 
 		return matches
-			.filter((match) => ScheduledMatch.isInstance(match) && Match.hasPlayer(match, playerId))
+			.filter((match) => ScheduledMatch.isInstance(match) && DefinedPlayersMatch.isInstance(match))
 			.sort(ScheduledMatch.ascendingComparator);
+	}
+
+	async getUpComingMatchesWithPredictions(playerId: string): Promise<WithMatchPrediction<WithScheduled<DefinedPlayersMatch>>[]> {
+		const matches = await new MatchRepository().getUpcomingMatchesByPlayer(playerId);
+		const playerElo = await this.getEloRating(playerId);
+
+		const filteredMatches = matches
+			.filter((match) => ScheduledMatch.isInstance(match) && DefinedPlayersMatch.isInstance(match));
+
+		const matchesWithPredictions = await Promise.all(filteredMatches.map(async (match) => {
+			const opponentId = match.player1Id === playerId ? match.player2Id : match.player1Id;
+			const opponentElo = await this.getEloRating(opponentId);
+
+			const player1WinChance = Elo.expectedScore(playerElo.eloRating, opponentElo.eloRating);
+			const player2WinChance = Elo.expectedScore(opponentElo.eloRating, playerElo.eloRating);
+
+			return {
+				...match,
+				prediction: {
+					player1WinChance,
+					player2WinChance
+				}
+			};
+		}));
+
+		return matchesWithPredictions;
 	}
 }

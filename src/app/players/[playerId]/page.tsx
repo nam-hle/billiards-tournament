@@ -3,7 +3,6 @@ import React from "react";
 import { PlayerPage } from "@/components/pages/player-page";
 
 import { PlayerRepository } from "@/repositories/player.repository";
-import type { WithScheduled, DefinedPlayersMatch } from "@/interfaces";
 
 export async function generateStaticParams() {
 	const players = await new PlayerRepository().getAll();
@@ -19,7 +18,7 @@ export default async function OverallPlayerProfilePage({ params }: Props) {
 	const { playerId } = await params;
 
 	const playerStat = await new PlayerRepository().getStat({ playerId });
-	const upcomingMatches = await new PlayerRepository().getUpcomingMatches(playerId);
+	const upcomingMatches = await new PlayerRepository().getUpComingMatchesWithPredictions(playerId);
 
-	return <PlayerPage playerStat={playerStat} upcomingMatches={upcomingMatches as WithScheduled<DefinedPlayersMatch>[]} />;
+	return <PlayerPage playerStat={playerStat} upcomingMatches={upcomingMatches} />;
 }

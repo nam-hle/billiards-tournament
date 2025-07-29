@@ -13,7 +13,16 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
-import { Match, ISOTime, CompletedMatch, type PlayerStat, type WithScheduled, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
+import {
+	Match,
+	ISOTime,
+	CompletedMatch,
+	type PlayerStat,
+	type WithScheduled,
+	DefinedPlayersMatch,
+	type PlayerAchievement,
+	type WithMatchPrediction
+} from "@/interfaces";
 
 function RecentMatches({ matches, playerId }: { playerId: string; matches: CompletedMatch[] }) {
 	const router = useRouter();
@@ -123,7 +132,13 @@ function PlayerAchievements({ achievements }: { achievements: PlayerAchievement[
 	);
 }
 
-export function PlayerPage({ playerStat, upcomingMatches }: { playerStat: PlayerStat; upcomingMatches: WithScheduled<DefinedPlayersMatch>[] }) {
+export function PlayerPage({
+	playerStat,
+	upcomingMatches
+}: {
+	playerStat: PlayerStat;
+	upcomingMatches: WithMatchPrediction<WithScheduled<DefinedPlayersMatch>>[];
+}) {
 	const router = useRouter();
 
 	return (
@@ -241,31 +256,39 @@ export function PlayerPage({ playerStat, upcomingMatches }: { playerStat: Player
 							<TableHeader>
 								<TableRow>
 									<TableHead>Date</TableHead>
-									<TableHead>Tournament</TableHead>
+									<TableHead>Type</TableHead>
 									<TableHead>Opponent</TableHead>
 									<TableHead>Stage</TableHead>
+									<TableHead>Win Chance %</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{upcomingMatches.map((match) => (
-									<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
-										<TableCell>{ISOTime.formatDate(match.scheduledAt)}</TableCell>
-										<TableCell>{match.name}</TableCell>
-										<TableCell>
-											<PlayerDisplay
-												player={{
-													id: DefinedPlayersMatch.getOpponentId(match, playerStat.id),
-													name: DefinedPlayersMatch.getOpponentName(match, playerStat.id)
-												}}
-											/>
-										</TableCell>
-										<TableCell>
-											<Badge variant="outline" className="text-xs">
-												{match.type}
-											</Badge>
-										</TableCell>
-									</TableRow>
-								))}
+								{upcomingMatches.map((match) => {
+									const opponentId = DefinedPlayersMatch.getOpponentId(match, playerStat.id);
+
+									return (
+										<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
+											<TableCell>{ISOTime.formatDate(match.scheduledAt)}</TableCell>
+											<TableCell>{match.name}</TableCell>
+											<TableCell>
+												<PlayerDisplay
+													player={{
+														id: opponentId,
+														name: DefinedPlayersMatch.getOpponentName(match, playerStat.id)
+													}}
+												/>
+											</TableCell>
+											<TableCell>
+												<Badge variant="outline" className="text-xs">
+													{match.type}
+												</Badge>
+											</TableCell>
+											<TableCell>
+												{formatRatio(match.player1Id === playerStat.id ? match.prediction.player1WinChance : match.prediction.player2WinChance)}
+											</TableCell>
+										</TableRow>
+									);
+								})}
 							</TableBody>
 						</Table>
 					</CardContent>
