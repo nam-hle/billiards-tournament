@@ -18,18 +18,20 @@ export interface GroupSummary extends Group {
 }
 
 export interface GroupStanding {
-	wins: number;
-	losses: number;
-	points: number;
-	played: number;
 	playerId: string;
 	groupName: string;
 	playerName: string;
-	racksWinRate: number;
 	groupPosition: number;
 
-	matchesWins: number;
-	matchesLosses: number;
+	points: number;
+	matchWins: number;
+	matchLosses: number;
+	totalMatches: number;
+
+	rackWins: number;
+	rackLosses: number;
+	racksWinRate: number;
+	racksDifference: number;
 
 	top1Prob: number;
 	top2Prob: number;
@@ -38,8 +40,8 @@ export namespace GroupStanding {
 	export function createComparator(matches: Match[]) {
 		return combineComparators<GroupStanding>(
 			(a, b) => b.points - a.points,
-			(a, b) => b.matchesWins - b.matchesLosses - (a.matchesWins - a.matchesLosses),
-			(a, b) => b.matchesWins - a.matchesWins,
+			(a, b) => b.rackWins - b.rackLosses - (a.rackWins - a.rackLosses),
+			(a, b) => b.rackWins - a.rackWins,
 			(a, b) => {
 				const match = Match.findHeadMatch(matches, a.playerId, b.playerId);
 
@@ -47,11 +49,11 @@ export namespace GroupStanding {
 					return 0;
 				}
 
-				if (CompletedMatch.getWinnerId(match) === a.playerId) {
+				if (CompletedMatch.isWinner(match, a.playerId)) {
 					return -1;
 				}
 
-				if (CompletedMatch.getWinnerId(match) === b.playerId) {
+				if (CompletedMatch.isWinner(match, b.playerId)) {
 					return 1;
 				}
 

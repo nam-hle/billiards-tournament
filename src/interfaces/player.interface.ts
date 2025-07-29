@@ -13,30 +13,31 @@ export interface PlayerTournamentStat extends Player {
 
 	group: Group;
 
-	wins: number;
-	losses: number;
+	matchWins: number;
+	matchLosses: number;
 	playedMatches: number;
 
-	winRate: number;
+	matchWinRate: number;
 	status: "active" | "eliminated" | "qualified";
 }
 export interface PlayerStat extends Player {
 	rank: number;
 	eloRating: number;
 
-	totalWins: number;
-	totalLosses: number;
+	matchWins: number;
+	matchLosses: number;
 	totalMatches: number;
 
 	racksWinRate: number;
-	overallWinRate: number;
+	matchWinRate: number;
+
+	tournaments: number;
 
 	maxStreak: number;
 	runnerUps: number;
 	semiFinals: number;
 	championships: number;
 	quarterFinals: number;
-	totalTournaments: number;
 
 	recentMatches: CompletedMatch[];
 	achievements: PlayerAchievement[];

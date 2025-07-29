@@ -11,7 +11,7 @@ export namespace PageContainer {
 }
 export const PageContainer: React.FC<PageContainer.Props> = ({ items, children }) => {
 	return (
-		<div className="container mx-auto space-y-8 py-4">
+		<div className="container mx-auto space-y-8 py-6">
 			<PageBreadcrumb items={items} />
 			{children}
 		</div>

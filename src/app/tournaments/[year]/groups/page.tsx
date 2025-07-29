@@ -5,10 +5,10 @@ import { Users, Trophy, Calendar, TrendingUp, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/shadcn/badge";
 import { Button } from "@/components/shadcn/button";
 import { Progress } from "@/components/shadcn/progress";
-import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageHeader } from "@/components/layouts/page-header";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
@@ -40,34 +40,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 
 	return (
 		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, tournamentInfo.name), Links.Tournaments.Year.Groups.get(year)]}>
-			{/* Tournament Header */}
-			<div className="space-y-4 text-center">
-				<div className="flex items-center justify-center gap-3">
-					<Trophy className="h-10 w-10 text-primary" />
-					<div>
-						<h1 className="text-3xl font-bold tracking-tight">Tournament Groups</h1>
-						<p className="text-xl text-muted-foreground">{tournamentInfo.name}</p>
-					</div>
-				</div>
-
-				{/* Tournament Stats */}
-				<div className="flex justify-center gap-8 text-sm text-muted-foreground">
-					<div className="flex items-center gap-1">
-						<Users className="h-4 w-4" />
-						{tournamentInfo.totalPlayers} Players
-					</div>
-					<div className="flex items-center gap-1">
-						<Trophy className="h-4 w-4" />
-						{tournamentInfo.totalGroups} Groups
-					</div>
-					<div className="flex items-center gap-1">
-						<Calendar className="h-4 w-4" />
-						{new Date(tournamentInfo.startDate).toLocaleDateString()} - {new Date(tournamentInfo.endDate).toLocaleDateString()}
-					</div>
-				</div>
-			</div>
-
-			<Separator />
+			<PageHeader title="Groups" description="View the current standings and matchups across all tournament groups" />
 
 			{/* Overall Progress */}
 			<Card>

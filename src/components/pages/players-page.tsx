@@ -6,12 +6,12 @@ import { Users, Search } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Input } from "@/components/shadcn/input";
-import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageHeader } from "@/components/layouts/page-header";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
@@ -35,17 +35,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 
 	return (
 		<PageContainer items={[Links.Players.get()]}>
-			{/* Header */}
-			<div className="mb-8">
-				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-					<div>
-						<h1 className="text-3xl font-bold text-gray-900">Players</h1>
-						<p className="text-gray-600"> Browse all billiards players and track their stats, and rankings</p>
-					</div>
-				</div>
-			</div>
-
-			<Separator />
+			<PageHeader title="Players" description="Browse all billiards players and track their stats, and rankings" />
 
 			{/* Filters and Search */}
 			<Card>
@@ -124,15 +114,15 @@ function PlayersTable({ players }: { players: PlayerStat[] }) {
 									<TableCell className="text-center">{player.totalMatches}</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-green-100 text-green-800">
-											{player.totalWins}
+											{player.matchWins}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-red-100 text-red-800">
-											{player.totalLosses}
+											{player.matchLosses}
 										</Badge>
 									</TableCell>
-									<TableCell className="text-center">{formatRatio(player.overallWinRate)}</TableCell>
+									<TableCell className="text-center">{formatRatio(player.matchWinRate)}</TableCell>
 									<TableCell className="text-center font-bold">{player.eloRating.toFixed(0)}</TableCell>
 								</TableRow>
 							))}

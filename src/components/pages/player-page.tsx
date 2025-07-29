@@ -9,7 +9,7 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
@@ -59,9 +59,9 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 								</TableCell>
 								<TableCell className="text-center">
 									<Badge
-										variant={CompletedMatch.getWinnerId(match) === playerId ? "default" : "secondary"}
-										className={CompletedMatch.getWinnerId(match) === playerId ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-										{CompletedMatch.getWinnerId(match) === playerId ? "Win" : "Loss"}
+										variant={CompletedMatch.isWinner(match, playerId) ? "default" : "secondary"}
+										className={CompletedMatch.isWinner(match, playerId) ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+										{CompletedMatch.isWinner(match, playerId) ? "Win" : "Loss"}
 									</Badge>
 								</TableCell>
 							</TableRow>
@@ -169,7 +169,7 @@ export function PlayerPage({ playerStat }: { playerStat: PlayerStat }) {
 										<Target className="h-4 w-4 text-green-600" />
 									</div>
 									<div>
-										<p className="text-2xl font-bold">{formatRatio(playerStat.overallWinRate)}</p>
+										<p className="text-2xl font-bold">{formatRatio(playerStat.matchWinRate)}</p>
 										<p className="text-xs text-muted-foreground">Match Win Rate</p>
 									</div>
 								</div>

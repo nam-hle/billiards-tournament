@@ -38,10 +38,10 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 									containerClassName="gap-2"
 									fallbackName={match.placeholder1}
 									player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
-									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player1Id ? "font-semibold text-green-600" : ""}`}
+									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1Id) ? "font-semibold text-green-600" : ""}`}
 								/>
 								{CompletedMatch.isInstance(match) && (
-									<span className={`font-bold ${CompletedMatch.getWinnerId(match) === match.player1Id ? "text-green-600" : ""}`}>{match.score1}</span>
+									<span className={`font-bold ${CompletedMatch.isWinner(match, match.player1Id) ? "text-green-600" : ""}`}>{match.score1}</span>
 								)}
 							</div>
 
@@ -52,10 +52,10 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 									containerClassName="gap-2"
 									fallbackName={match.placeholder2}
 									player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
-									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player2Id ? "font-semibold text-green-600" : ""}`}
+									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2Id) ? "font-semibold text-green-600" : ""}`}
 								/>
 								{CompletedMatch.isInstance(match) && (
-									<span className={`font-bold ${CompletedMatch.getWinnerId(match) === match.player2Id ? "text-green-600" : ""}`}>{match.score2}</span>
+									<span className={`font-bold ${CompletedMatch.isWinner(match, match.player2Id) ? "text-green-600" : ""}`}>{match.score2}</span>
 								)}
 							</div>
 						</div>
@@ -140,20 +140,21 @@ export function QualifiedPlayersList({ players }: { players: GroupStanding[] }) 
 					<TableHeader>
 						<TableRow>
 							<TableHead>Player</TableHead>
-							<TableHead>Group</TableHead>
-							<TableHead className="text-center">Position</TableHead>
+							<TableHead className="text-center">Group</TableHead>
+							<TableHead className="text-center">Group Position</TableHead>
 							<TableHead className="text-center">Points</TableHead>
-							<TableHead className="text-center">W/L</TableHead>
-							<TableHead className="text-center">Win Rate</TableHead>
+							<TableHead className="text-center">Racks Difference</TableHead>
+							<TableHead className="text-center">Rack Wins</TableHead>
+							<TableHead className="w-[50px]">Rank</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{players.map((player) => (
+						{players.map((player, playerIndex) => (
 							<TableRow key={player.playerId}>
 								<TableCell>
 									<PlayerDisplay player={{ id: player.playerId, name: player.playerName }} />
 								</TableCell>
-								<TableCell>
+								<TableCell className="text-center">
 									<Badge variant="outline">{player.groupName}</Badge>
 								</TableCell>
 								<TableCell className="text-center">
@@ -167,13 +168,17 @@ export function QualifiedPlayersList({ players }: { players: GroupStanding[] }) 
 									</Badge>
 								</TableCell>
 								<TableCell className="text-center">
-									<span className="text-sm">
-										<span className="font-medium text-green-600">{player.wins}</span>
-										<span className="mx-1 text-muted-foreground">/</span>
-										<span className="font-medium text-red-600">{player.losses}</span>
+									<span
+										className={`text-sm font-medium ${player.racksDifference > 0 ? "text-green-600" : player.racksDifference < 0 ? "text-red-600" : ""}`}>
+										{player.racksDifference}
 									</span>
 								</TableCell>
-								<TableCell className="text-center">{isNaN(player.racksWinRate) ? "-" : `${player.racksWinRate.toFixed(1)}%`}</TableCell>
+								<TableCell className="text-center">
+									<span className="text-sm font-medium text-green-600">{player.rackWins}</span>
+								</TableCell>
+								<TableCell>
+									<Badge variant="outline">{`#${playerIndex + 1}`}</Badge>
+								</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

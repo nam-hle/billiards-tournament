@@ -4,7 +4,8 @@ import { Crown, Trophy } from "lucide-react";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageHeader } from "@/components/layouts/page-header";
+import { PageContainer } from "@/components/layouts/page-container";
 import { TournamentBracket, QualifiedPlayersList } from "@/components/pages/knockout-page";
 
 import { Links } from "@/utils/links";
@@ -42,16 +43,7 @@ export default async function TournamentKnockoutPage({ params }: Props) {
 				Links.Tournaments.Year.get(tournament.year, tournament.name),
 				Links.Tournaments.Year.Knockout.get(tournament.year)
 			]}>
-			{/* Header */}
-			<div className="space-y-4 text-center">
-				<div className="flex items-center justify-center gap-3">
-					<Crown className="h-8 w-8 text-yellow-600" />
-					<div>
-						<h1 className="text-3xl font-bold tracking-tight">Knockout Phase</h1>
-						<p className="text-xl text-muted-foreground">{tournament.name}</p>
-					</div>
-				</div>
-			</div>
+			<PageHeader title="Knockout Phase" description="Watch as the tournament heats up in the knockout stage" />
 
 			<Separator />
 

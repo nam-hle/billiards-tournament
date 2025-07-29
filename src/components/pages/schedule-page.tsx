@@ -10,8 +10,9 @@ import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/tabs";
 
 import { DaySchedule } from "@/components/day-schedule";
+import { PageHeader } from "@/components/layouts/page-header";
 import { ScheduleFilters } from "@/components/schedule-filters";
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { ALL_FILTER } from "@/constants";
@@ -94,18 +95,7 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 				Links.Tournaments.Year.get(tournament.year, tournament.name),
 				Links.Tournaments.Year.Schedule.get(tournament.year)
 			]}>
-			{/* Header */}
-			<div className="space-y-4 text-center">
-				<div className="flex items-center justify-center gap-3">
-					<Trophy className="h-8 w-8 text-primary" />
-					<div>
-						<h1 className="text-3xl font-bold tracking-tight">Tournament Schedule</h1>
-						<p className="text-xl text-muted-foreground">{schedule.name}</p>
-					</div>
-				</div>
-			</div>
-
-			<Separator />
+			<PageHeader title="Schedule" description="View the full match schedule, including dates, times, and player pairings" />
 
 			{/* Quick Stats */}
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-3">

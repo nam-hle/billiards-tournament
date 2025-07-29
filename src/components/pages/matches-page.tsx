@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Clock, Users, Search, Filter, Trophy } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
@@ -12,7 +12,8 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageHeader } from "@/components/layouts/page-header";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { combineComparators } from "@/utils/comparator";
@@ -227,16 +228,7 @@ export function MatchesPageClient({
 
 	return (
 		<PageContainer items={[Links.Matches.get()]}>
-			{/* Header */}
-			<div className="space-y-4 text-center">
-				<div className="flex items-center justify-center gap-3">
-					<Trophy className="h-8 w-8 text-primary" />
-					<div>
-						<h1 className="text-3xl font-bold tracking-tight">All Matches</h1>
-						<p className="text-xl text-muted-foreground">Complete match history across all tournaments</p>
-					</div>
-				</div>
-			</div>
+			<PageHeader title="Matches" description="Complete match history across all tournaments" />
 
 			{/* Quick Stats */}
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-3">

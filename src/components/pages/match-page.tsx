@@ -13,7 +13,7 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 
 import { CountdownTimer } from "@/components/countdown-timer";
 import { getRandomGradient } from "@/components/player-display";
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { cn } from "@/utils/cn";
 import { Links } from "@/utils/links";
@@ -35,7 +35,7 @@ function MatchResult({ match }: { match: MatchDetails }) {
 		return null;
 	}
 
-	const winner = CompletedMatch.getWinnerId(match) === match.player1.id ? match.player1 : match.player2;
+	const winner = CompletedMatch.isWinner(match, match.player1.id) ? match.player1 : match.player2;
 
 	return (
 		<Card className="border-green-200 bg-gradient-to-r from-green-50 to-green-100">
@@ -108,15 +108,15 @@ function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?: boole
 
 					<div className="grid grid-cols-3 gap-4 text-center">
 						<div>
-							<div className="text-lg font-bold">{player.totalWins}</div>
+							<div className="text-lg font-bold">{player.matchWins}</div>
 							<div className="text-xs text-muted-foreground">Wins</div>
 						</div>
 						<div>
-							<div className="text-lg font-bold">{player.totalLosses}</div>
+							<div className="text-lg font-bold">{player.matchLosses}</div>
 							<div className="text-xs text-muted-foreground">Losses</div>
 						</div>
 						<div>
-							<div className="text-lg font-bold">{formatRatio(player.overallWinRate)}</div>
+							<div className="text-lg font-bold">{formatRatio(player.matchWinRate)}</div>
 							<div className="text-xs text-muted-foreground">Win Rate</div>
 						</div>
 					</div>
@@ -128,9 +128,9 @@ function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?: boole
 								<div
 									key={match.id}
 									className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
-										CompletedMatch.getWinnerId(match) === player.id ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+										CompletedMatch.isWinner(match, player.id) ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
 									}`}>
-									{CompletedMatch.getWinnerId(match) === player.id ? "W" : "L"}
+									{CompletedMatch.isWinner(match, player.id) ? "W" : "L"}
 								</div>
 							))}
 						</div>
@@ -189,8 +189,8 @@ export function HeadToHeadHistory({
 	headToHeadMatches: CompletedMatchWithTournament[];
 }) {
 	const lastMatch: CompletedMatchWithTournament | undefined = headToHeadMatches[0];
-	const player1Wins = headToHeadMatches.filter((match) => CompletedMatch.getWinnerId(match) === player1.id).length;
-	const player2Wins = headToHeadMatches.filter((match) => CompletedMatch.getWinnerId(match) === player2.id).length;
+	const player1Wins = headToHeadMatches.filter((match) => CompletedMatch.isWinner(match, player1.id)).length;
+	const player2Wins = headToHeadMatches.filter((match) => CompletedMatch.isWinner(match, player2.id)).length;
 
 	return (
 		<Card>
@@ -228,7 +228,7 @@ export function HeadToHeadHistory({
 								<Badge variant="outline">{`${lastMatch.score1}-${lastMatch.score2}`}</Badge>
 							</div>
 							<div className="text-sm text-muted-foreground">
-								{CompletedMatch.getWinnerId(lastMatch) === player1.id ? player1.name : player2.name} won •{" "}
+								{CompletedMatch.isWinner(lastMatch, player1.id) ? player1.name : player2.name} won •{" "}
 								{ISOTime.formatDate(lastMatch.scheduledAt, { weekday: undefined })}
 							</div>
 						</div>
@@ -290,9 +290,9 @@ function RecentForm({ player }: { player: PlayerStat }) {
 								</TableCell>
 								<TableCell className="text-center">
 									<Badge
-										variant={CompletedMatch.getWinnerId(match) === player.id ? "default" : "secondary"}
-										className={CompletedMatch.getWinnerId(match) === player.id ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-										{CompletedMatch.getWinnerId(match) === player.id ? "Win" : "Loss"}
+										variant={CompletedMatch.isWinner(match, player.id) ? "default" : "secondary"}
+										className={CompletedMatch.isWinner(match, player.id) ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+										{CompletedMatch.isWinner(match, player.id) ? "Win" : "Loss"}
 									</Badge>
 								</TableCell>
 							</TableRow>
@@ -369,12 +369,12 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 					<PlayerCard
 						isPlayer1
 						player={match.player1}
-						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player1.id}
+						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1.id)}
 					/>
 					<PlayerCard
 						isPlayer1={false}
 						player={match.player2}
-						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player2.id}
+						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2.id)}
 					/>
 				</div>
 			)}
