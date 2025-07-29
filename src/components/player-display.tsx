@@ -67,7 +67,7 @@ export const PlayerDisplay: React.FC<PlayerDisplay.Props> = (props) => {
 					</AvatarFallback>
 				</Avatar>
 			)}
-			<p className={cn("font-medium", highlight ? "text-green-600" : "", !player ? "font-light" : "", nameClassName)}>
+			<p className={cn("font-medium", highlight ? "text-green-600" : "", !player ? "font-normal" : "", nameClassName)}>
 				{player?.name ?? fallbackName}
 			</p>
 		</div>

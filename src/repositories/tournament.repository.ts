@@ -6,6 +6,7 @@ import { PlayerRepository } from "@/repositories/player.repository";
 import {
 	Match,
 	ISOTime,
+	GroupStanding,
 	CompletedMatch,
 	ScheduledMatch,
 	type Tournament,
@@ -107,10 +108,10 @@ export class TournamentRepository extends BaseRepository {
 			)
 		)
 			.flat()
-			.sort((a, b) => b.points - a.points || b.wins - a.wins || a.name.localeCompare(b.name))
+			.sort(GroupStanding.createComparator([]))
 			.slice(0, 5)
 			.map((player) => {
-				return { id: player.id, name: player.name, wins: player.wins, points: player.points };
+				return { id: player.id, name: player.name, points: player.points, wins: player.matchWins };
 			});
 
 		const overview: TournamentOverview = {
@@ -141,7 +142,7 @@ export class TournamentRepository extends BaseRepository {
 		);
 
 		if (finalMatch) {
-			if (CompletedMatch.getWinnerId(finalMatch) === params.playerId) {
+			if (CompletedMatch.isWinner(finalMatch, params.playerId)) {
 				return [{ ...PlayerAchievementDescriptionMap.champion, tournamentName: tournament.name }];
 			}
 

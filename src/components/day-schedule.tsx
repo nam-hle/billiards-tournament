@@ -39,13 +39,13 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 					<Table>
 						<TableHeader>
 							<TableRow>
-								<TableHead className="w-[80px]">ID</TableHead>
-								{date === "upcoming" ? <TableHead className="w-[140px]">Date</TableHead> : null}
-								<TableHead className="w-[100px]">Time</TableHead>
-								<TableHead className="w-[140px] text-center">Type</TableHead>
-								<TableHead>Player 1</TableHead>
-								<TableHead className="w-[100px] text-center">Score</TableHead>
-								<TableHead>Player 2</TableHead>
+								<TableHead className="w-[40px] text-center">ID</TableHead>
+								{date === "upcoming" ? <TableHead className="w-[60px]">Date</TableHead> : null}
+								<TableHead className="w-[6px] text-center">Time</TableHead>
+								<TableHead className="w-[80px] text-center">Type</TableHead>
+								<TableHead className="w-[200px] text-right">Player 1</TableHead>
+								<TableHead className="w-[80px] text-center">Score</TableHead>
+								<TableHead className="w-[200px]">Player 2</TableHead>
 								<TableHead className="w-[120px] text-center">Status</TableHead>
 							</TableRow>
 						</TableHeader>
@@ -58,11 +58,11 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 
 									return (
 										<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
-											<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
+											<TableCell className="text-center font-mono text-sm">{Match.formatId(match)}</TableCell>
 											{date === "upcoming" ? (
 												<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { year: undefined })}</TableCell>
 											) : null}
-											<TableCell className="font-mono text-sm">{ISOTime.formatTime(match.scheduledAt)}</TableCell>
+											<TableCell className="text-center font-mono text-sm">{ISOTime.formatTime(match.scheduledAt)}</TableCell>
 											<TableCell className="text-center">
 												<div className="space-y-1">
 													<Badge variant="outline" className="text-xs">
@@ -70,10 +70,11 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 													</Badge>
 												</div>
 											</TableCell>
-											<TableCell>
+											<TableCell className="text-right">
 												<PlayerDisplay
 													showAvatar={false}
 													highlight={winner === "player1"}
+													containerClassName="justify-end"
 													player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
 												/>
 											</TableCell>

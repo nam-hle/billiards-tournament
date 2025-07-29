@@ -10,6 +10,14 @@ export namespace CompletedMatch {
 		return match.score1 !== undefined && match.score2 !== undefined && [match.score1, match.score2].includes(Match.getRaceScore(match));
 	}
 
+	export function isWinner(match: CompletedMatch, playerId: string): boolean {
+		if (!Match.hasPlayer(match, playerId)) {
+			throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Id}" and "${match.player2Id}"`);
+		}
+
+		return getWinnerId(match) === playerId;
+	}
+
 	export function getWinnerId(match: CompletedMatch): string {
 		if (match.score1 > match.score2) {
 			return match.player1Id;

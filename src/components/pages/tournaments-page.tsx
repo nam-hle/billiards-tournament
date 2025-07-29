@@ -10,7 +10,7 @@ import { Badge } from "@/components/shadcn/badge";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
@@ -41,8 +41,8 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 			<div className="mb-8">
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<h1 className="text-3xl font-bold text-gray-900">Tournaments</h1>
-						<p className="text-gray-600">Discover and join exciting tournaments</p>
+						<h1 className="text-3xl font-bold tracking-tight">Tournaments</h1>
+						<p className="text-xl text-muted-foreground">Discover and join exciting tournaments</p>
 					</div>
 				</div>
 			</div>

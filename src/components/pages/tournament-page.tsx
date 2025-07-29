@@ -12,7 +12,7 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 
 import { PlayerDisplay } from "@/components/player-display";
 import { CountdownTimer } from "@/components/countdown-timer";
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
@@ -21,11 +21,11 @@ import { Match, ISOTime, type TournamentData, DefinedPlayersMatch, type Tourname
 function NavigationCards({ year }: { year: string }) {
 	const navigationItems = [
 		{
-			icon: Target,
-			title: "Groups",
-			color: "bg-blue-100 text-blue-600",
-			href: `/tournaments/${year}/groups`,
-			description: "View all tournament groups and standings"
+			icon: Users,
+			title: "Players",
+			href: `/tournaments/${year}/players`,
+			color: "bg-purple-100 text-purple-600",
+			description: "Player profiles and statistics"
 		},
 		{
 			icon: Calendar,
@@ -35,11 +35,11 @@ function NavigationCards({ year }: { year: string }) {
 			description: "Complete match schedule and results"
 		},
 		{
-			icon: Users,
-			title: "Players",
-			href: `/tournaments/${year}/players`,
-			color: "bg-purple-100 text-purple-600",
-			description: "Player profiles and statistics"
+			icon: Target,
+			title: "Groups",
+			color: "bg-blue-100 text-blue-600",
+			href: `/tournaments/${year}/groups`,
+			description: "View all tournament groups and standings"
 		}
 	] as const;
 
@@ -153,7 +153,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 					</Badge>
 				</div>
 
-				<p className="mx-auto max-w-2xl text-muted-foreground">{overview.description}</p>
+				<p className="mx-auto max-w-3xl text-muted-foreground">{overview.description}</p>
 
 				<div className="flex justify-center gap-8 text-sm text-muted-foreground">
 					<div className="flex items-center gap-1">
@@ -218,50 +218,6 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 
 			{/* Content Grid */}
 			<div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-				{/* Groups Summary */}
-				<Card>
-					<CardHeader>
-						<div className="flex items-center justify-between">
-							<CardTitle className="flex items-center gap-2">
-								<Users className="h-5 w-5" />
-								Groups Overview
-							</CardTitle>
-							<Button asChild size="sm" variant="outline">
-								<Link href={`/tournaments/${year}/groups`}>
-									View All
-									<ArrowRight className="ml-2 h-4 w-4" />
-								</Link>
-							</Button>
-						</div>
-						<CardDescription>Current standings by group</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<div className="space-y-4">
-							{groups.map((group) => (
-								<Link passHref key={group.id} className="flex" href={`/tournaments/${year}/groups/${group.id}`}>
-									<div className="flex w-full items-center justify-between rounded-lg border p-3 hover:bg-accent">
-										<div className="flex items-center gap-3">
-											<Badge variant="outline">{group.name}</Badge>
-											<div>
-												<PlayerDisplay showLink={false} showAvatar={false} player={group.leader} />
-												<p className="text-xs text-muted-foreground">
-													{group.completedMatches}/{group.matches.length} matches
-												</p>
-											</div>
-										</div>
-										<div className="text-right">
-											<Badge variant="secondary" className={getStatusColor(group.status)}>
-												{toLabel(group.status)}
-											</Badge>
-											{!!group.leader?.points && <p className="mt-1 text-sm font-medium">{group.leader.points} pts</p>}
-										</div>
-									</div>
-								</Link>
-							))}
-						</div>
-					</CardContent>
-				</Card>
-
 				{/* Top Players */}
 				<Card>
 					<CardHeader>
@@ -310,6 +266,50 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 						</Table>
 					</CardContent>
 				</Card>
+
+				{/* Groups Summary */}
+				<Card>
+					<CardHeader>
+						<div className="flex items-center justify-between">
+							<CardTitle className="flex items-center gap-2">
+								<Users className="h-5 w-5" />
+								Groups Overview
+							</CardTitle>
+							<Button asChild size="sm" variant="outline">
+								<Link href={`/tournaments/${year}/groups`}>
+									View All
+									<ArrowRight className="ml-2 h-4 w-4" />
+								</Link>
+							</Button>
+						</div>
+						<CardDescription>Current standings by group</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							{groups.map((group) => (
+								<Link passHref key={group.id} className="flex" href={`/tournaments/${year}/groups/${group.id}`}>
+									<div className="flex w-full items-center justify-between rounded-lg border p-3 hover:bg-accent">
+										<div className="flex items-center gap-3">
+											<Badge variant="outline">{group.name}</Badge>
+											<div>
+												<PlayerDisplay showLink={false} showAvatar={false} player={group.leader} />
+												<p className="text-xs text-muted-foreground">
+													{group.completedMatches}/{group.matches.length} matches
+												</p>
+											</div>
+										</div>
+										<div className="text-right">
+											<Badge variant="secondary" className={getStatusColor(group.status)}>
+												{toLabel(group.status)}
+											</Badge>
+											{!!group.leader?.points && <p className="mt-1 text-sm font-medium">{group.leader.points} pts</p>}
+										</div>
+									</div>
+								</Link>
+							))}
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 
 			{/* Recent & Upcoming Matches */}
@@ -344,7 +344,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 										className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent">
 										<div className="space-y-1">
 											<div className="flex items-center gap-2">
-												<Badge variant="secondary" className="text-xs">
+												<Badge variant="outline" className="text-xs">
 													{Match.formatId(match)}
 												</Badge>
 												<Badge variant="outline" className="text-xs">

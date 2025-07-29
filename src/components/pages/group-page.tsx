@@ -11,7 +11,7 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
@@ -98,25 +98,25 @@ export function GroupPage(props: {
 											<PlayerDisplay showAvatar={false} player={{ id: standing.playerId, name: standing.playerName }} />
 										</div>
 									</TableCell>
-									<TableCell className="text-center">{standing.played}</TableCell>
+									<TableCell className="text-center">{standing.totalMatches}</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-green-100 text-green-800">
-											{standing.wins}
+											{standing.matchWins}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-red-100 text-red-800">
-											{standing.losses}
+											{standing.matchLosses}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-green-100 text-green-800">
-											{standing.matchesWins}
+											{standing.rackWins}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-red-100 text-red-800">
-											{standing.matchesLosses}
+											{standing.rackLosses}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
@@ -124,10 +124,10 @@ export function GroupPage(props: {
 											variant="secondary"
 											className={
 												{ "0": "", "-1": "bg-red-100 text-red-800", "1": "bg-green-100 text-green-800" }[
-													Math.sign(standing.matchesWins - standing.matchesLosses)
+													Math.sign(standing.rackWins - standing.rackLosses)
 												]
 											}>
-											{standing.matchesWins - standing.matchesLosses}
+											{standing.rackWins - standing.rackLosses}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
@@ -187,7 +187,7 @@ export function GroupPage(props: {
 										<TableCell>
 											<PlayerDisplay
 												showAvatar={false}
-												highlight={CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player1Id}
+												highlight={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1Id)}
 												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
 											/>
 										</TableCell>
@@ -203,7 +203,7 @@ export function GroupPage(props: {
 										<TableCell>
 											<PlayerDisplay
 												showAvatar={false}
-												highlight={CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player2Id}
+												highlight={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2Id)}
 												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
 											/>
 										</TableCell>

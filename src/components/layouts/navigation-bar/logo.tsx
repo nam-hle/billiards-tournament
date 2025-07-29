@@ -8,7 +8,7 @@ export const Logo = () => {
 	return (
 		<Link href="/">
 			<div data-testid="logo" className="flex items-center">
-				<Image width={24} height={24} src="/logo.svg" alt="mgm Billiards Club" />
+				<Image width={24} height={24} src="/logo.svg" className="dark:invert" alt="mgm Billiards Club" />
 				<span className="ml-2 text-lg font-semibold md:text-xl">mgm Billiards Club</span>
 			</div>
 		</Link>

@@ -42,29 +42,29 @@ export class PlayerRepository extends BaseRepository {
 		return players.filter((player) => groupPlayers.includes(player.id));
 	}
 
-	public async getStatsByTournament(id: string, year: string): Promise<PlayerTournamentStat> {
-		const player = await this.getById(id);
+	public async getStatsByTournament(playerId: string, year: string): Promise<PlayerTournamentStat> {
+		const player = await this.getById(playerId);
 		const groups = await new GroupRepository().getByYear({ year });
-		const matches = (await new MatchRepository().getAllByYear({ year })).filter((match) => match.player1Id === id || match.player2Id === id);
+		const matches = (await new MatchRepository().getAllByYear({ year })).filter((match) => Match.hasPlayer(match, playerId));
 		const completedMatches = matches.filter(CompletedMatch.isInstance);
 
-		const group = groups.find((group) => group.players.includes(id));
+		const group = groups.find((group) => group.players.includes(playerId));
 		assert(group);
 
-		const wins = completedMatches.filter((match) => CompletedMatch.getWinnerId(match) === id).length;
+		const wins = completedMatches.filter((match) => CompletedMatch.isWinner(match, playerId)).length;
 		const losses = completedMatches.length - wins;
 		const { eloRating } = await this.getEloRating(player.id);
 
 		return {
 			...player,
-			wins,
 			group,
-			losses,
 			eloRating,
+			matchWins: wins,
+			matchLosses: losses,
 
 			status: "active", // TODO: Determine status based on matches
 			playedMatches: completedMatches.length,
-			winRate: wins / completedMatches.length
+			matchWinRate: wins / completedMatches.length
 		};
 	}
 
@@ -74,25 +74,23 @@ export class PlayerRepository extends BaseRepository {
 
 		const completedMatches = await this.getCompletedMatches({ order: "asc", playerId: params.playerId });
 
-		const totalWins = completedMatches.filter((match) => CompletedMatch.getWinnerId(match) === params.playerId).length;
+		const totalWins = completedMatches.filter((match) => CompletedMatch.isWinner(match, params.playerId)).length;
 		const totalLosses = completedMatches.length - totalWins;
 
 		const totalRacksWins = completedMatches.reduce(
 			(sum, match) =>
-				sum +
-				(CompletedMatch.getWinnerId(match) === params.playerId ? CompletedMatch.getWinnerRacksWon(match) : CompletedMatch.getLoserRacksWon(match)),
+				sum + (CompletedMatch.isWinner(match, params.playerId) ? CompletedMatch.getWinnerRacksWon(match) : CompletedMatch.getLoserRacksWon(match)),
 			0
 		);
 		const totalRacksLost = completedMatches.reduce(
 			(sum, match) =>
-				sum +
-				(CompletedMatch.getWinnerId(match) === params.playerId ? CompletedMatch.getLoserRacksWon(match) : CompletedMatch.getWinnerRacksWon(match)),
+				sum + (CompletedMatch.isWinner(match, params.playerId) ? CompletedMatch.getLoserRacksWon(match) : CompletedMatch.getWinnerRacksWon(match)),
 			0
 		);
 
 		const accumulatedStreaks = completedMatches.reduce<number[]>((streaks, match, matchIndex) => {
 			if (matchIndex === 0) {
-				return [CompletedMatch.getWinnerId(match) === playerId ? 1 : 0];
+				return [CompletedMatch.isWinner(match, playerId) ? 1 : 0];
 			}
 
 			if (CompletedMatch.getLoserId(match) === playerId) {
@@ -115,19 +113,19 @@ export class PlayerRepository extends BaseRepository {
 			...player,
 			rank,
 			maxStreak,
-			totalWins,
 			runnerUps,
 			eloRating,
 			semiFinals,
-			totalLosses,
 			championships,
 			quarterFinals,
+			matchWins: totalWins,
+			matchLosses: totalLosses,
 
-			totalTournaments: achievements.length,
+			tournaments: achievements.length,
 			totalMatches: completedMatches.length,
 
 			recentMatches: completedMatches.slice(-5),
-			overallWinRate: totalWins / completedMatches.length,
+			matchWinRate: totalWins / completedMatches.length,
 			achievements: await this.getTournamentResults({ playerId }),
 			racksWinRate: totalRacksWins / (totalRacksWins + totalRacksLost)
 		};

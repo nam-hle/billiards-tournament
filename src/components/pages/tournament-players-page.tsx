@@ -6,13 +6,13 @@ import { Users, Medal, Trophy, Search, Filter, Target } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Input } from "@/components/shadcn/input";
-import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageContainer } from "@/components/layouts/page-layout";
+import { PageHeader } from "@/components/layouts/page-header";
+import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
@@ -56,18 +56,7 @@ export function TournamentPlayersPageClient(props: TournamentPlayersPageClient.P
 				Links.Tournaments.Year.get(tournament.year, tournament.name),
 				Links.Tournaments.Year.Players.get(tournament.year)
 			]}>
-			{/* Header */}
-			<div className="space-y-4 text-center">
-				<div className="flex items-center justify-center gap-3">
-					<Users className="h-8 w-8 text-primary" />
-					<div>
-						<h1 className="text-3xl font-bold tracking-tight">Tournament Players</h1>
-						<p className="text-xl text-muted-foreground">{tournament.name}</p>
-					</div>
-				</div>
-			</div>
-
-			<Separator />
+			<PageHeader title="Tournament Players" description="Meet the competitors and see who's climbing the ranks this tournament" />
 
 			{/* Player Stats */}
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -218,7 +207,7 @@ function PlayersTable({ players }: { players: PlayerTournamentStat[] }) {
 					</TableHeader>
 					<TableBody>
 						{players
-							.sort((a, b) => b.wins - a.wins || b.winRate - a.winRate)
+							.sort((a, b) => b.matchWins - a.matchWins || b.matchWinRate - a.matchWinRate)
 							.map((player, index) => (
 								<TableRow key={player.id} className="cursor-pointer" onClick={() => router.push(`/players/${player.id}`)}>
 									<TableCell>
@@ -235,15 +224,15 @@ function PlayersTable({ players }: { players: PlayerTournamentStat[] }) {
 									<TableCell className="text-center">{player.playedMatches}</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-green-100 text-green-800">
-											{player.wins}
+											{player.matchWins}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-red-100 text-red-800">
-											{player.losses}
+											{player.matchLosses}
 										</Badge>
 									</TableCell>
-									<TableCell className="text-center">{formatRatio(player.winRate)}</TableCell>
+									<TableCell className="text-center">{formatRatio(player.matchWinRate)}</TableCell>
 									<TableCell className="text-center">
 										<Badge className={getStatusColor(player.status)}>{toLabel(player.status)}</Badge>
 									</TableCell>

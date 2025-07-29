@@ -84,50 +84,51 @@ export class GroupRepository extends BaseRepository {
 				const playerName = players.find((player) => player.id === playerId)?.name;
 				assert(playerName, `Player with ID ${playerId} not found in group ${group.id}`);
 
-				let wins = 0,
-					losses = 0,
+				let matchWins = 0,
+					matchLosses = 0,
 					points = 0,
-					played = 0,
-					matchesWins = 0,
-					matchesLosses = 0;
+					totalMatches = 0,
+					rackWins = 0,
+					rackLosses = 0;
 
 				for (const match of matches) {
-					if (match.player1Id !== playerId && match.player2Id !== playerId) {
+					if (!Match.hasPlayer(match, playerId)) {
 						continue;
 					}
 
-					played++;
+					totalMatches++;
 
 					if (!CompletedMatch.isInstance(match)) {
 						continue;
 					}
 
-					if (playerId === CompletedMatch.getWinnerId(match)) {
+					if (CompletedMatch.isWinner(match, playerId)) {
 						points += 3;
-						wins++;
-						matchesWins += CompletedMatch.getWinnerRacksWon(match);
-						matchesLosses += CompletedMatch.getLoserRacksWon(match);
+						matchWins++;
+						rackWins += CompletedMatch.getWinnerRacksWon(match);
+						rackLosses += CompletedMatch.getLoserRacksWon(match);
 					} else {
-						losses++;
-						matchesWins += CompletedMatch.getLoserRacksWon(match);
-						matchesLosses += CompletedMatch.getWinnerRacksWon(match);
+						matchLosses++;
+						rackWins += CompletedMatch.getLoserRacksWon(match);
+						rackLosses += CompletedMatch.getWinnerRacksWon(match);
 					}
 				}
 
 				return {
-					wins,
-					losses,
 					points,
-					played,
 					playerId,
+					rackWins,
+					matchWins,
 					playerName,
-					matchesWins,
-					matchesLosses,
+					rackLosses,
+					matchLosses,
+					totalMatches,
 					groupPosition: 0,
 					groupName: group.name,
 					top1Prob: prediction.top1[playerId],
 					top2Prob: prediction.top2[playerId],
-					racksWinRate: (matchesWins / (matchesWins + matchesLosses)) * 100
+					racksDifference: rackWins - rackLosses,
+					racksWinRate: (rackWins / (rackWins + rackLosses)) * 100
 				};
 			})
 			.sort(comparator)
