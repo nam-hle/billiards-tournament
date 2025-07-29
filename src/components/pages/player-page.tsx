@@ -9,7 +9,7 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
@@ -125,9 +125,7 @@ function PlayerAchievements({ achievements }: { achievements: PlayerAchievement[
 
 export function PlayerPage({ playerStat }: { playerStat: PlayerStat }) {
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb items={[Links.Players.get(), Links.Players.Player.get(playerStat.id, playerStat.name)]} />
-
+		<PageContainer items={[Links.Players.get(), Links.Players.Player.get(playerStat.id, playerStat.name)]}>
 			{/* Player Header */}
 			<div className="mb-8 flex items-center gap-6">
 				<div className="flex-1">
@@ -231,6 +229,6 @@ export function PlayerPage({ playerStat }: { playerStat: PlayerStat }) {
 			<PlayerAchievements achievements={playerStat.achievements} />
 
 			<RecentMatches playerId={playerStat.id} matches={playerStat.recentMatches} />
-		</div>
+		</PageContainer>
 	);
 }

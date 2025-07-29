@@ -8,7 +8,7 @@ import { Progress } from "@/components/shadcn/progress";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
@@ -39,11 +39,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 		(groups.reduce((acc, group) => acc + group.completedMatches, 0) / groups.reduce((acc, group) => acc + group.matches.length, 0)) * 100;
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb
-				items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, tournamentInfo.name), Links.Tournaments.Year.Groups.get(year)]}
-			/>
-
+		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, tournamentInfo.name), Links.Tournaments.Year.Groups.get(year)]}>
 			{/* Tournament Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
@@ -196,6 +192,6 @@ export default async function GroupsIndexPage({ params }: Props) {
 					))}
 				</div>
 			</div>
-		</div>
+		</PageContainer>
 	);
 }

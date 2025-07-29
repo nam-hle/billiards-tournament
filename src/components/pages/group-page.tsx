@@ -11,7 +11,7 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
@@ -40,16 +40,13 @@ export function GroupPage(props: {
 	const router = useRouter();
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb
-				items={[
-					Links.Tournaments.get(),
-					Links.Tournaments.Year.get(year, tournament.name),
-					Links.Tournaments.Year.Groups.get(year),
-					Links.Tournaments.Year.Groups.Group.get(year, groupId)
-				]}
-			/>
-
+		<PageContainer
+			items={[
+				Links.Tournaments.get(),
+				Links.Tournaments.Year.get(year, tournament.name),
+				Links.Tournaments.Year.Groups.get(year),
+				Links.Tournaments.Year.Groups.Group.get(year, groupId)
+			]}>
 			{/* Header */}
 			<div className="flex items-center gap-3">
 				<Target className="h-8 w-8 text-primary" />
@@ -220,6 +217,6 @@ export function GroupPage(props: {
 					</Table>
 				</CardContent>
 			</Card>
-		</div>
+		</PageContainer>
 	);
 }

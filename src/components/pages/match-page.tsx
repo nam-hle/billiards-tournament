@@ -10,8 +10,8 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/ta
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
 import { CountdownTimer } from "@/components/countdown-timer";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { cn } from "@/utils/cn";
 import { Links } from "@/utils/links";
@@ -308,9 +308,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 	const isPending = !CompletedMatch.isInstance(match);
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb items={[Links.Matches.get(), Links.Matches.Match.get(match.id)]} />
-
+		<PageContainer items={[Links.Matches.get(), Links.Matches.Match.get(match.id)]}>
 			{/* Match Header */}
 			<Card>
 				<CardContent className="pt-6">
@@ -398,6 +396,6 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 					</TabsContent>
 				</Tabs>
 			)}
-		</div>
+		</PageContainer>
 	);
 }

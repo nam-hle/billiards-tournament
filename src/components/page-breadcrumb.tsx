@@ -2,8 +2,8 @@ import React from "react";
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/shadcn/breadcrumb";
 
-namespace PageBreadcrumb {
-	interface Item {
+export namespace PageBreadcrumb {
+	export interface Item {
 		readonly href: string;
 		readonly label: string;
 	}

@@ -12,7 +12,9 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
 import { PlayerDisplay } from "@/components/player-display";
+import { PageContainer } from "@/components/layouts/page-layout";
 
+import { Links } from "@/utils/links";
 import { combineComparators } from "@/utils/comparator";
 import { toLabel, getStatusColor } from "@/utils/strings";
 import { Match, ISOTime, type Player, CompletedMatch, type Tournament, DefinedPlayersMatch } from "@/interfaces";
@@ -218,7 +220,7 @@ export function MatchesPageClient({
 	// const recentMatches = sortedMatches.filter((m) => Match.getStatus(m) === "completed").slice(0, 10);
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
+		<PageContainer items={[Links.Matches.get()]}>
 			{/* Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
@@ -298,6 +300,6 @@ export function MatchesPageClient({
 					<p className="text-muted-foreground">Try adjusting your search or filter criteria.</p>
 				</div>
 			)}
-		</div>
+		</PageContainer>
 	);
 }

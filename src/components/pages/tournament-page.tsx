@@ -11,8 +11,8 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
 import { CountdownTimer } from "@/components/countdown-timer";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
@@ -137,9 +137,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 	const completionPercentage = (overview.completedMatches / overview.totalMatches) * 100;
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, data.overview.name)]} />
-
+		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, data.overview.name)]}>
 			{/* Tournament Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
@@ -245,7 +243,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 										<div className="flex items-center gap-3">
 											<Badge variant="outline">{group.name}</Badge>
 											<div>
-												<PlayerDisplay showAvatar={false} player={group.leader} />
+												<PlayerDisplay showLink={false} showAvatar={false} player={group.leader} />
 												<p className="text-xs text-muted-foreground">
 													{group.completedMatches}/{group.matches.length} matches
 												</p>
@@ -413,6 +411,6 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 					</CardContent>
 				</Card>
 			</div>
-		</div>
+		</PageContainer>
 	);
 }

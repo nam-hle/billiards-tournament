@@ -13,6 +13,7 @@ export namespace PlayerDisplay {
 		readonly highlight?: boolean;
 		readonly fallbackName?: string;
 
+		readonly showLink?: boolean;
 		readonly showAvatar?: boolean;
 
 		readonly nameClassName?: string;
@@ -26,6 +27,7 @@ export const PlayerDisplay: React.FC<PlayerDisplay.Props> = (props) => {
 	const {
 		player,
 		nameClassName,
+		showLink = true,
 		avatarClassName,
 		highlight = false,
 		showAvatar = true,
@@ -46,7 +48,7 @@ export const PlayerDisplay: React.FC<PlayerDisplay.Props> = (props) => {
 		</div>
 	);
 
-	if (!player) {
+	if (!player || !showLink) {
 		return content;
 	}
 

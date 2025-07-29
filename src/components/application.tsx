@@ -26,7 +26,7 @@ export const Application: React.FC<Container & { tournaments: TournamentOverview
 		<ThemeProvider enableSystem attribute="class" defaultTheme="system" disableTransitionOnChange>
 			<div className="mx-auto flex min-h-screen max-w-screen-2xl flex-col px-8">
 				<NavigationBar tournaments={tournaments} />
-				<main className="my-2 flex flex-1 flex-col">{children}</main>
+				<main className="flex flex-1 flex-col">{children}</main>
 				<Footer />
 			</div>
 			<Toaster expand richColors closeButton duration={10000} position="bottom-left" offset={{ top: "4.5rem" }} />

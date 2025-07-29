@@ -11,7 +11,7 @@ import { Card, CardContent } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
@@ -34,9 +34,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 		.sort((a, b) => b.eloRating - a.eloRating);
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb items={[Links.Players.get()]} />
-
+		<PageContainer items={[Links.Players.get()]}>
 			{/* Header */}
 			<div className="mb-8">
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -88,7 +86,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 					<p className="text-muted-foreground">Try adjusting your search or filter criteria.</p>
 				</div>
 			)}
-		</div>
+		</PageContainer>
 	);
 }
 

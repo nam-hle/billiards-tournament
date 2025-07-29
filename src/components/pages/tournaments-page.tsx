@@ -11,7 +11,7 @@ import { Button } from "@/components/shadcn/button";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
 import { getStatusColor } from "@/utils/strings";
@@ -37,9 +37,7 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 	});
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb items={[Links.Tournaments.get()]} />
-
+		<PageContainer items={[Links.Tournaments.get()]}>
 			{/* Header */}
 			<div className="mb-8">
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -148,6 +146,6 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 					</CardContent>
 				</Card>
 			)}
-		</div>
+		</PageContainer>
 	);
 }

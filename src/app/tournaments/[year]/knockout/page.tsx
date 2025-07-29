@@ -4,7 +4,7 @@ import { Crown, Trophy } from "lucide-react";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { PageContainer } from "@/components/layouts/page-layout";
 import { TournamentBracket, QualifiedPlayersList } from "@/components/pages/knockout-page";
 
 import { Links } from "@/utils/links";
@@ -36,15 +36,12 @@ export default async function TournamentKnockoutPage({ params }: Props) {
 	const runnerUp = qualifiedPlayers.find((player) => player.playerId === runnerUpId);
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb
-				items={[
-					Links.Tournaments.get(),
-					Links.Tournaments.Year.get(tournament.year, tournament.name),
-					Links.Tournaments.Year.Knockout.get(tournament.year)
-				]}
-			/>
-
+		<PageContainer
+			items={[
+				Links.Tournaments.get(),
+				Links.Tournaments.Year.get(tournament.year, tournament.name),
+				Links.Tournaments.Year.Knockout.get(tournament.year)
+			]}>
 			{/* Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
@@ -89,6 +86,6 @@ export default async function TournamentKnockoutPage({ params }: Props) {
 
 			{/* Qualified Players */}
 			<QualifiedPlayersList players={qualifiedPlayers} />
-		</div>
+		</PageContainer>
 	);
 }

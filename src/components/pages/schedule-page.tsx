@@ -10,8 +10,8 @@ import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/tabs";
 
 import { DaySchedule } from "@/components/day-schedule";
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
 import { ScheduleFilters } from "@/components/schedule-filters";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
 import { ALL_FILTER } from "@/constants";
@@ -88,15 +88,12 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 	const unscheduledMatches = filteredMatches.filter((match) => !ScheduledMatch.isInstance(match));
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb
-				items={[
-					Links.Tournaments.get(),
-					Links.Tournaments.Year.get(tournament.year, tournament.name),
-					Links.Tournaments.Year.Schedule.get(tournament.year)
-				]}
-			/>
-
+		<PageContainer
+			items={[
+				Links.Tournaments.get(),
+				Links.Tournaments.Year.get(tournament.year, tournament.name),
+				Links.Tournaments.Year.Schedule.get(tournament.year)
+			]}>
 			{/* Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
@@ -215,6 +212,6 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 					{unscheduledMatches.length > 0 && <DaySchedule date="unscheduled" groups={schedule.groups} matches={unscheduledMatches} />}
 				</TabsContent>
 			</Tabs>
-		</div>
+		</PageContainer>
 	);
 }

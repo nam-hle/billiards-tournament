@@ -12,7 +12,7 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
 import { PlayerDisplay } from "@/components/player-display";
-import { PageBreadcrumb } from "@/components/page-breadcrumb";
+import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
@@ -50,15 +50,12 @@ export function TournamentPlayersPageClient(props: TournamentPlayersPageClient.P
 	const eliminatedPlayers = players.filter((p) => p.status === "eliminated").length;
 
 	return (
-		<div className="container mx-auto space-y-8 py-8">
-			<PageBreadcrumb
-				items={[
-					Links.Tournaments.get(),
-					Links.Tournaments.Year.get(tournament.year, tournament.name),
-					Links.Tournaments.Year.Players.get(tournament.year)
-				]}
-			/>
-
+		<PageContainer
+			items={[
+				Links.Tournaments.get(),
+				Links.Tournaments.Year.get(tournament.year, tournament.name),
+				Links.Tournaments.Year.Players.get(tournament.year)
+			]}>
 			{/* Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
@@ -196,7 +193,7 @@ export function TournamentPlayersPageClient(props: TournamentPlayersPageClient.P
 					<p className="text-muted-foreground">Try adjusting your search or filter criteria.</p>
 				</div>
 			)}
-		</div>
+		</PageContainer>
 	);
 }
 
