@@ -4,17 +4,20 @@
 		{
 			"id": "A",
 			"name": "Group A",
-			"players": ["nhle", "hqtran", "atvo", "dple", "hqnguyen"]
+			"players": ["nhle", "hqtran", "atvo", "dple", "hqnguyen"],
+			"matches": []
 		},
 		{
 			"id": "B",
 			"name": "Group B",
-			"players": ["bvphan", "tmdo", "qanguyen", "hnnguyen", "mbnguyen"]
+			"players": ["bvphan", "tmdo", "qanguyen", "hnnguyen", "mbnguyen"],
+			"matches": []
 		},
 		{
 			"id": "C",
 			"name": "Group C",
-			"players": ["tttran", "bvqhuynh", "shvu", "thnguyen", "ltnguyen"]
+			"players": ["tttran", "bvqhuynh", "shvu", "thnguyen", "ltnguyen"],
+			"matches": []
 		}
 	]
 }

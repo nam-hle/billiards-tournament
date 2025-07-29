@@ -25,22 +25,23 @@ export function CountdownTimer({ targetTime }: { targetTime: ISOTime }) {
 	}, [targetTime]);
 
 	return (
-		<div className="grid grid-cols-4 gap-4 text-center">
-			<div className="rounded-lg border p-3">
-				<div className="text-2xl font-bold text-primary">{timeLeft.days}</div>
-				<div className="text-xs text-muted-foreground">Days</div>
-			</div>
-			<div className="rounded-lg border p-3">
-				<div className="text-2xl font-bold text-primary">{timeLeft.hours}</div>
-				<div className="text-xs text-muted-foreground">Hours</div>
-			</div>
-			<div className="rounded-lg border p-3">
-				<div className="text-2xl font-bold text-primary">{timeLeft.minutes}</div>
-				<div className="text-xs text-muted-foreground">Minutes</div>
-			</div>
-			<div className="rounded-lg border p-3">
-				<div className="text-2xl font-bold text-primary">{timeLeft.seconds}</div>
-				<div className="text-xs text-muted-foreground">Seconds</div>
+		<div className="animate-fade-in flex items-center justify-center">
+			<div className="flex gap-8 shadow-2xl backdrop-blur-2xl">
+				{[
+					{ label: "Day", value: timeLeft.days },
+					{ label: "Hour", value: timeLeft.hours },
+					{ label: "Minute", value: timeLeft.minutes },
+					{ label: "Second", value: timeLeft.seconds }
+				].map((item) => (
+					<div key={item.label} className="mx-6 flex flex-col items-center justify-center">
+						<div className="mb-6 shadow-xl backdrop-blur-lg">
+							<span className="text-9xl font-bold tracking-wider drop-shadow-2xl">{String(item.value).padStart(2, "0")}</span>
+						</div>
+						<span className="text-sm font-bold uppercase tracking-wide text-muted-foreground drop-shadow">
+							{item.value > 1 ? item.label + "s" : item.label}
+						</span>
+					</div>
+				))}
 			</div>
 		</div>
 	);

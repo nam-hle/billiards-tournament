@@ -21,18 +21,8 @@
 								"type": "string"
 							},
 							"scheduledAt": {
-								"type": "object",
-								"required": ["date", "time"],
-								"properties": {
-									"date": {
-										"type": "string",
-										"format": "date"
-									},
-									"time": {
-										"type": "string",
-										"pattern": "^\\d{2}:\\d{2}$"
-									}
-								}
+								"type": "string",
+								"format": "date-time"
 							},
 							"score1": {
 								"type": "number"
@@ -60,18 +50,8 @@
 								"enum": ["quarter-final", "semi-final", "final"]
 							},
 							"scheduledAt": {
-								"type": "object",
-								"required": ["date", "time"],
-								"properties": {
-									"date": {
-										"type": "string",
-										"format": "date"
-									},
-									"time": {
-										"type": "string",
-										"pattern": "^\\d{2}:\\d{2}$"
-									}
-								}
+								"type": "string",
+								"format": "date-time"
 							},
 							"score1": {
 								"type": "number"
@@ -86,8 +66,13 @@
 								"type": "string"
 							},
 							"order": {
-								"type": "integer",
-								"minimum": 1
+								"type": "integer"
+							},
+							"placeholder1": {
+								"type": "string"
+							},
+							"placeholder2": {
+								"type": "string"
 							}
 						},
 						"additionalProperties": false

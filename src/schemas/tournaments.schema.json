@@ -10,8 +10,8 @@
 				"required": ["year", "startDate", "endDate", "name"],
 				"properties": {
 					"year": { "type": "string" },
-					"startDate": { "type": "string", "format": "date" },
-					"endDate": { "type": "string", "format": "date" },
+					"startDate": { "type": "string", "format": "date-string" },
+					"endDate": { "type": "string", "format": "date-string" },
 					"name": { "type": "string" },
 					"venue": { "type": "string" }
 				}
