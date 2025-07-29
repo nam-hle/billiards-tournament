@@ -7,14 +7,13 @@ import { Users, Search, Trophy, Filter, Calendar } from "lucide-react";
 
 import { Input } from "@/components/shadcn/input";
 import { Badge } from "@/components/shadcn/badge";
-import { Button } from "@/components/shadcn/button";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from "@/components/shadcn/select";
 
 import { PageContainer } from "@/components/layouts/page-layout";
 
 import { Links } from "@/utils/links";
-import { getStatusColor } from "@/utils/strings";
+import { toLabel, getStatusColor } from "@/utils/strings";
 import { ISOTime, type TournamentOverview } from "@/interfaces";
 
 export namespace TournamentsPage {
@@ -92,7 +91,7 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 							<CardHeader className="pb-3">
 								<div className="flex items-start justify-between gap-2">
 									<CardTitle className="line-clamp-1 text-lg">{tournament.name}</CardTitle>
-									<Badge className={getStatusColor(tournament.status)}>{tournament.status}</Badge>
+									<Badge className={getStatusColor(tournament.status)}>{toLabel(tournament.status)}</Badge>
 								</div>
 								<CardDescription className="line-clamp-2">{tournament.description}</CardDescription>
 							</CardHeader>
@@ -107,27 +106,6 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 											<Users className="h-4 w-4" />
 											<span>{tournament.totalPlayers}</span>
 										</div>
-									</div>
-
-									<div className="flex gap-2 pt-2">
-										<Link className="flex-1" href={`/tournaments/${tournament.year}`}>
-											<Button size="sm" variant="outline" className="flex-1 bg-transparent">
-												View Details
-											</Button>
-										</Link>
-										{tournament.status === "upcoming" ? (
-											<Button size="sm" className="flex-1">
-												Join Tournament
-											</Button>
-										) : tournament.status === "ongoing" ? (
-											<Button size="sm" className="flex-1">
-												Watch Live
-											</Button>
-										) : (
-											<Button size="sm" className="flex-1" variant="secondary">
-												View Results
-											</Button>
-										)}
 									</div>
 								</div>
 							</CardContent>

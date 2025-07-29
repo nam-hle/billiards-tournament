@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Zap, Clock, MapPin, Trophy, History, Percent, Calendar } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
@@ -11,6 +12,7 @@ import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/com
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { CountdownTimer } from "@/components/countdown-timer";
+import { getRandomGradient } from "@/components/player-display";
 import { PageContainer } from "@/components/layouts/page-layout";
 
 import { cn } from "@/utils/cn";
@@ -53,13 +55,15 @@ function MatchResult({ match }: { match: MatchDetails }) {
 
 					{/* Final Score */}
 					<div className="flex items-center justify-center gap-8">
-						<div className="text-center">
-							<Avatar className="mx-auto mb-2 h-16 w-16">
-								<AvatarImage alt={match.player1.name} />
-								<AvatarFallback>{getAbbrName(match.player1.name)}</AvatarFallback>
-							</Avatar>
-							<div className="font-medium">{match.player1.name}</div>
-						</div>
+						<Link href={`/players/${match.player1Id}`}>
+							<div className="text-center">
+								<Avatar className="mx-auto mb-2 h-16 w-16">
+									<AvatarImage alt={match.player1.name} />
+									<AvatarFallback className={getRandomGradient(match.player1Name)}>{getAbbrName(match.player1.name)}</AvatarFallback>
+								</Avatar>
+								<div className="font-medium">{match.player1.name}</div>
+							</div>
+						</Link>
 
 						<div className="text-center">
 							<div className="mb-2 text-4xl font-bold">
@@ -72,13 +76,15 @@ function MatchResult({ match }: { match: MatchDetails }) {
 							</Badge>
 						</div>
 
-						<div className="text-center">
-							<Avatar className="mx-auto mb-2 h-16 w-16">
-								<AvatarImage alt={match.player2.name} />
-								<AvatarFallback>{getAbbrName(match.player2.name)}</AvatarFallback>
-							</Avatar>
-							<div className="font-medium">{match.player2.name}</div>
-						</div>
+						<Link href={`/players/${match.player2Id}`}>
+							<div className="text-center">
+								<Avatar className="mx-auto mb-2 h-16 w-16">
+									<AvatarImage alt={match.player2.name} />
+									<AvatarFallback className={getRandomGradient(match.player2Name)}>{getAbbrName(match.player2.name)}</AvatarFallback>
+								</Avatar>
+								<div className="font-medium">{match.player2.name}</div>
+							</div>
+						</Link>
 					</div>
 				</div>
 			</CardContent>

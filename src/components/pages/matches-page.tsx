@@ -127,8 +127,14 @@ function MatchesTable({ matches }: { matches: (Match & { tournament: Tournament 
 							return (
 								<TableRow key={match.id}>
 									<TableCell className="text-center font-mono text-xs">
-										<div>{ISOTime.formatDate(match.scheduledAt, { month: "2-digit", weekday: undefined })}</div>
-										<div>{ISOTime.formatTime(match.scheduledAt)}</div>
+										{match.scheduledAt ? (
+											<>
+												<div>{ISOTime.formatDate(match.scheduledAt, { month: "2-digit", weekday: undefined })}</div>
+												<div>{ISOTime.formatTime(match.scheduledAt)}</div>
+											</>
+										) : (
+											"TBD"
+										)}
 									</TableCell>
 									<TableCell>
 										<div className="flex flex-col items-center space-y-1">
@@ -291,7 +297,7 @@ export function MatchesPageClient({
 				onTournamentChange={setSelectedTournament}
 			/>
 
-			<MatchesTable matches={sortedMatches.slice(0, 10)} />
+			<MatchesTable matches={sortedMatches} />
 
 			{filteredMatches.length === 0 && (
 				<div className="py-12 text-center">

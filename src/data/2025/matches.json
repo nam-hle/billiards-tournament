@@ -215,44 +215,58 @@
 		{
 			"id": "77",
 			"type": "quarter-final",
-			"order": 1,
-			"scheduledAt": "2025-08-17T01:30:00.000Z"
+			"order": 0,
+			"scheduledAt": "2025-08-17T01:30:00.000Z",
+			"placeholder1": "#1 of the quarter-finalists",
+			"placeholder2": "#8 of the quarter-finalists"
 		},
 		{
 			"id": "78",
 			"type": "quarter-final",
-			"order": 2,
-			"scheduledAt": "2025-08-17T01:30:00.000Z"
+			"order": 1,
+			"scheduledAt": "2025-08-17T01:30:00.000Z",
+			"placeholder1": "#3 of the quarter-finalists",
+			"placeholder2": "#6 of the quarter-finalists"
 		},
 		{
 			"id": "79",
 			"type": "quarter-final",
-			"order": 3,
-			"scheduledAt": "2025-08-17T01:30:00.000Z"
+			"order": 2,
+			"scheduledAt": "2025-08-17T01:30:00.000Z",
+			"placeholder1": "#2 of the quarter-finalists",
+			"placeholder2": "#7 of the quarter-finalists"
 		},
 		{
 			"id": "80",
 			"type": "quarter-final",
-			"order": 4,
-			"scheduledAt": "2025-08-17T01:30:00.000Z"
+			"order": 3,
+			"scheduledAt": "2025-08-17T01:30:00.000Z",
+			"placeholder1": "#4 of the quarter-finalists",
+			"placeholder2": "#5 of the quarter-finalists"
 		},
 		{
 			"id": "81",
 			"type": "semi-final",
-			"order": 1,
-			"scheduledAt": "2025-08-17T03:00:00.000Z"
+			"order": 0,
+			"scheduledAt": "2025-08-17T03:00:00.000Z",
+			"placeholder1": "The winner of match #77",
+			"placeholder2": "The winner of match #78"
 		},
 		{
 			"id": "82",
 			"type": "semi-final",
-			"order": 2,
-			"scheduledAt": "2025-08-17T03:00:00.000Z"
+			"order": 1,
+			"scheduledAt": "2025-08-17T03:00:00.000Z",
+			"placeholder1": "The winner of match #79",
+			"placeholder2": "The winner of match #80"
 		},
 		{
 			"id": "83",
 			"type": "final",
 			"order": 0,
-			"scheduledAt": "2025-08-24T01:30:00.000Z"
+			"scheduledAt": "2025-08-24T01:30:00.000Z",
+			"placeholder1": "The winner of match #81",
+			"placeholder2": "The winner of match #82"
 		}
 	]
 }

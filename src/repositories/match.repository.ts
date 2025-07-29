@@ -4,7 +4,7 @@ import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
-import { Match, type Group, GroupMatch, CompletedMatch, ScheduledMatch, type Tournament, type MatchDetails } from "@/interfaces";
+import { Match, type Group, GroupMatch, KnockoutMatch, CompletedMatch, ScheduledMatch, type Tournament, type MatchDetails } from "@/interfaces";
 
 export class MatchRepository extends BaseRepository {
 	async getAllByYear(params: { year: string }): Promise<Match[]> {
@@ -18,9 +18,35 @@ export class MatchRepository extends BaseRepository {
 				const player1Name = match.player1Id ? (await playerRepository.getById(match.player1Id)).name : undefined;
 				const player2Name = match.player2Id ? (await playerRepository.getById(match.player2Id)).name : undefined;
 
-				return { ...match, player1Name, player2Name, name: await this.computeMatchName(match, groups) };
+				return {
+					...match,
+					player1Name,
+					player2Name,
+					name: await this.computeMatchName(match, groups),
+					placeholder1: match.placeholder1 ?? (await this.computePlaceholder(params.year, match, 1)),
+					placeholder2: match.placeholder2 ?? (await this.computePlaceholder(params.year, match, 2))
+				};
 			})
 		);
+	}
+
+	async computePlaceholder(year: string, match: Match, player: 1 | 2) {
+		if (!KnockoutMatch.isInstance(match)) {
+			return undefined;
+		}
+
+		if (match.type === "quarter-final") {
+			const { quarterFinalSelectionRules = [] } = await new TournamentRepository().getByYear(year);
+			const rule = quarterFinalSelectionRules.find(({ targetQuarterFinalMatchOrder }) => targetQuarterFinalMatchOrder === match.order);
+
+			if (!rule) {
+				return undefined;
+			}
+
+			return `Quarter-finalist #${rule[`player${player}Position`]}`;
+		}
+
+		return undefined;
 	}
 
 	async getAllMatchesByGroup(params: { year: string; groupId: string }): Promise<GroupMatch[]> {

@@ -169,12 +169,22 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 			</Card>
 
 			{/* Schedule Tabs */}
-			<Tabs defaultValue="daily" className="space-y-6">
+			<Tabs defaultValue="all" className="space-y-6">
 				<TabsList className="grid w-full grid-cols-3">
+					<TabsTrigger value="all">All Matches</TabsTrigger>
 					<TabsTrigger value="daily">Daily View</TabsTrigger>
 					<TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-					<TabsTrigger value="all">All Matches</TabsTrigger>
 				</TabsList>
+
+				<TabsContent value="all" className="space-y-6">
+					{dates.map((date) => (
+						<div key={date}>
+							<DaySchedule date={date} groups={schedule.groups} matches={matchesByDate[date]} />
+							{date !== dates[dates.length - 1] && <Separator className="my-8" />}
+						</div>
+					))}
+					{unscheduledMatches.length > 0 && <DaySchedule date="unscheduled" groups={schedule.groups} matches={unscheduledMatches} />}
+				</TabsContent>
 
 				<TabsContent value="daily" className="space-y-6">
 					{/* Date Navigation */}
@@ -200,16 +210,6 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 
 				<TabsContent value="upcoming" className="space-y-6">
 					<DaySchedule date="upcoming" groups={schedule.groups} matches={upcomingMatches} />
-				</TabsContent>
-
-				<TabsContent value="all" className="space-y-6">
-					{dates.map((date) => (
-						<div key={date}>
-							<DaySchedule date={date} groups={schedule.groups} matches={matchesByDate[date]} />
-							{date !== dates[dates.length - 1] && <Separator className="my-8" />}
-						</div>
-					))}
-					{unscheduledMatches.length > 0 && <DaySchedule date="unscheduled" groups={schedule.groups} matches={unscheduledMatches} />}
 				</TabsContent>
 			</Tabs>
 		</PageContainer>

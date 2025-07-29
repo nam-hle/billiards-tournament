@@ -7,7 +7,7 @@
 			"startDate": "2025-08-03T01:30:00.000Z",
 			"endDate": "2025-08-24T05:00:00.000Z",
 			"name": "Tournament 2025",
-			"description": " A thrilling return with stronger competition and growing community",
+			"description": "Stronger. Bolder. Bigger. The second chapter of mgm’s billiards tradition returns with rising talents",
 			"venue": "The Billiards Club - 37 Pasteur, Danang",
 			"knockoutAdvanceRules": [
 				{
@@ -18,6 +18,28 @@
 					"count": 2
 				}
 			],
+			"quarterFinalSelectionRules": [
+				{
+					"targetQuarterFinalMatchOrder": 1,
+					"player1Position": 1,
+					"player2Position": 8
+				},
+				{
+					"targetQuarterFinalMatchOrder": 2,
+					"player1Position": 3,
+					"player2Position": 6
+				},
+				{
+					"targetQuarterFinalMatchOrder": 3,
+					"player1Position": 2,
+					"player2Position": 7
+				},
+				{
+					"targetQuarterFinalMatchOrder": 4,
+					"player1Position": 4,
+					"player2Position": 5
+				}
+			],
 			"image": "/tournament-2025.jpg"
 		},
 		{
@@ -26,7 +48,7 @@
 			"startDate": "2024-08-10T01:30:00.000Z",
 			"endDate": "2024-08-25T05:00:00.000Z",
 			"name": "Tournament 2024",
-			"description": "The debut event that launched mgm’s billiards tradition",
+			"description": "The starting point of a story written in focus and finesse—mgm’s first-ever billiards tournament",
 			"venue": "The Billiards Club - 37 Pasteur, Danang",
 			"knockoutAdvanceRules": [
 				{

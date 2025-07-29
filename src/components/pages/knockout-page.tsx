@@ -34,9 +34,9 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 							{/* Player 1 */}
 							<div className="flex items-center justify-between">
 								<PlayerDisplay
-									fallbackName="TBD"
 									avatarClassName="h-6 w-6"
 									containerClassName="gap-2"
+									fallbackName={match.placeholder1}
 									player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
 									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player1Id ? "font-semibold text-green-600" : ""}`}
 								/>
@@ -48,9 +48,9 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 							{/* Player 2 */}
 							<div className="flex items-center justify-between">
 								<PlayerDisplay
-									fallbackName="TBD"
 									avatarClassName="h-6 w-6"
 									containerClassName="gap-2"
+									fallbackName={match.placeholder2}
 									player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
 									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.getWinnerId(match) === match.player2Id ? "font-semibold text-green-600" : ""}`}
 								/>
