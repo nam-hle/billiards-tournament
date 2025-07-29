@@ -4,9 +4,10 @@ import { type ISOTime } from "@/interfaces";
 
 export function CountdownTimer({ targetTime }: { targetTime: ISOTime }) {
 	const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+	const firstRender = React.useRef(true);
 
 	useEffect(() => {
-		const timer = setInterval(() => {
+		function calculateTimeLeft() {
 			const difference = new Date(targetTime).getTime() - new Date().getTime();
 
 			if (difference > 0) {
@@ -19,7 +20,14 @@ export function CountdownTimer({ targetTime }: { targetTime: ISOTime }) {
 			} else {
 				setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 			}
-		}, 1000);
+		}
+
+		if (firstRender.current) {
+			firstRender.current = false;
+			calculateTimeLeft();
+		}
+
+		const timer = setInterval(calculateTimeLeft, 1000);
 
 		return () => clearInterval(timer);
 	}, [targetTime]);

@@ -13,7 +13,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
-import { Match, ISOTime, CompletedMatch, type PlayerStat, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, type PlayerStat, type WithScheduled, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
 
 function RecentMatches({ matches, playerId }: { playerId: string; matches: CompletedMatch[] }) {
 	const router = useRouter();
@@ -123,7 +123,9 @@ function PlayerAchievements({ achievements }: { achievements: PlayerAchievement[
 	);
 }
 
-export function PlayerPage({ playerStat }: { playerStat: PlayerStat }) {
+export function PlayerPage({ playerStat, upcomingMatches }: { playerStat: PlayerStat; upcomingMatches: WithScheduled<DefinedPlayersMatch>[] }) {
+	const router = useRouter();
+
 	return (
 		<PageContainer items={[Links.Players.get(), Links.Players.Player.get(playerStat.id, playerStat.name)]}>
 			{/* Player Header */}
@@ -227,6 +229,48 @@ export function PlayerPage({ playerStat }: { playerStat: PlayerStat }) {
 			</Card>
 
 			<PlayerAchievements achievements={playerStat.achievements} />
+
+			{upcomingMatches && upcomingMatches.length > 0 && (
+				<Card>
+					<CardHeader>
+						<CardTitle>Upcoming Matches</CardTitle>
+						<CardDescription>Next matches scheduled for this player</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>Date</TableHead>
+									<TableHead>Tournament</TableHead>
+									<TableHead>Opponent</TableHead>
+									<TableHead>Stage</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{upcomingMatches.map((match) => (
+									<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
+										<TableCell>{ISOTime.formatDate(match.scheduledAt)}</TableCell>
+										<TableCell>{match.name}</TableCell>
+										<TableCell>
+											<PlayerDisplay
+												player={{
+													id: DefinedPlayersMatch.getOpponentId(match, playerStat.id),
+													name: DefinedPlayersMatch.getOpponentName(match, playerStat.id)
+												}}
+											/>
+										</TableCell>
+										<TableCell>
+											<Badge variant="outline" className="text-xs">
+												{match.type}
+											</Badge>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</CardContent>
+				</Card>
+			)}
 
 			<RecentMatches playerId={playerStat.id} matches={playerStat.recentMatches} />
 		</PageContainer>

@@ -189,4 +189,12 @@ export class PlayerRepository extends BaseRepository {
 
 		return elo.getRatings();
 	}
+
+	async getUpcomingMatches(playerId: string): Promise<ScheduledMatch[]> {
+		const matches = await new MatchRepository().getUpcomingMatchesByPlayer(playerId);
+
+		return matches
+			.filter((match) => ScheduledMatch.isInstance(match) && Match.hasPlayer(match, playerId))
+			.sort(ScheduledMatch.ascendingComparator);
+	}
 }
