@@ -351,7 +351,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 
 			{/* Countdown Timer */}
 			{ScheduledMatch.isInstance(match) && isPending && (
-				<Card className="space-y-12 border-none py-8">
+				<Card className="space-y-8 py-8">
 					<CardHeader>
 						<CardTitle className="flex items-center justify-center gap-2 text-center text-2xl">
 							<Zap className="h-5 w-5" />

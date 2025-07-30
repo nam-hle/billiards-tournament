@@ -37,10 +37,9 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead>ID</TableHead>
-							<TableHead>Date</TableHead>
-							{/*<TableHead>Tournament</TableHead>*/}
-							<TableHead className="text-center">Stage</TableHead>
+							<TableHead className="w-[30px]">ID</TableHead>
+							<TableHead className="w-[180px]">Date</TableHead>
+							<TableHead className="w-[140px] text-center">Type</TableHead>
 							<TableHead>Opponent</TableHead>
 							<TableHead className="text-center">Score</TableHead>
 							<TableHead className="text-center">Result</TableHead>
@@ -245,7 +244,7 @@ export function PlayerPage({
 
 			<PlayerAchievements achievements={playerStat.achievements} />
 
-			{upcomingMatches && upcomingMatches.length > 0 && (
+			{upcomingMatches?.length && (
 				<Card>
 					<CardHeader>
 						<CardTitle>Upcoming Matches</CardTitle>
@@ -255,11 +254,11 @@ export function PlayerPage({
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>Date</TableHead>
-									<TableHead>Type</TableHead>
+									<TableHead className="w-[30px]">ID</TableHead>
+									<TableHead className="w-[180px]">Date</TableHead>
+									<TableHead className="w-[140px] text-center">Type</TableHead>
 									<TableHead>Opponent</TableHead>
-									<TableHead>Stage</TableHead>
-									<TableHead>Win Chance %</TableHead>
+									<TableHead className="text-center">Win Chance %</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
@@ -268,22 +267,18 @@ export function PlayerPage({
 
 									return (
 										<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
-											<TableCell>{ISOTime.formatDate(match.scheduledAt)}</TableCell>
-											<TableCell>{match.name}</TableCell>
-											<TableCell>
-												<PlayerDisplay
-													player={{
-														id: opponentId,
-														name: DefinedPlayersMatch.getOpponentName(match, playerStat.id)
-													}}
-												/>
-											</TableCell>
-											<TableCell>
+											<TableCell className="text-center font-mono">{Match.formatId(match)}</TableCell>
+											<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt)}</TableCell>
+											<TableCell className="text-center">
 												<Badge variant="outline" className="text-xs">
-													{match.type}
+													{match.name}
 												</Badge>
 											</TableCell>
 											<TableCell>
+												<PlayerDisplay player={{ id: opponentId, name: DefinedPlayersMatch.getOpponentName(match, playerStat.id) }} />
+											</TableCell>
+
+											<TableCell className="text-center">
 												{formatRatio(match.player1Id === playerStat.id ? match.prediction.player1WinChance : match.prediction.player2WinChance)}
 											</TableCell>
 										</TableRow>

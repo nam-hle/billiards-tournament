@@ -4,7 +4,18 @@ import { BaseRepository } from "@/repositories/base.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
-import { Match, ISOTime, type Group, GroupMatch, KnockoutMatch, CompletedMatch, ScheduledMatch, type Tournament, type MatchDetails, DefinedPlayersMatch, type WithDefinedPlayers } from "@/interfaces";
+import {
+	Match,
+	type Group,
+	GroupMatch,
+	KnockoutMatch,
+	CompletedMatch,
+	ScheduledMatch,
+	type Tournament,
+	type MatchDetails,
+	DefinedPlayersMatch,
+	type WithDefinedPlayers
+} from "@/interfaces";
 
 export class MatchRepository extends BaseRepository {
 	async getAllByYear(params: { year: string }): Promise<Match[]> {
@@ -180,9 +191,9 @@ export class MatchRepository extends BaseRepository {
 		const prediction =
 			player1 && player2
 				? {
-					player1WinChance: Elo.expectedScore(player1.eloRating, player2.eloRating),
-					player2WinChance: Elo.expectedScore(player2.eloRating, player1.eloRating)
-				}
+						player1WinChance: Elo.expectedScore(player1.eloRating, player2.eloRating),
+						player2WinChance: Elo.expectedScore(player2.eloRating, player1.eloRating)
+					}
 				: undefined;
 
 		const headToHeadMatches = player1 && player2 ? await this.getHeadToHeadMatches({ player1Id: player1.id, player2Id: player2.id }) : [];
@@ -196,25 +207,17 @@ export class MatchRepository extends BaseRepository {
 		for (const tournament of await new TournamentRepository().getAll()) {
 			const tournamentMatches = await this.getAllByYear({ year: tournament.year });
 
-			matches.push(
-				...tournamentMatches.filter(ScheduledMatch.isInstance).filter((match) => match.scheduledAt > new Date().toISOString())
-			);
+			matches.push(...tournamentMatches.filter(ScheduledMatch.isInstance).filter((match) => match.scheduledAt > new Date().toISOString()));
 		}
 
 		return matches.sort(ScheduledMatch.ascendingComparator);
 	}
 
-	async getUpcomingMatchesByPlayer(playerId: string, limit?: number, order: "asc" | "desc" = "asc"): Promise<WithDefinedPlayers<ScheduledMatch>[]> {
+	async getUpcomingMatchesByPlayer(playerId: string): Promise<WithDefinedPlayers<ScheduledMatch>[]> {
 		const upcomingMatches = await this.getAllUpcomingMatches();
 
-		const playerMatches = upcomingMatches.filter((match) => DefinedPlayersMatch.isInstance(match));
-
-		if (limit !== undefined) {
-			return playerMatches.slice(0, limit);
-		}
-
-		const comparator = ISOTime.createComparator(order);
-
-		return playerMatches.sort((matchA, matchB) => comparator(matchA.scheduledAt, matchB.scheduledAt));
+		return upcomingMatches
+			.filter((match): match is WithDefinedPlayers<ScheduledMatch> => DefinedPlayersMatch.isInstance(match) && Match.hasPlayer(match, playerId))
+			.sort(ScheduledMatch.ascendingComparator);
 	}
 }
