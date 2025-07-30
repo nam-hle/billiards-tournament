@@ -111,7 +111,8 @@
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "hnnguyen",
-			"player2Id": "tmdo"
+			"player2Id": "tmdo",
+			"scheduledAt": "2025-08-03T01:45:00.000Z"
 		},
 		{
 			"id": "63",
