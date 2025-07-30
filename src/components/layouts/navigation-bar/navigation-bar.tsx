@@ -4,7 +4,7 @@ import { type Route } from "next";
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { match, compile } from "path-to-regexp";
-import { Menu, Users, Trophy, Target } from "lucide-react";
+import { Menu, Users, Trophy, Target, MessageCircleQuestion } from "lucide-react";
 
 import { Button } from "@/components/shadcn/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/shadcn/sheet";
@@ -30,6 +30,11 @@ const mainPages = [
 		icon: Target,
 		label: "Matches",
 		href: "/matches"
+	},
+	{
+		label: "FAQ",
+		href: "/faq",
+		icon: MessageCircleQuestion
 	}
 ] as const;
 
@@ -135,7 +140,8 @@ function useMainTabs(): Tab[] {
 	return [
 		{ label: "Tournaments", ...createHrefAndMatcher("/tournaments") },
 		{ label: "Players", ...createHrefAndMatcher("/players") },
-		{ label: "Matches", ...createHrefAndMatcher("/matches") }
+		{ label: "Matches", ...createHrefAndMatcher("/matches") },
+		{ label: "FAQ", ...createHrefAndMatcher("/faq") }
 	] as const;
 
 	function createHrefAndMatcher(href: string) {

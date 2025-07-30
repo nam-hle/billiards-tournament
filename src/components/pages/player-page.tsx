@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Star, Users, Award, Crown, Medal, Gauge, Trophy, Target, TrendingUp, ShieldCheck } from "lucide-react";
 
@@ -13,16 +14,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
-import {
-	Match,
-	ISOTime,
-	CompletedMatch,
-	type PlayerStat,
-	type WithScheduled,
-	DefinedPlayersMatch,
-	type PlayerAchievement,
-	type WithMatchPrediction
-} from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, type PlayerStat, type WithScheduled, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
 
 function RecentMatches({ matches, playerId }: { playerId: string; matches: CompletedMatch[] }) {
 	const router = useRouter();
@@ -172,7 +164,9 @@ export function PlayerPage({
 									</div>
 									<div>
 										<p className="text-2xl font-bold">{isNaN(playerStat.eloRating) ? "-" : playerStat.eloRating.toFixed(0)}</p>
-										<p className="text-xs text-muted-foreground">Elo rating</p>
+										<Link href="/faq#how-a-players-elo-rating-is-calculated" className="text-xs text-muted-foreground underline">
+											Elo rating
+										</Link>
 									</div>
 								</div>
 							</CardContent>
