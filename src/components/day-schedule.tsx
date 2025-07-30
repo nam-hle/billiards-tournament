@@ -40,8 +40,8 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 						<TableHeader>
 							<TableRow>
 								<TableHead className="w-[40px] text-center">ID</TableHead>
-								{date === "upcoming" ? <TableHead className="w-[60px]">Date</TableHead> : null}
-								<TableHead className="w-[6px] text-center">Time</TableHead>
+								{date === "upcoming" ? <TableHead className="w-[80px]">Date</TableHead> : null}
+								<TableHead className="w-[6px]">Time</TableHead>
 								<TableHead className="w-[80px] text-center">Type</TableHead>
 								<TableHead className="w-[200px] text-right">Player 1</TableHead>
 								<TableHead className="w-[80px] text-center">Score</TableHead>
@@ -62,7 +62,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 											{date === "upcoming" ? (
 												<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { year: undefined })}</TableCell>
 											) : null}
-											<TableCell className="text-center font-mono text-sm">{ISOTime.formatTime(match.scheduledAt)}</TableCell>
+											<TableCell className="font-mono text-sm">{ISOTime.formatTime(match.scheduledAt)}</TableCell>
 											<TableCell className="text-center">
 												<div className="space-y-1">
 													<Badge variant="outline" className="text-xs">
