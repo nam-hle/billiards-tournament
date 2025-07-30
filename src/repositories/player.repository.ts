@@ -14,7 +14,6 @@ import {
 	type WithScheduled,
 	DefinedPlayersMatch,
 	type PlayerAchievement,
-	type WithMatchPrediction,
 	type PlayerTournamentStat
 } from "@/interfaces";
 
@@ -193,7 +192,7 @@ export class PlayerRepository extends BaseRepository {
 		return elo.getRatings();
 	}
 
-	async getUpComingMatchesWithPredictions(playerId: string): Promise<WithMatchPrediction<WithScheduled<DefinedPlayersMatch>>[]> {
+	async getUpComingMatchesWithPredictions(playerId: string): Promise<WithScheduled<DefinedPlayersMatch & { winChance: number }>[]> {
 		const matches = await new MatchRepository().getUpcomingMatchesByPlayer(playerId);
 		const playerElo = await this.getEloRating(playerId);
 
@@ -204,10 +203,9 @@ export class PlayerRepository extends BaseRepository {
 				const opponentId = match.player1Id === playerId ? match.player2Id : match.player1Id;
 				const opponentElo = await this.getEloRating(opponentId);
 
-				const player1WinChance = Elo.expectedScore(playerElo.eloRating, opponentElo.eloRating);
-				const player2WinChance = Elo.expectedScore(opponentElo.eloRating, playerElo.eloRating);
+				const winChance = Elo.expectedScore(playerElo.eloRating, opponentElo.eloRating);
 
-				return { ...match, prediction: { player1WinChance, player2WinChance } };
+				return { ...match, winChance };
 			})
 		);
 	}

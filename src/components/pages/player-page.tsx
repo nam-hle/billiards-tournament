@@ -136,7 +136,7 @@ export function PlayerPage({
 	upcomingMatches
 }: {
 	playerStat: PlayerStat;
-	upcomingMatches: WithMatchPrediction<WithScheduled<DefinedPlayersMatch>>[];
+	upcomingMatches: WithScheduled<DefinedPlayersMatch & { winChance: number }>[];
 }) {
 	const router = useRouter();
 
@@ -278,9 +278,7 @@ export function PlayerPage({
 												<PlayerDisplay player={{ id: opponentId, name: DefinedPlayersMatch.getOpponentName(match, playerStat.id) }} />
 											</TableCell>
 
-											<TableCell className="text-center">
-												{formatRatio(match.player1Id === playerStat.id ? match.prediction.player1WinChance : match.prediction.player2WinChance)}
-											</TableCell>
+											<TableCell className="text-center">{formatRatio(match.winChance)}</TableCell>
 										</TableRow>
 									);
 								})}
