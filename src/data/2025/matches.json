@@ -20,7 +20,8 @@
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "nhle",
-			"player2Id": "dple"
+			"player2Id": "dple",
+			"scheduledAt": "2025-08-03T01:45:00.000Z"
 		},
 		{
 			"id": "50",
