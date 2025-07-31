@@ -9,7 +9,6 @@ import { ScheduledMatch } from "@/interfaces/scheduled-match.interface";
 import { DefinedPlayersMatch } from "@/interfaces/defined-players-match.interface";
 
 export type CompletedMatchWithTournament = CompletedMatch & { tournament: Tournament };
-export type WithMatchPrediction<T> = T & { prediction: MatchPrediction };
 
 export type MatchDetails = Match & {
 	readonly player1?: PlayerStat;

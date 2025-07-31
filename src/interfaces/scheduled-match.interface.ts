@@ -15,4 +15,20 @@ export namespace ScheduledMatch {
 	export const descendingComparator = (a: ScheduledMatch, b: ScheduledMatch): number => {
 		return ISOTime.createComparator("desc")(a.scheduledAt, b.scheduledAt);
 	};
+
+	export const nullableAscendingComparator = (a: Match, b: Match) => {
+		if (ScheduledMatch.isInstance(a) && ScheduledMatch.isInstance(b)) {
+			return ascendingComparator(a, b);
+		}
+
+		if (ScheduledMatch.isInstance(a)) {
+			return -1;
+		}
+
+		if (ScheduledMatch.isInstance(b)) {
+			return 1;
+		}
+
+		return 0;
+	};
 }

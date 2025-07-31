@@ -15,7 +15,17 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
-import { Match, ISOTime, type Group, CompletedMatch, type Tournament, type GroupMatch, type GroupStanding, DefinedPlayersMatch } from "@/interfaces";
+import {
+	Match,
+	ISOTime,
+	type Group,
+	CompletedMatch,
+	ScheduledMatch,
+	type Tournament,
+	type GroupMatch,
+	type GroupStanding,
+	DefinedPlayersMatch
+} from "@/interfaces";
 
 export function GroupPage(props: {
 	group: Group;
@@ -158,7 +168,7 @@ export function GroupPage(props: {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{matches.map((match) => {
+							{matches.sort(ScheduledMatch.nullableAscendingComparator).map((match) => {
 								const status = Match.getStatus(match);
 
 								return (
