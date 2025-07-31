@@ -13,7 +13,8 @@
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "atvo",
-			"player2Id": "nhle"
+			"player2Id": "nhle",
+			"scheduledAt": "2025-08-06T05:15:00.000Z"
 		},
 		{
 			"id": "49",
