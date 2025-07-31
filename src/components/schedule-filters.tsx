@@ -52,6 +52,7 @@ export function ScheduleFilters({
 					<SelectItem value="all">All Status</SelectItem>
 					<SelectItem value="scheduling">Scheduling</SelectItem>
 					<SelectItem value="scheduled">Scheduled</SelectItem>
+					<SelectItem value="upcoming">Upcoming</SelectItem>
 					<SelectItem value="in-progress">In Progress</SelectItem>
 					<SelectItem value="completed">Completed</SelectItem>
 					<SelectItem value="waiting">Waiting</SelectItem>
