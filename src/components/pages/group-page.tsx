@@ -15,16 +15,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
-import {
-	Match,
-	type Group,
-	CompletedMatch,
-	ScheduledMatch,
-	type Tournament,
-	type GroupMatch,
-	type GroupStanding,
-	DefinedPlayersMatch
-} from "@/interfaces";
+import { Match, ISOTime, type Group, CompletedMatch, type Tournament, type GroupMatch, type GroupStanding, DefinedPlayersMatch } from "@/interfaces";
 
 export function GroupPage(props: {
 	group: Group;
@@ -158,8 +149,9 @@ export function GroupPage(props: {
 						<TableHeader>
 							<TableRow>
 								<TableHead className="w-[50px]">ID</TableHead>
-								<TableHead className="w-[200px]">Time</TableHead>
-								<TableHead>Player 1</TableHead>
+								<TableHead className="w-[140px]">Date</TableHead>
+								<TableHead className="w-[140px]">Time</TableHead>
+								<TableHead className="text-right">Player 1</TableHead>
 								<TableHead className="w-[120px] text-center">Score</TableHead>
 								<TableHead>Player 2</TableHead>
 								<TableHead className="w-[100px] text-center">Status</TableHead>
@@ -172,21 +164,12 @@ export function GroupPage(props: {
 								return (
 									<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
 										<TableCell className="font-mono text-sm">{Match.formatId(match)}</TableCell>
-										<TableCell className="font-mono text-sm">
-											{ScheduledMatch.isInstance(match)
-												? new Date(match.scheduledAt).toLocaleDateString("en-US", {
-														hour12: false,
-														day: "2-digit",
-														hour: "2-digit",
-														month: "2-digit",
-														weekday: "short",
-														minute: "2-digit"
-													})
-												: "TBD"}
-										</TableCell>
+										<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { year: undefined })}</TableCell>
+										<TableCell className="font-mono text-sm">{ISOTime.formatTime(match.scheduledAt)}</TableCell>
 										<TableCell>
 											<PlayerDisplay
 												showAvatar={false}
+												containerClassName="justify-end"
 												highlight={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1Id)}
 												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
 											/>
