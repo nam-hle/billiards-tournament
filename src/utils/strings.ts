@@ -45,6 +45,6 @@ export function getStatusColor(status: string): string {
 		case "scheduled":
 			return "bg-gray-100 text-gray-800 hover:bg-gray-300 hover:text-gray-900";
 		default:
-			return "bg-gray-100 text-gray-800hover:bg-gray-300 hover:text-gray-900 ";
+			return "bg-gray-100 text-gray-800 hover:bg-gray-300 hover:text-gray-900 ";
 	}
 }

@@ -3,10 +3,11 @@
 import React from "react";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
-import { Target, Calendar } from "lucide-react";
+import { Target, Calendar, CircleQuestionMark } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Separator } from "@/components/shadcn/separator";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/shadcn/tooltip";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
@@ -80,8 +81,20 @@ export function GroupPage(props: {
 								<TableHead className="text-center">Racks Lost</TableHead>
 								<TableHead className="text-center">Racks Diff</TableHead>
 								<TableHead className="text-center font-semibold">Points</TableHead>
-								<TableHead className="text-center font-semibold">Top 1 Probability</TableHead>
-								<TableHead className="text-center font-semibold">Top 2 Probability</TableHead>
+								<TableHead className="text-center font-semibold">
+									<div className="flex items-center justify-center gap-1">
+										Advance Probabilities
+										<Tooltip>
+											<TooltipTrigger>
+												<CircleQuestionMark className="h-5 w-5" />
+											</TooltipTrigger>
+											<TooltipContent className="text-muted-foreground">
+												Estimated top 1/top 2 finish probabilities based on completed match results and simulations of remaining matches using current
+												ratings
+											</TooltipContent>
+										</Tooltip>
+									</div>
+								</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -136,12 +149,15 @@ export function GroupPage(props: {
 											{standing.points}
 										</Badge>
 									</TableCell>
-									<TableCell className="text-center">{formatRatio(standing.top1Prob)}</TableCell>
-									<TableCell className="text-center">{formatRatio(standing.top2Prob)}</TableCell>
+									<TableCell className="text-center">
+										{formatRatio(standing.top1Prob)} / {formatRatio(standing.top2Prob)}
+									</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
 					</Table>
+
+					<CardDescription className="mt-3">(*) Highlighted players are expected to advance to the quarter-final stage</CardDescription>
 				</CardContent>
 			</Card>
 

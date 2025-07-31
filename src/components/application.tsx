@@ -2,7 +2,7 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 
-import { Toaster } from "@/components/shadcn/sonner";
+import { TooltipProvider } from "@/components/shadcn/tooltip";
 
 import { Footer } from "@/components/layouts/footer";
 import { ThemeProvider } from "@/components/layouts/theme-provider";
@@ -24,12 +24,13 @@ export const Application: React.FC<Container & { tournaments: TournamentOverview
 
 	return (
 		<ThemeProvider enableSystem attribute="class" defaultTheme="system" disableTransitionOnChange>
-			<div className="mx-auto flex min-h-screen max-w-screen-2xl flex-col px-8">
-				<NavigationBar tournaments={tournaments} />
-				<main className="flex flex-1 flex-col">{children}</main>
-				<Footer />
-			</div>
-			<Toaster expand richColors closeButton duration={10000} position="bottom-left" offset={{ top: "4.5rem" }} />
+			<TooltipProvider>
+				<div className="mx-auto flex min-h-screen max-w-screen-2xl flex-col px-8">
+					<NavigationBar tournaments={tournaments} />
+					<main className="flex flex-1 flex-col">{children}</main>
+					<Footer />
+				</div>
+			</TooltipProvider>
 		</ThemeProvider>
 	);
 };

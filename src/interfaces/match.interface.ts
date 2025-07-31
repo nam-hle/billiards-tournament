@@ -81,11 +81,11 @@ export namespace Match {
 				return "completed";
 			}
 
-			if (match.score1 !== undefined && match.score2 !== undefined) {
-				return "in-progress";
-			}
-
 			if (ScheduledMatch.isInstance(match)) {
+				if (new Date(match.scheduledAt).getTime() < new Date().getTime()) {
+					return "in-progress";
+				}
+
 				return "upcoming";
 			}
 
