@@ -7,7 +7,7 @@ import { match, compile } from "path-to-regexp";
 import { Menu, Users, Trophy, Target, MessageCircleQuestion } from "lucide-react";
 
 import { Button } from "@/components/shadcn/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/shadcn/sheet";
+import { Sheet, SheetTitle, SheetContent, SheetTrigger } from "@/components/shadcn/sheet";
 
 import { Logo } from "@/components/layouts/navigation-bar/logo";
 import { TournamentSwitcher } from "@/components/tournament-switcher";
@@ -76,26 +76,25 @@ const Sidebar = () => {
 					<span className="sr-only">Toggle navigation menu</span>
 				</Button>
 			</SheetTrigger>
-			<SheetContent side="left" className="w-[300px] sm:w-[400px]">
-				<div className="flex flex-col space-y-4">
+			<SheetContent side="left" aria-describedby={undefined} className="w-[300px] space-y-4 sm:w-[400px]">
+				<SheetTitle>
 					<Logo />
+				</SheetTitle>
+				<div className="flex flex-col space-y-2">
+					{mainPages.map((item) => {
+						const Icon = item.icon;
 
-					<nav className="flex flex-col space-y-2">
-						{mainPages.map((item) => {
-							const Icon = item.icon;
-
-							return (
-								<Link
-									key={item.href}
-									href={item.href}
-									onClick={() => setIsOpen(false)}
-									className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-									<Icon className="h-4 w-4" />
-									<span>{item.label}</span>
-								</Link>
-							);
-						})}
-					</nav>
+						return (
+							<Link
+								key={item.href}
+								href={item.href}
+								onClick={() => setIsOpen(false)}
+								className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+								<Icon className="h-4 w-4" />
+								<span>{item.label}</span>
+							</Link>
+						);
+					})}
 				</div>
 			</SheetContent>
 		</Sheet>
