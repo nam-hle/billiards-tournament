@@ -1,7 +1,6 @@
 import { mapValues } from "es-toolkit";
 
 import { assert } from "@/utils";
-import { Elo } from "@/utils/elo";
 import { BaseRepository } from "@/repositories/base.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
@@ -224,8 +223,8 @@ export class GroupRepository extends BaseRepository {
 					player1Id: match.player1Id,
 					player2Id: match.player2Id,
 					raceTo: Match.getRaceScore(match),
-					player2Rating: eloRatings[match.player2Id] ?? Elo.DEFAULT_RATING,
-					player1Rating: eloRatings[match.player1Id] ?? Elo.DEFAULT_RATING
+					player2Rating: eloRatings[match.player2Id],
+					player1Rating: eloRatings[match.player1Id]
 				});
 
 				return { ...match, score1, score2, scheduledAt: "" as ISOTime };

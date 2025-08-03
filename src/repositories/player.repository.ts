@@ -55,7 +55,7 @@ export class PlayerRepository extends BaseRepository {
 
 		const wins = completedMatches.filter((match) => CompletedMatch.isWinner(match, playerId)).length;
 		const losses = completedMatches.length - wins;
-		const { eloRating } = await this.getEloRating(player.id);
+		const { eloRating } = await this.getEloRating({ playerId: player.id });
 
 		return {
 			...player,
@@ -70,7 +70,7 @@ export class PlayerRepository extends BaseRepository {
 		};
 	}
 
-	async getStat(params: { playerId: string }): Promise<PlayerStat> {
+	async getStat(params: { playerId: string; skipLast?: number }): Promise<PlayerStat> {
 		const { playerId } = params;
 		const player = await this.getById(playerId);
 
@@ -109,7 +109,7 @@ export class PlayerRepository extends BaseRepository {
 		const semiFinals = achievements.filter((achievement) => achievement.type === "semi-finalist").length;
 		const quarterFinals = achievements.filter((achievement) => achievement.type === "quarter-finalist").length;
 		const runnerUps = achievements.filter((achievement) => achievement.type === "runner-up").length;
-		const { rank, eloRating } = await this.getEloRating(player.id);
+		const { rank, eloRating } = await this.getEloRating({ ...params, playerId: player.id });
 
 		return {
 			...player,
@@ -169,23 +169,26 @@ export class PlayerRepository extends BaseRepository {
 		return results;
 	}
 
-	async getEloRating(playerId: string): Promise<{ rank: number; eloRating: number }> {
-		const eloRatings = await this.getEloRatings();
+	async getEloRating(params: { playerId: string; skipLast?: number }): Promise<{ rank: number; eloRating: number }> {
+		const eloRatings = await this.getEloRatings(params.skipLast);
 
-		const eloRating = eloRatings[playerId] ?? Elo.DEFAULT_RATING;
+		const eloRating = eloRatings[params.playerId];
 
 		const rank =
 			Object.values(eloRatings)
-				.sort((a, b) => (b ?? Elo.DEFAULT_RATING) - (a ?? Elo.DEFAULT_RATING))
+				.sort((a, b) => b - a)
 				.indexOf(eloRating) + 1;
 
 		return { rank, eloRating };
 	}
 
-	async getEloRatings(): Promise<Record<string, number | undefined>> {
-		const elo = new Elo();
+	async getEloRatings(skipLast?: number): Promise<Record<string, number>> {
+		const players = await this.getAll();
+		const elo = new Elo(players.map((player) => player.id));
 
-		for (const match of (await new MatchRepository().getAllCompletedMatches()).sort(ScheduledMatch.ascendingComparator)) {
+		for (const match of (await new MatchRepository().getAllCompletedMatches())
+			.sort(ScheduledMatch.ascendingComparator)
+			.slice(0, skipLast ? -skipLast : undefined)) {
 			elo.processMatch(CompletedMatch.getWinnerId(match), CompletedMatch.getLoserId(match));
 		}
 
@@ -194,14 +197,14 @@ export class PlayerRepository extends BaseRepository {
 
 	async getUpComingMatchesWithPredictions(playerId: string): Promise<WithScheduled<DefinedPlayersMatch & { winChance: number }>[]> {
 		const matches = await new MatchRepository().getUpcomingMatchesByPlayer(playerId);
-		const playerElo = await this.getEloRating(playerId);
+		const playerElo = await this.getEloRating({ playerId });
 
 		const filteredMatches = matches.filter((match) => ScheduledMatch.isInstance(match) && DefinedPlayersMatch.isInstance(match));
 
 		return Promise.all(
 			filteredMatches.map(async (match) => {
 				const opponentId = match.player1Id === playerId ? match.player2Id : match.player1Id;
-				const opponentElo = await this.getEloRating(opponentId);
+				const opponentElo = await this.getEloRating({ playerId: opponentId });
 
 				const winChance = Elo.expectedScore(playerElo.eloRating, opponentElo.eloRating);
 

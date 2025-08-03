@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, Search } from "lucide-react";
+import { Users, Minus, Search, MoveUp, MoveDown } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Input } from "@/components/shadcn/input";
@@ -19,19 +19,15 @@ import { type PlayerStat } from "@/interfaces";
 
 namespace PlayersPageClient {
 	export interface Props {
-		players: PlayerStat[];
+		players: (PlayerStat & { rankDiff: number })[];
 	}
 }
 
 export function PlayersPageClient(props: PlayersPageClient.Props) {
 	const { players } = props;
 	const [searchTerm, setSearchTerm] = useState("");
-	// const [sortBy, setSortBy] = useState("points");
 
-	// Filter and sort players
-	const filteredPlayers = players
-		.filter((player) => player.name.toLowerCase().includes(searchTerm.toLowerCase()))
-		.sort((a, b) => b.eloRating - a.eloRating);
+	const filteredPlayers = players.filter((player) => player.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
 	return (
 		<PageContainer items={[Links.Players.get()]}>
@@ -45,23 +41,6 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 							<Search className="h-4 w-4 text-muted-foreground" />
 							<Input value={searchTerm} className="w-[250px]" placeholder="Search players..." onChange={(e) => setSearchTerm(e.target.value)} />
 						</div>
-
-						{/*<div className="flex items-center gap-2">*/}
-						{/*	<Filter className="h-4 w-4 text-muted-foreground" />*/}
-						{/*	<span className="text-sm font-medium">Filters:</span>*/}
-						{/*</div>*/}
-
-						{/*<Select value={sortBy} onValueChange={setSortBy}>*/}
-						{/*	<SelectTrigger className="w-[140px]">*/}
-						{/*		<SelectValue placeholder="Sort by" />*/}
-						{/*	</SelectTrigger>*/}
-						{/*	<SelectContent>*/}
-						{/*		<SelectItem value="points">Points</SelectItem>*/}
-						{/*		<SelectItem value="wins">Wins</SelectItem>*/}
-						{/*		<SelectItem value="winRate">Win Rate</SelectItem>*/}
-						{/*		<SelectItem value="name">Name</SelectItem>*/}
-						{/*	</SelectContent>*/}
-						{/*</Select>*/}
 					</div>
 				</CardContent>
 			</Card>
@@ -80,7 +59,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 	);
 }
 
-function PlayersTable({ players }: { players: PlayerStat[] }) {
+function PlayersTable({ players }: { players: (PlayerStat & { rankDiff: number })[] }) {
 	const router = useRouter();
 
 	return (
@@ -95,7 +74,9 @@ function PlayersTable({ players }: { players: PlayerStat[] }) {
 							<TableHead className="text-center">Wins</TableHead>
 							<TableHead className="text-center">Losses</TableHead>
 							<TableHead className="text-center">Win Rate</TableHead>
-							<TableHead className="text-center">Rating</TableHead>
+							<TableHead className="text-center" title="Compared to ranking after previous 10 matches">
+								Rating
+							</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -123,7 +104,13 @@ function PlayersTable({ players }: { players: PlayerStat[] }) {
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">{formatRatio(player.matchWinRate)}</TableCell>
-									<TableCell className="text-center font-bold">{player.eloRating.toFixed(0)}</TableCell>
+									<TableCell className="text-center font-bold">
+										<div className="flex flex-row items-center justify-center gap-1">
+											{player.eloRating.toFixed(0)}
+											{player.rankDiff ? getChangeIcon(player.rankDiff) : null}
+											<span className={`font-mono ${getChangeColor(player.rankDiff)}`}>{Math.abs(player.rankDiff) || ""}</span>
+										</div>
+									</TableCell>
 								</TableRow>
 							))}
 					</TableBody>
@@ -132,3 +119,27 @@ function PlayersTable({ players }: { players: PlayerStat[] }) {
 		</Card>
 	);
 }
+
+const getChangeColor = (diff: number) => {
+	if (diff > 0) {
+		return "text-green-600";
+	}
+
+	if (diff < 0) {
+		return "text-red-600";
+	}
+
+	return "text-gray-500";
+};
+
+const getChangeIcon = (diff: number) => {
+	if (diff > 0) {
+		return <MoveUp className={`h-4 w-4 ${getChangeColor(diff)}`} />;
+	}
+
+	if (diff < 0) {
+		return <MoveDown className={`h-4 w-4 ${getChangeColor(diff)}`} />;
+	}
+
+	return <Minus className={`h-4 w-4 ${getChangeColor(diff)}`} />;
+};

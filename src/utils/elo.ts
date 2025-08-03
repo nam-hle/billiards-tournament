@@ -1,14 +1,18 @@
 export class Elo {
-	private ratings: Record<string, number> = {};
+	private readonly ratings: Record<string, number>;
 	public static readonly DEFAULT_RATING = 1500;
 	public static readonly K = 32;
+
+	public constructor(playerIds: string[]) {
+		this.ratings = Object.fromEntries(playerIds.map((playerId) => [playerId, Elo.DEFAULT_RATING]));
+	}
 
 	public getRatings() {
 		return this.ratings;
 	}
 
 	public getRating(playerId: string): number {
-		return this.ratings[playerId] ?? Elo.DEFAULT_RATING;
+		return this.ratings[playerId];
 	}
 
 	static expectedScore(rA: number, rB: number): number {
