@@ -77,7 +77,7 @@ export default async function TournamentKnockoutPage({ params }: Props) {
 			<Separator />
 
 			{/* Qualified Players */}
-			<QualifiedPlayersList players={qualifiedPlayers} />
+			<QualifiedPlayersList year={year} standings={qualifiedPlayers} />
 		</PageContainer>
 	);
 }

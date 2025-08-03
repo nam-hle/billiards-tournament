@@ -124,6 +124,7 @@ export class GroupRepository extends BaseRepository {
 					rackLosses,
 					matchLosses,
 					groupPosition: 0,
+					groupId: group.id,
 					groupName: group.name,
 					top1Prob: prediction.top1[playerId],
 					top2Prob: prediction.top2[playerId],
@@ -136,7 +137,7 @@ export class GroupRepository extends BaseRepository {
 			.map((standing, index) => ({ ...standing, groupPosition: index + 1 }));
 	}
 
-	async getAdvancedPlayers(params: { year: string }): Promise<GroupStanding[]> {
+	async getAdvancedPlayers(params: { year: string }): Promise<(GroupStanding & { knockoutPosition: number })[]> {
 		const groups = await this.getByYear(params);
 		const groupsStandings = await Promise.all(groups.map((group) => this.getStandings({ ...params, groupId: group.id })));
 
@@ -150,7 +151,9 @@ export class GroupRepository extends BaseRepository {
 			)
 			.flat();
 
-		const comparator = GroupStanding.createComparator([]);
+		const matches = await new MatchRepository().getAllByYear(params);
+
+		const comparator = GroupStanding.createComparator(matches);
 		const bestsOfRule = tournamentInfo.knockoutAdvanceRules.find((rule) => "bestsOf" in rule);
 		const bestsOfPlayers = bestsOfRule
 			? groupsStandings
@@ -159,7 +162,28 @@ export class GroupRepository extends BaseRepository {
 					.slice(0, bestsOfRule.count)
 			: [];
 
-		return [...topPlayers, ...bestsOfPlayers].sort(comparator);
+		const alphabeticalOrderedPlayers = [...topPlayers, ...bestsOfPlayers].sort(comparator);
+
+		const nonAlphabeticalPlayers: (GroupStanding & { knockoutPosition: number })[] = [];
+		const nonAlphabeticalComparator = GroupStanding.createComparator(matches, { orderAlphabetical: false });
+
+		for (let index = 0; index < alphabeticalOrderedPlayers.length; index++) {
+			const currentPlayer = alphabeticalOrderedPlayers[index];
+
+			if (index === 0) {
+				nonAlphabeticalPlayers.push({ ...currentPlayer, knockoutPosition: index + 1 });
+				continue;
+			}
+
+			const previousPlayer = nonAlphabeticalPlayers[index - 1];
+
+			nonAlphabeticalPlayers.push({
+				...currentPlayer,
+				knockoutPosition: nonAlphabeticalComparator(currentPlayer, previousPlayer) === 0 ? previousPlayer.knockoutPosition : index + 1
+			});
+		}
+
+		return nonAlphabeticalPlayers;
 	}
 
 	async updatePrediction(params: { year: string }): Promise<void> {

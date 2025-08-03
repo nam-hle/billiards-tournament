@@ -18,6 +18,7 @@ export interface GroupSummary extends Group {
 }
 
 export interface GroupStanding {
+	groupId: string;
 	playerId: string;
 	groupName: string;
 	playerName: string;
@@ -37,7 +38,9 @@ export interface GroupStanding {
 	top2Prob: number;
 }
 export namespace GroupStanding {
-	export function createComparator(matches: Match[]) {
+	export function createComparator(matches: Match[], options?: { orderAlphabetical?: boolean }) {
+		const orderAlphabetically = options?.orderAlphabetical ?? true;
+
 		return combineComparators<GroupStanding>(
 			(a, b) => b.points - a.points,
 			(a, b) => b.rackWins - b.rackLosses - (a.rackWins - a.rackLosses),
@@ -59,7 +62,7 @@ export namespace GroupStanding {
 
 				return 0;
 			},
-			(a, b) => a.playerName.localeCompare(b.playerName)
+			(a, b) => (orderAlphabetically ? a.playerName.localeCompare(b.playerName) : 0)
 		);
 	}
 }

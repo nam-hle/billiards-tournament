@@ -54,7 +54,9 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 								</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="font-mono">
-										{`${match.score1} - ${match.score2}`}
+										{CompletedMatch.isWinner(match, playerId)
+											? `${CompletedMatch.getWinnerRacksWon(match)} - ${CompletedMatch.getLoserRacksWon(match)}`
+											: `${CompletedMatch.getLoserRacksWon(match)} - ${CompletedMatch.getWinnerRacksWon(match)}`}
 									</Badge>
 								</TableCell>
 								<TableCell className="text-center">

@@ -125,7 +125,15 @@ export function TournamentBracket({ matches }: { matches: KnockoutMatch[] }) {
 	);
 }
 
-export function QualifiedPlayersList({ players }: { players: GroupStanding[] }) {
+export function QualifiedPlayersList({
+	year,
+	standings
+}: {
+	year: string;
+	standings: (GroupStanding & {
+		knockoutPosition: number;
+	})[];
+}) {
 	return (
 		<Card>
 			<CardHeader>
@@ -142,6 +150,7 @@ export function QualifiedPlayersList({ players }: { players: GroupStanding[] }) 
 							<TableHead>Player</TableHead>
 							<TableHead className="text-center">Group</TableHead>
 							<TableHead className="text-center">Group Position</TableHead>
+							<TableHead className="text-center">Played Matches</TableHead>
 							<TableHead className="text-center">Points</TableHead>
 							<TableHead className="text-center">Racks Difference</TableHead>
 							<TableHead className="text-center">Rack Wins</TableHead>
@@ -149,35 +158,42 @@ export function QualifiedPlayersList({ players }: { players: GroupStanding[] }) 
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{players.map((player, playerIndex) => (
-							<TableRow key={player.playerId}>
+						{standings.map((standing) => (
+							<TableRow key={standing.playerId}>
 								<TableCell>
-									<PlayerDisplay player={{ id: player.playerId, name: player.playerName }} />
+									<PlayerDisplay player={{ id: standing.playerId, name: standing.playerName }} />
 								</TableCell>
 								<TableCell className="text-center">
-									<Badge variant="outline">{player.groupName}</Badge>
+									<Link href={`/tournaments/${year}/groups/${standing.groupId}`}>
+										<Badge variant="outline">{standing.groupName}</Badge>
+									</Link>
 								</TableCell>
 								<TableCell className="text-center">
-									<Badge className="font-semibold" variant={player.groupPosition === 1 ? "default" : "secondary"}>
-										{player.groupPosition}
+									<Badge className="font-semibold" variant={standing.groupPosition === 1 ? "default" : "secondary"}>
+										{standing.groupPosition}
+									</Badge>
+								</TableCell>
+								<TableCell className="text-center">
+									<Badge variant="secondary" className="font-semibold">
+										{standing.completedMatches.length}
 									</Badge>
 								</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="default" className="font-semibold">
-										{player.points}
+										{standing.points}
 									</Badge>
 								</TableCell>
 								<TableCell className="text-center">
 									<span
-										className={`text-sm font-medium ${player.racksDifference > 0 ? "text-green-600" : player.racksDifference < 0 ? "text-red-600" : ""}`}>
-										{player.racksDifference}
+										className={`text-sm font-medium ${standing.racksDifference > 0 ? "text-green-600" : standing.racksDifference < 0 ? "text-red-600" : ""}`}>
+										{standing.racksDifference}
 									</span>
 								</TableCell>
 								<TableCell className="text-center">
-									<span className="text-sm font-medium text-green-600">{player.rackWins}</span>
+									<span className="text-sm font-medium text-green-600">{standing.rackWins}</span>
 								</TableCell>
 								<TableCell>
-									<Badge variant="outline">{`#${playerIndex + 1}`}</Badge>
+									<Badge variant="outline">{`#${standing.knockoutPosition}`}</Badge>
 								</TableCell>
 							</TableRow>
 						))}

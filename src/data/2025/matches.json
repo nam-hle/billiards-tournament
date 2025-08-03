@@ -75,7 +75,9 @@
 			"groupId": "A",
 			"player1Id": "dple",
 			"player2Id": "hqnguyen",
-			"scheduledAt": "2025-08-03T02:30:00.000Z"
+			"scheduledAt": "2025-08-03T02:30:00.000Z",
+			"score1": 2,
+			"score2": 5
 		},
 		{
 			"id": "57",
@@ -90,7 +92,9 @@
 			"groupId": "B",
 			"player1Id": "qanguyen",
 			"player2Id": "bvphan",
-			"scheduledAt": "2025-08-03T01:45:00.000Z"
+			"scheduledAt": "2025-08-03T01:45:00.000Z",
+			"score1": 5,
+			"score2": 3
 		},
 		{
 			"id": "59",
