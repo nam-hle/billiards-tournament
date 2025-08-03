@@ -35,7 +35,6 @@ export function getStatusColor(status: string): string {
 			return "bg-pink-100 text-pink-800 hover:bg-pink-300 hover:text-pink-900";
 		case "active":
 		case "ongoing":
-		case "in-progress":
 			return "bg-blue-100 text-blue-800 hover:bg-blue-300 hover:text-blue-900";
 		case "qualified":
 		case "completed":

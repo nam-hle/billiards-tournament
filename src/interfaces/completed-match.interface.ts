@@ -30,6 +30,14 @@ export namespace CompletedMatch {
 		throw new Error("Match is a draw, cannot determine winner ID");
 	}
 
+	export function getOpponentName(match: CompletedMatch, playerId: string): string {
+		if (!Match.hasPlayer(match, playerId)) {
+			throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Id}" and "${match.player2Id}"`);
+		}
+
+		return match.player1Id === playerId ? match.player2Name : match.player1Name;
+	}
+
 	export function getLoserId(match: CompletedMatch): string {
 		return getWinnerId(match) === match.player1Id ? match.player2Id : match.player1Id;
 	}

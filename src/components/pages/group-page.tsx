@@ -2,6 +2,7 @@
 
 import React from "react";
 import { clsx } from "clsx";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Target, Calendar, CircleQuestionMark } from "lucide-react";
 
@@ -81,6 +82,7 @@ export function GroupPage(props: {
 								<TableHead className="text-center">Racks Lost</TableHead>
 								<TableHead className="text-center">Racks Diff</TableHead>
 								<TableHead className="text-center font-semibold">Points</TableHead>
+								<TableHead className="text-center font-semibold">Form</TableHead>
 								<TableHead className="text-center font-semibold">
 									<div className="flex items-center justify-center gap-1">
 										Advance Probabilities
@@ -112,7 +114,7 @@ export function GroupPage(props: {
 											<PlayerDisplay showAvatar={false} player={{ id: standing.playerId, name: standing.playerName }} />
 										</div>
 									</TableCell>
-									<TableCell className="text-center">{standing.totalMatches}</TableCell>
+									<TableCell className="text-center">{standing.completedMatches.length}</TableCell>
 									<TableCell className="text-center">
 										<Badge variant="secondary" className="bg-green-100 text-green-800">
 											{standing.matchWins}
@@ -148,6 +150,26 @@ export function GroupPage(props: {
 										<Badge variant="default" className="font-semibold">
 											{standing.points}
 										</Badge>
+									</TableCell>
+									<TableCell>
+										<div className="flex justify-center gap-1">
+											{standing.completedMatches.map((completedMatch) => {
+												const opponentName = CompletedMatch.getOpponentName(completedMatch, standing.playerId);
+												const isWin = CompletedMatch.isWinner(completedMatch, standing.playerId);
+
+												return (
+													<Link key={completedMatch.id} href={`/matches/${completedMatch.id}`}>
+														<div
+															className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${isWin ? "bg-green-400" : "bg-red-400"}`}
+															title={
+																isWin
+																	? `Won vs ${opponentName}, score ${CompletedMatch.getWinnerRacksWon(completedMatch)}-${CompletedMatch.getLoserRacksWon(completedMatch)}`
+																	: `Lost to ${opponentName}, score ${CompletedMatch.getLoserRacksWon(completedMatch)}-${CompletedMatch.getWinnerRacksWon(completedMatch)}`
+															}></div>
+													</Link>
+												);
+											})}
+										</div>
 									</TableCell>
 									<TableCell className="text-center">
 										{formatRatio(standing.top1Prob)} / {formatRatio(standing.top2Prob)}

@@ -26,7 +26,7 @@ export interface GroupStanding {
 	points: number;
 	matchWins: number;
 	matchLosses: number;
-	totalMatches: number;
+	completedMatches: CompletedMatch[];
 
 	rackWins: number;
 	rackLosses: number;

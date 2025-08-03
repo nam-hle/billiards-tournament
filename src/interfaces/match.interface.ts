@@ -63,7 +63,7 @@ export namespace KnockoutMatch {
 
 export type Match = GroupMatch | KnockoutMatch;
 
-export type MatchStatus = "scheduling" | "scheduled" | "upcoming" | "waiting" | "in-progress" | "completed";
+export type MatchStatus = "scheduling" | "scheduled" | "upcoming" | "waiting" | "ongoing" | "completed";
 export namespace Match {
 	export function findHeadMatch<M extends Match>(matches: M[], player1Id: string, player2Id: string): M | undefined {
 		return matches.find(
@@ -83,7 +83,7 @@ export namespace Match {
 
 			if (ScheduledMatch.isInstance(match)) {
 				if (new Date(match.scheduledAt).getTime() < new Date().getTime()) {
-					return "in-progress";
+					return "ongoing";
 				}
 
 				return "upcoming";

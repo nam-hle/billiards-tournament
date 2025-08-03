@@ -13,6 +13,7 @@ import {
 	type ISOTime,
 	GroupStanding,
 	CompletedMatch,
+	ScheduledMatch,
 	type GroupMatch,
 	type GroupSummary,
 	type WithCompleted,
@@ -87,20 +88,20 @@ export class GroupRepository extends BaseRepository {
 				let matchWins = 0,
 					matchLosses = 0,
 					points = 0,
-					totalMatches = 0,
 					rackWins = 0,
 					rackLosses = 0;
+				const completedMatches: CompletedMatch[] = [];
 
 				for (const match of matches) {
 					if (!Match.hasPlayer(match, playerId)) {
 						continue;
 					}
 
-					totalMatches++;
-
 					if (!CompletedMatch.isInstance(match)) {
 						continue;
 					}
+
+					completedMatches.push(match);
 
 					if (CompletedMatch.isWinner(match, playerId)) {
 						points += 3;
@@ -122,13 +123,13 @@ export class GroupRepository extends BaseRepository {
 					playerName,
 					rackLosses,
 					matchLosses,
-					totalMatches,
 					groupPosition: 0,
 					groupName: group.name,
 					top1Prob: prediction.top1[playerId],
 					top2Prob: prediction.top2[playerId],
 					racksDifference: rackWins - rackLosses,
-					racksWinRate: (rackWins / (rackWins + rackLosses)) * 100
+					racksWinRate: (rackWins / (rackWins + rackLosses)) * 100,
+					completedMatches: completedMatches.sort(ScheduledMatch.ascendingComparator)
 				};
 			})
 			.sort(comparator)
