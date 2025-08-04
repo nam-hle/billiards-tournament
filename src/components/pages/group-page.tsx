@@ -152,7 +152,7 @@ export function GroupPage(props: {
 										</Badge>
 									</TableCell>
 									<TableCell>
-										<div className="flex justify-center gap-1">
+										<div className="flex justify-start gap-1">
 											{standing.completedMatches.map((completedMatch) => {
 												const opponentName = CompletedMatch.getOpponentName(completedMatch, standing.playerId);
 												const isWin = CompletedMatch.isWinner(completedMatch, standing.playerId);
