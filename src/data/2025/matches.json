@@ -164,7 +164,8 @@
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "shvu",
-			"player2Id": "tttran"
+			"player2Id": "tttran",
+			"scheduledAt": "2025-08-04T05:15:00.000Z"
 		},
 		{
 			"id": "69",
@@ -216,7 +217,8 @@
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "ltnguyen",
-			"player2Id": "shvu"
+			"player2Id": "shvu",
+			"scheduledAt": "2025-08-07T05:15:00.000Z"
 		},
 		{
 			"id": "76",
