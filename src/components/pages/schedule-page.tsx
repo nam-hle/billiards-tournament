@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Users, Trophy, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/shadcn/button";
-import { Separator } from "@/components/shadcn/separator";
 import { Card, CardContent } from "@/components/shadcn/card";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/tabs";
 
@@ -168,10 +167,7 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 
 				<TabsContent value="all" className="space-y-6">
 					{dates.map((date) => (
-						<div key={date}>
-							<DaySchedule date={date} groups={schedule.groups} matches={matchesByDate[date]} />
-							{date !== dates[dates.length - 1] && <Separator className="my-8" />}
-						</div>
+						<DaySchedule key={date} date={date} groups={schedule.groups} matches={matchesByDate[date]} />
 					))}
 					{unscheduledMatches.length > 0 && <DaySchedule date="unscheduled" groups={schedule.groups} matches={unscheduledMatches} />}
 				</TabsContent>

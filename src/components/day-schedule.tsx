@@ -8,7 +8,7 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { PlayerDisplay } from "@/components/player-display";
 
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { Match, ISOTime, type Group, CompletedMatch, DefinedPlayersMatch } from "@/interfaces";
+import { Match, ISOTime, type Group, CompletedMatch, ScheduledMatch, DefinedPlayersMatch } from "@/interfaces";
 
 export function DaySchedule({ date, matches }: { date: string; matches: Match[]; groups: Pick<Group, "id" | "name">[] }) {
 	const router = useRouter();
@@ -50,56 +50,54 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{matches
-								// .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())
-								.map((match) => {
-									const winnerId = CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
-									const winner = winnerId !== undefined ? (match.player1Id === winnerId ? "player1" : "player2") : null;
+							{matches.sort(ScheduledMatch.nullableAscendingComparator).map((match) => {
+								const winnerId = CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
+								const winner = winnerId !== undefined ? (match.player1Id === winnerId ? "player1" : "player2") : null;
 
-									return (
-										<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
-											<TableCell className="text-center font-mono text-sm">{Match.formatId(match)}</TableCell>
-											{date === "upcoming" ? (
-												<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { year: undefined })}</TableCell>
-											) : null}
-											<TableCell className="font-mono text-sm">{ISOTime.formatTime(match.scheduledAt)}</TableCell>
-											<TableCell className="text-center">
-												<div className="space-y-1">
-													<Badge variant="outline" className="text-xs">
-														{match.name}
-													</Badge>
-												</div>
-											</TableCell>
-											<TableCell className="text-right">
-												<PlayerDisplay
-													showAvatar={false}
-													highlight={winner === "player1"}
-													containerClassName="justify-end"
-													player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
-												/>
-											</TableCell>
-											<TableCell className="text-center">
-												{match.score1 != null && match.score2 != null ? (
-													<Badge variant="outline" className="font-mono">
-														{match.score1} : {match.score2}
-													</Badge>
-												) : (
-													<span className="text-muted-foreground">-</span>
-												)}
-											</TableCell>
-											<TableCell>
-												<PlayerDisplay
-													showAvatar={false}
-													highlight={winner === "player2"}
-													player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
-												/>
-											</TableCell>
-											<TableCell className="text-center">
-												<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
-											</TableCell>
-										</TableRow>
-									);
-								})}
+								return (
+									<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
+										<TableCell className="text-center font-mono text-sm">{Match.formatId(match)}</TableCell>
+										{date === "upcoming" ? (
+											<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { year: undefined })}</TableCell>
+										) : null}
+										<TableCell className="font-mono text-sm">{ISOTime.formatTime(match.scheduledAt)}</TableCell>
+										<TableCell className="text-center">
+											<div className="space-y-1">
+												<Badge variant="outline" className="text-xs">
+													{match.name}
+												</Badge>
+											</div>
+										</TableCell>
+										<TableCell className="text-right">
+											<PlayerDisplay
+												showAvatar={false}
+												highlight={winner === "player1"}
+												containerClassName="justify-end"
+												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
+											/>
+										</TableCell>
+										<TableCell className="text-center">
+											{match.score1 != null && match.score2 != null ? (
+												<Badge variant="outline" className="font-mono">
+													{match.score1} : {match.score2}
+												</Badge>
+											) : (
+												<span className="text-muted-foreground">-</span>
+											)}
+										</TableCell>
+										<TableCell>
+											<PlayerDisplay
+												showAvatar={false}
+												highlight={winner === "player2"}
+												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
+											/>
+										</TableCell>
+										<TableCell className="text-center">
+											<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
+										</TableCell>
+									</TableRow>
+								);
+							})}
 						</TableBody>
 					</Table>
 				</CardContent>
