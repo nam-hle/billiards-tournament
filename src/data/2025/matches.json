@@ -223,7 +223,8 @@
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "thnguyen",
-			"player2Id": "ltnguyen"
+			"player2Id": "ltnguyen",
+			"scheduledAt": "2025-08-06T05:00:00.000Z"
 		},
 		{
 			"id": "77",
