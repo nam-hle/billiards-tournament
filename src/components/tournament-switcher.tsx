@@ -13,10 +13,10 @@ import { Command, CommandItem, CommandList, CommandEmpty, CommandGroup, CommandI
 
 import { cn } from "@/utils/cn";
 import { extractTournamentId } from "@/utils/paths";
+import { type TournamentSummary } from "@/interfaces";
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { type Tournament, type TournamentOverview } from "@/interfaces";
 
-export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }> = ({ tournaments }) => {
+export const TournamentSwitcher: React.FC<{ tournaments: TournamentSummary[] }> = ({ tournaments }) => {
 	const [open, setOpen] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
 	const router = useRouter();
@@ -25,7 +25,7 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 	const currentTournamentId = extractTournamentId(pathname);
 	const currentTournament = tournaments.find((t) => t.year === currentTournamentId);
 
-	const handleTournamentSelect = (tournament: Tournament) => {
+	const handleTournamentSelect = (tournament: TournamentSummary) => {
 		if (tournament.id === currentTournamentId) {
 			return;
 		}
@@ -91,35 +91,13 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 						{activeTournaments.length > 0 && (
 							<CommandGroup heading="Active Tournaments">
 								{activeTournaments.map((tournament) => (
-									<CommandItem
+									<TournamentCommandItem
 										key={tournament.id}
-										className="flex items-center gap-2 px-2 py-2"
-										value={`${tournament.name} ${tournament.year}`}
-										onSelect={() => handleTournamentSelect(tournament)}>
-										<Avatar className="h-6 w-6">
-											<AvatarFallback className="bg-blue-100 text-xs text-blue-600">{tournament.year.slice(-2)}</AvatarFallback>
-										</Avatar>
-										<div className="flex min-w-0 flex-1 flex-col">
-											<div className="flex items-center gap-2">
-												<span className="truncate text-sm font-medium">{tournament.name}</span>
-												<Badge variant="secondary" className={cn("px-1.5 py-0.5 text-xs", getStatusColor(tournament.status))}>
-													{toLabel(tournament.status)}
-												</Badge>
-											</div>
-											<div className="flex items-center gap-3 text-xs text-muted-foreground">
-												<span>{tournament.year}</span>
-												<div className="flex items-center gap-1">
-													<Users className="h-3 w-3" />
-													{tournament.totalPlayers}
-												</div>
-												<div className="flex items-center gap-1">
-													<Trophy className="h-3 w-3" />
-													{tournament.totalGroups}
-												</div>
-											</div>
-										</div>
-										<Check className={cn("ml-auto h-4 w-4", currentTournament.id === tournament.id ? "opacity-100" : "opacity-0")} />
-									</CommandItem>
+										tournament={tournament}
+										className="bg-blue-100 text-blue-600"
+										currentTournamentId={currentTournament.id}
+										onTournamentChange={handleTournamentSelect}
+									/>
 								))}
 							</CommandGroup>
 						)}
@@ -130,35 +108,13 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 								{activeTournaments.length > 0 && <CommandSeparator />}
 								<CommandGroup heading="Upcoming Tournaments">
 									{upcomingTournaments.map((tournament) => (
-										<CommandItem
+										<TournamentCommandItem
 											key={tournament.id}
-											className="flex items-center gap-2 px-2 py-2"
-											value={`${tournament.name} ${tournament.year}`}
-											onSelect={() => handleTournamentSelect(tournament)}>
-											<Avatar className="h-6 w-6">
-												<AvatarFallback className="bg-gray-100 text-xs text-gray-600">{tournament.year.slice(-2)}</AvatarFallback>
-											</Avatar>
-											<div className="flex min-w-0 flex-1 flex-col">
-												<div className="flex items-center gap-2">
-													<span className="truncate text-sm font-medium">{tournament.name}</span>
-													<Badge variant="secondary" className={cn("px-1.5 py-0.5 text-xs", getStatusColor(tournament.status))}>
-														{toLabel(tournament.status)}
-													</Badge>
-												</div>
-												<div className="flex items-center gap-3 text-xs text-muted-foreground">
-													<span>{tournament.year}</span>
-													<div className="flex items-center gap-1">
-														<Users className="h-3 w-3" />
-														{tournament.totalPlayers}
-													</div>
-													<div className="flex items-center gap-1">
-														<Trophy className="h-3 w-3" />
-														{tournament.totalGroups}
-													</div>
-												</div>
-											</div>
-											<Check className={cn("ml-auto h-4 w-4", currentTournament.id === tournament.id ? "opacity-100" : "opacity-0")} />
-										</CommandItem>
+											tournament={tournament}
+											className="bg-gray-100 text-gray-600"
+											currentTournamentId={currentTournament.id}
+											onTournamentChange={handleTournamentSelect}
+										/>
 									))}
 								</CommandGroup>
 							</>
@@ -170,35 +126,13 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 								{(activeTournaments.length > 0 || upcomingTournaments.length > 0) && <CommandSeparator />}
 								<CommandGroup heading="Completed Tournaments">
 									{completedTournaments.map((tournament) => (
-										<CommandItem
+										<TournamentCommandItem
 											key={tournament.id}
-											className="flex items-center gap-2 px-2 py-2"
-											value={`${tournament.name} ${tournament.year}`}
-											onSelect={() => handleTournamentSelect(tournament)}>
-											<Avatar className="h-6 w-6">
-												<AvatarFallback className="bg-green-100 text-xs text-green-600">{tournament.year.slice(-2)}</AvatarFallback>
-											</Avatar>
-											<div className="flex min-w-0 flex-1 flex-col">
-												<div className="flex items-center gap-2">
-													<span className="truncate text-sm font-medium">{tournament.name}</span>
-													<Badge variant="secondary" className={cn("px-1.5 py-0.5 text-xs", getStatusColor(tournament.status))}>
-														{toLabel(tournament.status)}
-													</Badge>
-												</div>
-												<div className="flex items-center gap-3 text-xs text-muted-foreground">
-													<span>{tournament.year}</span>
-													<div className="flex items-center gap-1">
-														<Users className="h-3 w-3" />
-														{tournament.totalPlayers}
-													</div>
-													<div className="flex items-center gap-1">
-														<Trophy className="h-3 w-3" />
-														{tournament.totalGroups}
-													</div>
-												</div>
-											</div>
-											<Check className={cn("ml-auto h-4 w-4", currentTournament.id === tournament.id ? "opacity-100" : "opacity-0")} />
-										</CommandItem>
+											tournament={tournament}
+											className="bg-green-100 text-green-600"
+											currentTournamentId={currentTournament.id}
+											onTournamentChange={handleTournamentSelect}
+										/>
 									))}
 								</CommandGroup>
 							</>
@@ -207,5 +141,44 @@ export const TournamentSwitcher: React.FC<{ tournaments: TournamentOverview[] }>
 				</Command>
 			</PopoverContent>
 		</Popover>
+	);
+};
+
+const TournamentCommandItem: React.FC<{
+	className: string;
+	currentTournamentId: string;
+	tournament: TournamentSummary;
+	onTournamentChange: (tournament: TournamentSummary) => void;
+}> = ({ className, tournament, onTournamentChange, currentTournamentId }) => {
+	return (
+		<CommandItem
+			key={tournament.id}
+			className="flex items-center gap-2 px-2 py-2"
+			value={`${tournament.name} ${tournament.year}`}
+			onSelect={() => onTournamentChange(tournament)}>
+			<Avatar className="h-6 w-6">
+				<AvatarFallback className={cn("text-xs", className)}>{tournament.year.slice(-2)}</AvatarFallback>
+			</Avatar>
+			<div className="flex min-w-0 flex-1 flex-col">
+				<div className="flex items-center gap-2">
+					<span className="truncate text-sm font-medium">{tournament.name}</span>
+					<Badge variant="secondary" className={cn("px-1.5 py-0.5 text-xs", getStatusColor(tournament.status))}>
+						{toLabel(tournament.status)}
+					</Badge>
+				</div>
+				<div className="flex items-center gap-3 text-xs text-muted-foreground">
+					<span>{tournament.year}</span>
+					<div className="flex items-center gap-1">
+						<Users className="h-3 w-3" />
+						{tournament.players.length}
+					</div>
+					<div className="flex items-center gap-1">
+						<Trophy className="h-3 w-3" />
+						{tournament.groups.length}
+					</div>
+				</div>
+			</div>
+			<Check className={cn("ml-auto h-4 w-4", currentTournamentId === tournament.id ? "opacity-100" : "opacity-0")} />
+		</CommandItem>
 	);
 };

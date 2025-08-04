@@ -25,18 +25,18 @@ import {
 	type Player,
 	ScheduledMatch,
 	CompletedMatch,
-	type PlayerStat,
 	type MatchDetails,
 	DefinedPlayersMatch,
+	type PlayerOverallStat,
 	type CompletedMatchWithTournament
 } from "@/interfaces";
 
 function MatchResult({ match }: { match: MatchDetails }) {
-	if (!CompletedMatch.isInstance(match) || !match.player1 || !match.player2) {
+	if (!CompletedMatch.isInstance(match) || !match.player1Stat || !match.player2Stat) {
 		return null;
 	}
 
-	const winner = CompletedMatch.isWinner(match, match.player1.id) ? match.player1 : match.player2;
+	const winner = CompletedMatch.isWinner(match, match.player1Stat.id) ? match.player1Stat : match.player2Stat;
 
 	return (
 		<Card className="border-green-200 bg-gradient-to-r from-green-50 to-green-100">
@@ -56,34 +56,34 @@ function MatchResult({ match }: { match: MatchDetails }) {
 
 					{/* Final Score */}
 					<div className="flex items-center justify-center gap-8">
-						<Link href={`/players/${match.player1Id}`}>
+						<Link href={`/players/${match.player1.id}`}>
 							<div className="text-center">
 								<Avatar className="mx-auto mb-2 h-16 w-16">
-									<AvatarImage alt={match.player1.name} />
-									<AvatarFallback className={getRandomGradient(match.player1Name)}>{getAbbrName(match.player1.name)}</AvatarFallback>
+									<AvatarImage alt={match.player1Stat.name} />
+									<AvatarFallback className={getRandomGradient(match.player1.name)}>{getAbbrName(match.player1Stat.name)}</AvatarFallback>
 								</Avatar>
-								<div className="font-medium">{match.player1.name}</div>
+								<div className="font-medium">{match.player1Stat.name}</div>
 							</div>
 						</Link>
 
 						<div className="text-center">
 							<div className="mb-2 text-4xl font-bold">
-								<span className={winner.id === match.player1.id ? "text-green-600" : "text-gray-600"}>{match.score1}</span>
+								<span className={winner.id === match.player1Stat.id ? "text-green-600" : "text-gray-600"}>{match.score1}</span>
 								<span className="mx-2 text-gray-400">-</span>
-								<span className={winner.id === match.player2.id ? "text-green-600" : "text-gray-600"}>{match.score2}</span>
+								<span className={winner.id === match.player2Stat.id ? "text-green-600" : "text-gray-600"}>{match.score2}</span>
 							</div>
 							<Badge variant="outline" className="text-sm">
 								Final Score
 							</Badge>
 						</div>
 
-						<Link href={`/players/${match.player2Id}`}>
+						<Link href={`/players/${match.player2.id}`}>
 							<div className="text-center">
 								<Avatar className="mx-auto mb-2 h-16 w-16">
-									<AvatarImage alt={match.player2.name} />
-									<AvatarFallback className={getRandomGradient(match.player2Name)}>{getAbbrName(match.player2.name)}</AvatarFallback>
+									<AvatarImage alt={match.player2Stat.name} />
+									<AvatarFallback className={getRandomGradient(match.player2.name)}>{getAbbrName(match.player2.name)}</AvatarFallback>
 								</Avatar>
-								<div className="font-medium">{match.player2.name}</div>
+								<div className="font-medium">{match.player2Stat.name}</div>
 							</div>
 						</Link>
 					</div>
@@ -93,7 +93,7 @@ function MatchResult({ match }: { match: MatchDetails }) {
 	);
 }
 
-function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?: boolean; isPlayer1?: boolean }) {
+function PlayerCard({ player, isWinner }: { isWinner?: boolean; isPlayer1?: boolean; player: PlayerOverallStat }) {
 	return (
 		<Card className={isWinner ? "bg-green-50 ring-2 ring-green-400" : ""}>
 			<CardContent className="pt-6">
@@ -143,9 +143,9 @@ function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?: boole
 }
 
 function WinPrediction(props: { match: MatchDetails }) {
-	const { player2, player1, prediction } = props.match;
+	const { player1, player2, prediction, player1Stat, player2Stat } = props.match;
 
-	if (!prediction || !player1 || !player2) {
+	if (!prediction || !player1 || !player2 || !player1Stat || !player2Stat) {
 		return null;
 	}
 
@@ -262,7 +262,7 @@ export function HeadToHeadHistory({
 	);
 }
 
-function RecentForm({ player }: { player: PlayerStat }) {
+function RecentForm({ player }: { player: PlayerOverallStat }) {
 	return (
 		<Card>
 			<CardHeader>
@@ -326,7 +326,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 
 						<div className="flex justify-center gap-2 text-sm">
 							<Badge variant="outline">{match.tournament.name}</Badge>
-							<Badge variant="outline">{match.name}</Badge>
+							<Badge variant="outline">{Match.getName(match)}</Badge>
 							<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
 						</div>
 
@@ -380,41 +380,41 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 				</Card>
 			)}
 
-			{match.player1 && match.player2 && isPending && (
+			{match.player1Stat && match.player2Stat && isPending && (
 				<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 					<PlayerCard
 						isPlayer1
-						player={match.player1}
-						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1.id)}
+						player={match.player1Stat}
+						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1Stat.id)}
 					/>
 					<PlayerCard
 						isPlayer1={false}
-						player={match.player2}
-						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2.id)}
+						player={match.player2Stat}
+						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2Stat.id)}
 					/>
 				</div>
 			)}
 
 			{isPending && <WinPrediction match={match} />}
 
-			{isPending && match.player1 && match.player2 && (
+			{isPending && match.player1Stat && match.player2Stat && (
 				<Tabs className="space-y-6" defaultValue="head-to-head">
 					<TabsList className="grid w-full grid-cols-3">
-						<TabsTrigger value="form1">{match.player1.name}</TabsTrigger>
+						<TabsTrigger value="form1">{match.player1Stat.name}</TabsTrigger>
 						<TabsTrigger value="head-to-head">Head-to-Head</TabsTrigger>
-						<TabsTrigger value="form2">{match.player2.name}</TabsTrigger>
+						<TabsTrigger value="form2">{match.player2Stat.name}</TabsTrigger>
 					</TabsList>
 
 					<TabsContent value="form1">
-						<RecentForm player={match.player1} />
+						<RecentForm player={match.player1Stat} />
 					</TabsContent>
 
 					<TabsContent value="head-to-head">
-						<HeadToHeadHistory player1={match.player1} player2={match.player2} headToHeadMatches={match.headToHeadMatches} />
+						<HeadToHeadHistory player2={match.player2Stat} player1={match.player1Stat} headToHeadMatches={match.headToHeadMatches} />
 					</TabsContent>
 
 					<TabsContent value="form2">
-						<RecentForm player={match.player2} />
+						<RecentForm player={match.player2Stat} />
 					</TabsContent>
 				</Tabs>
 			)}

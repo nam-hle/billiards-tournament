@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { sumBy } from "es-toolkit";
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar";
 
@@ -39,7 +40,7 @@ const gradientClasses = [
 ];
 
 export function getRandomGradient(seed: string) {
-	const hash = [...seed].reduce((acc, c) => acc + c.charCodeAt(0), 0);
+	const hash = sumBy([...seed], (char) => char.charCodeAt(0));
 
 	return `text-white ${gradientClasses[hash % gradientClasses.length]}`;
 }

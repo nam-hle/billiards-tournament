@@ -16,7 +16,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { Match, ISOTime, type TournamentData, DefinedPlayersMatch, type TournamentOverview } from "@/interfaces";
+import { Match, ISOTime, DefinedPlayersMatch, type TournamentSummary } from "@/interfaces";
 
 function NavigationCards({ year }: { year: string }) {
 	const navigationItems = [
@@ -66,7 +66,7 @@ function NavigationCards({ year }: { year: string }) {
 	);
 }
 
-function TournamentStats({ overview }: { overview: TournamentOverview }) {
+function TournamentStats({ tournament }: { tournament: TournamentSummary }) {
 	return (
 		<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
 			<Card>
@@ -76,7 +76,7 @@ function TournamentStats({ overview }: { overview: TournamentOverview }) {
 							<Users className="h-4 w-4 text-blue-600" />
 						</div>
 						<div>
-							<p className="text-2xl font-bold">{overview.totalPlayers}</p>
+							<p className="text-2xl font-bold">{tournament.players.length}</p>
 							<p className="text-xs text-muted-foreground">Players</p>
 						</div>
 					</div>
@@ -90,7 +90,7 @@ function TournamentStats({ overview }: { overview: TournamentOverview }) {
 							<Target className="h-4 w-4 text-green-600" />
 						</div>
 						<div>
-							<p className="text-2xl font-bold">{overview.totalGroups}</p>
+							<p className="text-2xl font-bold">{tournament.groups.length}</p>
 							<p className="text-xs text-muted-foreground">Groups</p>
 						</div>
 					</div>
@@ -105,7 +105,7 @@ function TournamentStats({ overview }: { overview: TournamentOverview }) {
 						</div>
 						<div>
 							<p className="text-2xl font-bold">
-								{overview.completedMatches}/{overview.totalMatches}
+								{tournament.completedMatches.length}/{tournament.matches.length}
 							</p>
 							<p className="text-xs text-muted-foreground">Matches</p>
 						</div>
@@ -130,48 +130,61 @@ function TournamentStats({ overview }: { overview: TournamentOverview }) {
 	);
 }
 
-export function TournamentPage({ data }: { data: TournamentData }) {
-	const { groups, overview, topPlayers, recentMatches, upcomingMatches } = data;
-	const { year } = overview;
+export function TournamentPage({ tournament }: { tournament: TournamentSummary }) {
+	const {
+		name,
+		year,
+		venue,
+		groups,
+		status,
+		endTime,
+		matches,
+		startTime,
+		description,
+		topStandings,
+		recentMatches,
+		upcomingMatches,
+		completedMatches
+	} = tournament;
 
-	const completionPercentage = (overview.completedMatches / overview.totalMatches) * 100;
+	const completionPercentage = (completedMatches.length / matches.length) * 100;
 
 	return (
-		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, data.overview.name)]}>
+		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, tournament.name)]}>
 			{/* Tournament Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">
 					<Image width={56} height={56} src="/billiards-logo.svg" alt="Billiards Tournament Logo" />
 					<div>
-						<h1 className="text-4xl font-bold tracking-tight">{overview.name}</h1>
+						<h1 className="text-4xl font-bold tracking-tight">{name}</h1>
 					</div>
 				</div>
 
 				<div className="flex justify-center">
-					<Badge variant="secondary" className={getStatusColor(overview.status)}>
-						{toLabel(overview.status)}
+					<Badge variant="secondary" className={getStatusColor(status)}>
+						{toLabel(status)}
 					</Badge>
 				</div>
 
-				<p className="mx-auto max-w-3xl text-muted-foreground">{overview.description}</p>
+				<p className="mx-auto max-w-3xl text-muted-foreground">{description}</p>
 
 				<div className="flex justify-center gap-8 text-sm text-muted-foreground">
 					<div className="flex items-center gap-1">
 						<Calendar className="h-4 w-4" />
-						{new Date(overview.startDate).toLocaleDateString()} - {new Date(overview.endDate).toLocaleDateString()}
+						{new Date(startTime).toLocaleDateString()} - {new Date(endTime).toLocaleDateString()}
 					</div>
 					<div className="flex items-center gap-1">
 						<MapPin className="h-4 w-4" />
-						{overview.venue}
+						{venue}
 					</div>
 				</div>
 			</div>
 
 			{/* Tournament Stats */}
-			<TournamentStats overview={overview} />
+			<TournamentStats tournament={tournament} />
 
 			{/* Countdown Timer */}
-			{overview.status === "upcoming" && (
+			{status === "upcoming" && (
 				<Card className="space-y-12 border-none py-8">
 					<CardHeader>
 						<CardTitle className="flex items-center justify-center gap-2 text-center">
@@ -180,13 +193,13 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<CountdownTimer targetTime={overview.startDate} />
+						<CountdownTimer targetTime={startTime} />
 					</CardContent>
 				</Card>
 			)}
 
 			{/* Tournament Progress */}
-			{overview.status === "ongoing" && (
+			{status === "ongoing" && (
 				<Card>
 					<CardHeader>
 						<CardTitle className="flex items-center gap-2">
@@ -203,7 +216,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 							</div>
 							<Progress className="h-3" value={completionPercentage} />
 							<p className="text-xs text-muted-foreground">
-								{overview.completedMatches} of {overview.totalMatches} matches completed
+								{completedMatches.length} of {matches.length} matches completed
 							</p>
 						</div>
 					</CardContent>
@@ -246,19 +259,19 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{topPlayers.map((player, index) => (
-									<TableRow key={player.name}>
+								{topStandings.map((standing, index) => (
+									<TableRow key={standing.player.name}>
 										<TableCell>
 											<Badge variant={index === 0 ? "default" : "outline"} className="flex h-6 w-6 items-center justify-center p-0 text-xs">
 												{index + 1}
 											</Badge>
 										</TableCell>
 										<TableCell className="font-medium">
-											<PlayerDisplay player={player} showAvatar={false} />
+											<PlayerDisplay showAvatar={false} player={standing.player} />
 										</TableCell>
-										<TableCell className="text-center">{player.wins}</TableCell>
+										<TableCell className="text-center">{standing.matchWins}</TableCell>
 										<TableCell className="text-center">
-											<Badge variant="secondary">{player.points}</Badge>
+											<Badge variant="secondary">{standing.points}</Badge>
 										</TableCell>
 									</TableRow>
 								))}
@@ -287,7 +300,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 					<CardContent>
 						<div className="space-y-4">
 							{groups.map((group) => (
-								<Link passHref key={group.id} className="flex" href={`/tournaments/${year}/groups/${group.id}`}>
+								<Link passHref key={group.id} className="flex" href={`/tournaments/${year}/groups/${group.name}`}>
 									<div className="flex w-full items-center justify-between rounded-lg border p-3 hover:bg-accent">
 										<div className="flex items-center gap-3">
 											<Badge variant="outline">{group.name}</Badge>
@@ -334,7 +347,7 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 					<CardContent>
 						<div className="space-y-4">
 							{recentMatches.map((match) => {
-								const { id, name, score1, score2, player2Name, player1Name } = match;
+								const { id, score1, score2, player1, player2 } = match;
 
 								return (
 									<Link
@@ -348,14 +361,14 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 													{Match.formatId(match)}
 												</Badge>
 												<Badge variant="outline" className="text-xs">
-													{name}
+													{Match.getName(match)}
 												</Badge>
 												<span className="text-xs text-muted-foreground">{ISOTime.formatDateTime(match.scheduledAt)}</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<span className="font-medium">{player1Name}</span>
+												<span className="font-medium">{player1.name}</span>
 												<span className="text-muted-foreground">vs</span>
-												<span className="font-medium">{player2Name}</span>
+												<span className="font-medium">{player2.name}</span>
 											</div>
 										</div>
 										<div className="text-right">
@@ -394,14 +407,14 @@ export function TournamentPage({ data }: { data: TournamentData }) {
 													{Match.formatId(match)}
 												</Badge>
 												<Badge variant="outline" className="text-xs">
-													{match.name}
+													{Match.getName(match)}
 												</Badge>
 												<span className="text-xs text-muted-foreground">{ISOTime.formatDateTime(match.scheduledAt)}</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player1Name : "TBD"}</span>
+												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player1.name : "TBD"}</span>
 												<span className="text-muted-foreground">vs</span>
-												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player2Name : "TBD"}</span>
+												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player2.name : "TBD"}</span>
 											</div>
 										</div>
 									</Link>

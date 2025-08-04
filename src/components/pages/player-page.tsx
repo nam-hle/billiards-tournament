@@ -14,7 +14,15 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
-import { Match, ISOTime, CompletedMatch, type PlayerStat, type WithScheduled, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
+import {
+	Match,
+	ISOTime,
+	CompletedMatch,
+	type WithScheduled,
+	DefinedPlayersMatch,
+	type PlayerOverallStat,
+	type PlayerAchievement
+} from "@/interfaces";
 
 function RecentMatches({ matches, playerId }: { playerId: string; matches: CompletedMatch[] }) {
 	const router = useRouter();
@@ -44,7 +52,7 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 								<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt)}</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="text-xs">
-										{match.name}
+										{Match.getName(match)}
 									</Badge>
 								</TableCell>
 								<TableCell>
@@ -129,7 +137,7 @@ export function PlayerPage({
 	playerStat,
 	upcomingMatches
 }: {
-	playerStat: PlayerStat;
+	playerStat: PlayerOverallStat;
 	upcomingMatches: WithScheduled<DefinedPlayersMatch & { winChance: number }>[];
 }) {
 	const router = useRouter();
@@ -267,7 +275,7 @@ export function PlayerPage({
 											<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt)}</TableCell>
 											<TableCell className="text-center">
 												<Badge variant="outline" className="text-xs">
-													{match.name}
+													{Match.getName(match)}
 												</Badge>
 											</TableCell>
 											<TableCell>

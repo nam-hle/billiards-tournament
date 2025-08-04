@@ -23,6 +23,10 @@ const eslintConfig = [
 	...compat.extends("next/core-web-vitals", "next/typescript"),
 	...query.configs["flat/recommended"],
 	{
+		name: "ignores",
+		ignores: ["**/.next/", "**/.next-dev/", "node_modules/", "src/database.types.ts"]
+	},
+	{
 		settings: {
 			react: {
 				version: "detect"

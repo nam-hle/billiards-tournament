@@ -1,8 +1,6 @@
 export const Environments = {
-	PUBLIC: {
-		APP: {
-			PORT: process.env.PORT ?? 3000,
-			URL: process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
-		}
+	SUPABASE: {
+		URL: process.env.SUPABASE_URL!,
+		ANON_KEY: process.env.SUPABASE_ANON_KEY!
 	}
 };

@@ -1,23 +1,8 @@
 import { type Match } from "@/interfaces/match.interface";
 import { type Player } from "@/interfaces/player.interface";
-import { type Group, type GroupSummary } from "@/interfaces/group.interface";
 import { type CompletedMatch } from "@/interfaces/completed-match.interface";
 import { type ScheduledMatch } from "@/interfaces/scheduled-match.interface";
-
-export type KnockoutAdvanceRule =
-	| {
-			top: number;
-	  }
-	| {
-			count: number;
-			bestsOf: number;
-	  };
-
-export type QuarterFinalSelectionRule = {
-	player1Position: number;
-	player2Position: number;
-	targetQuarterFinalMatchOrder: number;
-};
+import { type GroupSummary, type GroupStanding } from "@/interfaces/group.interface";
 
 export interface Tournament {
 	id: string;
@@ -27,38 +12,23 @@ export interface Tournament {
 	image: string;
 	description: string;
 
-	endDate: string;
-	startDate: string;
+	endTime: string;
+	startTime: string;
 
-	knockoutAdvanceRules: KnockoutAdvanceRule[];
-	quarterFinalSelectionRules?: QuarterFinalSelectionRule[];
-
-	googleMapsUrl?: string;
+	googleMapsUrl: string;
 }
 export type TournamentStatus = "upcoming" | "ongoing" | "completed";
-export interface TournamentOverview extends Tournament {
-	totalGroups: number;
-	totalPlayers: number;
-	totalMatches: number;
-	completedMatches: number;
-	status: TournamentStatus;
-}
-
-export interface TournamentData {
-	groups: GroupSummary[];
-	overview: TournamentOverview;
-	recentMatches: CompletedMatch[];
-	upcomingMatches: ScheduledMatch[];
-	topPlayers: Array<{ id: string; name: string; wins: number; points: number }>;
-}
-
-export interface TournamentSchedule extends Tournament {
-	matches: Match[];
-	players: Player[];
-	groups: Pick<Group, "id" | "name">[];
-}
 
 export interface TournamentSummary extends Tournament {
-	totalGroups: number;
-	totalPlayers: number;
+	status: TournamentStatus;
+
+	players: Player[];
+	topStandings: GroupStanding[];
+
+	groups: GroupSummary[];
+
+	matches: Match[];
+	recentMatches: CompletedMatch[];
+	upcomingMatches: ScheduledMatch[];
+	completedMatches: CompletedMatch[];
 }

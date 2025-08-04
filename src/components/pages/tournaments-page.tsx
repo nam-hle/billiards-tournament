@@ -14,20 +14,20 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { ISOTime, type TournamentOverview } from "@/interfaces";
+import { ISOTime, type TournamentSummary } from "@/interfaces";
 
 export namespace TournamentsPage {
 	export interface Props {
-		readonly tournamentOverviews: TournamentOverview[];
+		readonly tournaments: TournamentSummary[];
 	}
 }
 
 export function ClientTournamentsPage(props: TournamentsPage.Props) {
-	const { tournamentOverviews } = props;
+	const { tournaments } = props;
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState("all");
 
-	const filteredTournaments = tournamentOverviews.filter((tournament) => {
+	const filteredTournaments = tournaments.filter((tournament) => {
 		const matchesSearch =
 			tournament.name.toLowerCase().includes(searchTerm.toLowerCase()) || tournament.description.toLowerCase().includes(searchTerm.toLowerCase());
 		const matchesStatus = statusFilter === "all" || tournament.status === statusFilter;
@@ -100,15 +100,15 @@ export function ClientTournamentsPage(props: TournamentsPage.Props) {
 									<div className="flex items-center gap-4 text-sm text-gray-600">
 										<div className="flex items-center gap-1">
 											<Calendar className="h-4 w-4" />
-											<span>{ISOTime.formatDate(tournament.startDate)}</span>
+											<span>{ISOTime.formatDate(tournament.startTime)}</span>
 										</div>
 										<div className="flex items-center gap-1">
 											<Users className="h-4 w-4" />
-											<span>{tournament.totalPlayers}</span>
+											<span>{tournament.players.length}</span>
 										</div>
 										<div className="flex items-center gap-1">
 											<Target className="h-4 w-4" />
-											<span>{tournament.totalMatches}</span>
+											<span>{tournament.matches.length}</span>
 										</div>
 									</div>
 								</div>

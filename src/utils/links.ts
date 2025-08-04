@@ -27,7 +27,7 @@ export const Links = {
 			Groups: {
 				get: (year: string) => ({ label: `Groups`, href: `/tournaments/${year}/groups` }),
 				Group: {
-					get: (year: string, groupId: string) => ({ label: `Group ${groupId}`, href: `/tournaments/${year}/groups/${groupId}` })
+					get: (year: string, groupName: string) => ({ label: `Group ${groupName}`, href: `/tournaments/${year}/groups/${groupName}` })
 				}
 			}
 		}

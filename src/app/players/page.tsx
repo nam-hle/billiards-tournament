@@ -16,7 +16,7 @@ export default async function PlayersPage() {
 	const currentStats = (
 		await Promise.all(
 			players.map(async (player) => {
-				const stats = await playerRepo.getStat({ playerId: player.id });
+				const stats = await playerRepo.getOverallStat({ playerId: player.id });
 				const previousRank = previousRanks.find((stat) => stat.playerId === player.id)?.rank;
 
 				if (previousRank === undefined) {

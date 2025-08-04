@@ -1,7 +1,7 @@
 import { mapValues } from "es-toolkit";
 
-import { assert } from "@/utils";
-import { BaseRepository } from "@/repositories/base.repository";
+import { supabaseClient } from "@/services/supabase/server";
+import { GROUP_SELECT, QUARTER_FINALIST_NUM } from "@/constants";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
 import { type GroupPrediction } from "@/interfaces/prediction.interface";
@@ -20,147 +20,150 @@ import {
 	type WithDefinedPlayers
 } from "@/interfaces";
 
-export class GroupRepository extends BaseRepository {
-	private static SIMULATION_ITERATION = 5_000;
+function postProcessGroupResult(result: {
+	id: string;
+	name: string;
+	group_players: { player: { id: string; name: string; nickname: string | null } }[];
+}): Group {
+	const { id, name, group_players } = result;
 
-	async getByYear(params: { year: string }): Promise<Group[]> {
-		return this.dataSource.getGroups(params);
+	return { id, name, players: group_players.map(({ player }) => player) };
+}
+
+export class GroupRepository {
+	private static SIMULATION_ITERATION = 7_000;
+
+	async getAllByTournament(params: { tournamentId: string }): Promise<Group[]> {
+		const tournament = await new TournamentRepository().getById(params);
+		const { data } = await supabaseClient.from("groups").select(GROUP_SELECT).eq("tournament_id", tournament.id);
+
+		return data?.map(postProcessGroupResult) ?? [];
 	}
 
-	async find(params: { year: string; groupId: string }): Promise<Group | undefined> {
-		const groups = await this.getByYear(params);
+	async findByName(params: { groupName: string; tournamentId: string }): Promise<Group | null> {
+		const tournament = await new TournamentRepository().getById(params);
 
-		return groups.find((group) => group.id === params.groupId);
+		const { data, error } = await supabaseClient
+			.from("groups")
+			.select(GROUP_SELECT)
+			.eq("tournament_id", tournament.id)
+			.eq("name", params.groupName)
+			.single();
+
+		if (error) {
+			throw error;
+		}
+
+		return postProcessGroupResult(data);
 	}
 
-	async get(params: { year: string; groupId: string }): Promise<Group> {
-		const group = await this.find(params);
+	async getById(params: { groupId: string }): Promise<Group> {
+		const { data, error } = await supabaseClient.from("groups").select(GROUP_SELECT).eq("id", params.groupId).single();
 
-		assert(group, `Group with ID ${params.groupId} not found for year ${params.year}`);
+		if (error) {
+			throw error;
+		}
 
-		return group;
+		return postProcessGroupResult(data);
 	}
 
-	async getSummary(params: { year: string; groupId: string }): Promise<GroupSummary> {
-		const group = await this.get(params);
-		const matches = await new MatchRepository().getAllMatchesByGroup(params);
-		const playerRepository = new PlayerRepository();
+	async getByPlayer(params: { playerId: string; tournamentId: string }): Promise<Group> {
+		const { data, error } = await supabaseClient.from("group_players").select(`group:groups (${GROUP_SELECT})`).eq("player_id", params.playerId);
+
+		if (error) {
+			throw error;
+		}
+
+		const group = data.find((group) => group.group.tournament_id === params.tournamentId)?.group;
+
+		if (!group) {
+			throw new Error(`Group for player ID ${params.playerId} in tournament ID ${params.tournamentId} not found`);
+		}
+
+		return postProcessGroupResult(group);
+	}
+
+	async getSummary(params: { groupId: string }): Promise<GroupSummary> {
+		const group = await this.getById(params);
+		const matches = await new MatchRepository().query(params);
 
 		const completedMatches = matches.filter((match) => CompletedMatch.isInstance(match));
 		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "ongoing" : "completed";
 
 		const [topPlayer] = await this.getStandings(params);
-		const leader = { id: topPlayer.playerId, points: topPlayer.points, name: (await playerRepository.getById(topPlayer.playerId)).name };
 
-		return {
-			leader,
-			status,
-			matches,
-			id: group.id,
-			name: group.name,
-			players: group.players,
-			completedMatches: completedMatches.length
-		};
+		return { ...group, status, matches, completedMatches: completedMatches.length, leader: { ...topPlayer.player, points: topPlayer.points } };
 	}
 
-	async getStandings(params: { year: string; groupId: string; matches?: WithCompleted<GroupMatch>[] }): Promise<GroupStanding[]> {
-		const group = await this.get(params);
-		const matches =
-			params.matches ??
-			(await new MatchRepository().getAllMatchesByGroup(params)).filter((match): match is WithCompleted<WithDefinedPlayers<GroupMatch>> =>
-				CompletedMatch.isInstance(match)
-			);
+	async getStandings(params: {
+		group?: Group;
+		groupId: string;
+		prediction?: boolean;
+		matches?: WithCompleted<GroupMatch>[];
+	}): Promise<GroupStanding[]> {
+		const group = params.group ?? (await this.getById(params));
+		const matches = params.matches ?? (await new MatchRepository().query({ ...params, completed: true }));
 
-		const comparator = GroupStanding.createComparator(matches);
-		const players = await new PlayerRepository().getAll();
-
-		const prediction =
-			params.matches === undefined
-				? await this.getPrediction({ year: params.year, groupId: params.groupId })
-				: { top1: {}, top2: {}, groupId: params.groupId };
+		const prediction: GroupPrediction =
+			params.matches === undefined && params.prediction ? await this.getPrediction({ groupId: params.groupId }) : { top1: {}, top2: {} };
 
 		return group.players
-			.map<GroupStanding>((playerId) => {
-				const playerName = players.find((player) => player.id === playerId)?.name;
-				assert(playerName, `Player with ID ${playerId} not found in group ${group.id}`);
+			.map<GroupStanding>((player) => {
+				const playerId = player.id;
 
 				let matchWins = 0,
 					matchLosses = 0,
-					points = 0,
 					rackWins = 0,
 					rackLosses = 0;
-				const completedMatches: CompletedMatch[] = [];
+				const playerMatches = matches.filter((match) => Match.hasPlayer(match, playerId));
 
-				for (const match of matches) {
-					if (!Match.hasPlayer(match, playerId)) {
-						continue;
-					}
-
-					if (!CompletedMatch.isInstance(match)) {
-						continue;
-					}
-
-					completedMatches.push(match);
+				for (const match of playerMatches) {
+					rackWins += CompletedMatch.getRackWins(match, playerId);
+					rackLosses += CompletedMatch.getRackLosses(match, playerId);
 
 					if (CompletedMatch.isWinner(match, playerId)) {
-						points += 3;
 						matchWins++;
-						rackWins += CompletedMatch.getWinnerRacksWon(match);
-						rackLosses += CompletedMatch.getLoserRacksWon(match);
 					} else {
 						matchLosses++;
-						rackWins += CompletedMatch.getLoserRacksWon(match);
-						rackLosses += CompletedMatch.getWinnerRacksWon(match);
 					}
 				}
 
 				return {
-					points,
-					playerId,
+					player,
 					rackWins,
 					matchWins,
-					playerName,
 					rackLosses,
 					matchLosses,
 					groupPosition: 0,
 					groupId: group.id,
+					points: matchWins * 3,
 					groupName: group.name,
 					top1Prob: prediction.top1[playerId],
 					top2Prob: prediction.top2[playerId],
 					racksDifference: rackWins - rackLosses,
-					racksWinRate: (rackWins / (rackWins + rackLosses)) * 100,
-					completedMatches: completedMatches.sort(ScheduledMatch.ascendingComparator)
+					completedMatches: playerMatches.sort(ScheduledMatch.ascendingComparator)
 				};
 			})
-			.sort(comparator)
+			.sort(GroupStanding.createComparator(matches))
 			.map((standing, index) => ({ ...standing, groupPosition: index + 1 }));
 	}
 
-	async getAdvancedPlayers(params: { year: string }): Promise<(GroupStanding & { knockoutPosition: number })[]> {
-		const groups = await this.getByYear(params);
+	async getAdvancedPlayers(params: { tournamentId: string }): Promise<(GroupStanding & { knockoutPosition: number })[]> {
+		const groups = await this.getAllByTournament(params);
 		const groupsStandings = await Promise.all(groups.map((group) => this.getStandings({ ...params, groupId: group.id })));
-
-		const tournamentInfo = await new TournamentRepository().getInfoByYear(params);
-
-		const topPlayers = groupsStandings
-			.map((standings) =>
-				tournamentInfo.knockoutAdvanceRules.flatMap((rule) => {
-					return "top" in rule ? standings.slice(0, rule.top) : [];
-				})
-			)
-			.flat();
-
-		const matches = await new MatchRepository().getAllByYear(params);
+		const topPlayersNum = Math.floor(QUARTER_FINALIST_NUM / groups.length);
+		const topPlayers = groupsStandings.map((standings) => standings.slice(0, topPlayersNum)).flat();
+		const matches = await new MatchRepository().query(params);
+		const bestsOfRule =
+			QUARTER_FINALIST_NUM % groups.length === 0 ? undefined : { bestOf: topPlayersNum, count: QUARTER_FINALIST_NUM - topPlayers.length };
 
 		const comparator = GroupStanding.createComparator(matches);
-		const bestsOfRule = tournamentInfo.knockoutAdvanceRules.find((rule) => "bestsOf" in rule);
 		const bestsOfPlayers = bestsOfRule
 			? groupsStandings
-					.map((standings) => standings[bestsOfRule.bestsOf])
+					.map((standings) => standings[bestsOfRule.bestOf])
 					.sort(comparator)
 					.slice(0, bestsOfRule.count)
 			: [];
-
 		const alphabeticalOrderedPlayers = [...topPlayers, ...bestsOfPlayers].sort(comparator);
 
 		const nonAlphabeticalPlayers: (GroupStanding & { knockoutPosition: number })[] = [];
@@ -185,46 +188,36 @@ export class GroupRepository extends BaseRepository {
 		return nonAlphabeticalPlayers;
 	}
 
-	async updatePrediction(params: { year: string }): Promise<void> {
-		const groups = await this.getByYear(params);
-		const predictions = await Promise.all(groups.map((group) => this.computePrediction({ year: params.year, groupId: group.id })));
-
-		await this.dataSource.updatePredictions({ ...params, predictions });
-	}
-
-	async getPrediction(params: { year: string; groupId: string }): Promise<GroupPrediction> {
-		const prediction = (await this.dataSource.getPredictions(params)).find((p) => p.groupId === params.groupId);
-
-		if (!prediction) {
-			return this.computePrediction(params);
-		}
-
-		return prediction;
-	}
-
-	async computePrediction(params: { year: string; groupId: string }): Promise<GroupPrediction> {
-		const groupMatches = await new MatchRepository().getAllMatchesByGroup(params);
+	async getPrediction(params: { groupId: string }): Promise<GroupPrediction> {
+		const group = await this.getById(params);
+		const groupMatches = await new MatchRepository().query(params);
 		const incompletedMatches = groupMatches.filter((match): match is IncompletedMatch => {
 			return DefinedPlayersMatch.isInstance(match) && !CompletedMatch.isInstance(match);
 		});
 
 		const completedMatches = groupMatches.filter(CompletedMatch.isInstance);
 		const eloRatings = await new PlayerRepository().getEloRatings();
-		const prediction: GroupPrediction = { top2: {}, top1: {}, groupId: params.groupId };
+		const prediction: GroupPrediction = { top2: {}, top1: {} };
 
-		for (let iteration = 0; iteration < GroupRepository.SIMULATION_ITERATION; iteration++) {
+		if (incompletedMatches.length === 0) {
+			return prediction;
+		}
+
+		const N = GroupRepository.SIMULATION_ITERATION / incompletedMatches.length;
+
+		for (let iteration = 0; iteration < GroupRepository.SIMULATION_ITERATION / incompletedMatches.length; iteration++) {
 			if (iteration % 1000 === 0) {
 				// eslint-disable-next-line no-console
-				console.log(`Simulation iteration ${iteration} for group ${params.groupId} of year ${params.year}`);
+				console.log(`Simulation iteration ${iteration} for group ${params.groupId}`);
 			}
 
 			const simulatedMatches: WithCompleted<GroupMatch>[] = incompletedMatches.map((match) => {
 				const { score1, score2 } = Match.simulate({
-					player1Id: match.player1Id,
-					player2Id: match.player2Id,
+					player1Id: match.player1.id,
+					player2Id: match.player2.id,
 					raceTo: Match.getRaceScore(match),
-					player2Rating: eloRatings[match.player2Id],
-					player1Rating: eloRatings[match.player1Id]
+					player2Rating: eloRatings[match.player2.id],
+					player1Rating: eloRatings[match.player1.id]
 				});
 
 				return { ...match, score1, score2, scheduledAt: "" as ISOTime };
@@ -232,16 +225,16 @@ export class GroupRepository extends BaseRepository {
 
 			const allMatches = [...completedMatches, ...simulatedMatches];
 
-			const standings = await this.getStandings({ ...params, matches: allMatches });
+			const standings = await this.getStandings({ ...params, group, matches: allMatches });
 
 			const [top1Player, top2Player] = standings;
 
-			prediction.top1[top1Player.playerId] = (prediction.top1[top1Player.playerId] || 0) + 1;
-			prediction.top2[top2Player.playerId] = (prediction.top2[top2Player.playerId] || 0) + 1;
+			prediction.top1[top1Player.player.id] = (prediction.top1[top1Player.player.id] || 0) + 1;
+			prediction.top2[top2Player.player.id] = (prediction.top2[top2Player.player.id] || 0) + 1;
 		}
 
-		prediction.top1 = mapValues(prediction.top1, (value) => value / GroupRepository.SIMULATION_ITERATION);
-		prediction.top2 = mapValues(prediction.top2, (value) => value / GroupRepository.SIMULATION_ITERATION);
+		prediction.top1 = mapValues(prediction.top1, (value) => value / N);
+		prediction.top2 = mapValues(prediction.top2, (value) => value / N);
 
 		return prediction;
 	}

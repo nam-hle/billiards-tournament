@@ -4,8 +4,7 @@ import { type CompletedMatch } from "@/interfaces/completed-match.interface";
 export interface Player {
 	id: string;
 	name: string;
-	nickname?: string;
-	location?: string;
+	nickname: string | null;
 }
 
 export interface PlayerTournamentStat extends Player {
@@ -22,7 +21,7 @@ export interface PlayerTournamentStat extends Player {
 	matchWinRate: number;
 	status: "active" | "eliminated" | "qualified";
 }
-export interface PlayerStat extends Player {
+export interface PlayerOverallStat extends Player {
 	rank: number;
 	eloRating: number;
 
@@ -32,8 +31,6 @@ export interface PlayerStat extends Player {
 
 	racksWinRate: number;
 	matchWinRate: number;
-
-	tournaments: number;
 
 	maxStreak: number;
 	runnerUps: number;

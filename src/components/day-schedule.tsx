@@ -52,7 +52,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 						<TableBody>
 							{matches.sort(ScheduledMatch.nullableAscendingComparator).map((match) => {
 								const winnerId = CompletedMatch.isInstance(match) ? CompletedMatch.getWinnerId(match) : undefined;
-								const winner = winnerId !== undefined ? (match.player1Id === winnerId ? "player1" : "player2") : null;
+								const winner = winnerId !== undefined ? (match.player1?.id === winnerId ? "player1" : "player2") : null;
 
 								return (
 									<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
@@ -64,7 +64,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 										<TableCell className="text-center">
 											<div className="space-y-1">
 												<Badge variant="outline" className="text-xs">
-													{match.name}
+													{Match.getName(match)}
 												</Badge>
 											</div>
 										</TableCell>
@@ -73,7 +73,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 												showAvatar={false}
 												highlight={winner === "player1"}
 												containerClassName="justify-end"
-												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
+												player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined}
 											/>
 										</TableCell>
 										<TableCell className="text-center">
@@ -89,7 +89,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 											<PlayerDisplay
 												showAvatar={false}
 												highlight={winner === "player2"}
-												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
+												player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined}
 											/>
 										</TableCell>
 										<TableCell className="text-center">

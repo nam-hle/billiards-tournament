@@ -15,11 +15,11 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
-import { type PlayerStat } from "@/interfaces";
+import { type PlayerOverallStat } from "@/interfaces";
 
 namespace PlayersPageClient {
 	export interface Props {
-		players: (PlayerStat & { rankDiff: number })[];
+		players: (PlayerOverallStat & { rankDiff: number })[];
 	}
 }
 
@@ -59,7 +59,7 @@ export function PlayersPageClient(props: PlayersPageClient.Props) {
 	);
 }
 
-function PlayersTable({ players }: { players: (PlayerStat & { rankDiff: number })[] }) {
+function PlayersTable({ players }: { players: (PlayerOverallStat & { rankDiff: number })[] }) {
 	const router = useRouter();
 
 	return (

@@ -36,12 +36,12 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 								<PlayerDisplay
 									avatarClassName="h-6 w-6"
 									containerClassName="gap-2"
-									fallbackName={match.placeholder1}
-									player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
-									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1Id) ? "font-semibold text-green-600" : ""}`}
+									fallbackName={match.placeholder1 ?? undefined}
+									player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined}
+									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1.id) ? "font-semibold text-green-600" : ""}`}
 								/>
 								{CompletedMatch.isInstance(match) && (
-									<span className={`font-bold ${CompletedMatch.isWinner(match, match.player1Id) ? "text-green-600" : ""}`}>{match.score1}</span>
+									<span className={`font-bold ${CompletedMatch.isWinner(match, match.player1.id) ? "text-green-600" : ""}`}>{match.score1}</span>
 								)}
 							</div>
 
@@ -50,12 +50,12 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 								<PlayerDisplay
 									avatarClassName="h-6 w-6"
 									containerClassName="gap-2"
-									fallbackName={match.placeholder2}
-									player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
-									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2Id) ? "font-semibold text-green-600" : ""}`}
+									fallbackName={match.placeholder2 ?? undefined}
+									player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined}
+									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2.id) ? "font-semibold text-green-600" : ""}`}
 								/>
 								{CompletedMatch.isInstance(match) && (
-									<span className={`font-bold ${CompletedMatch.isWinner(match, match.player2Id) ? "text-green-600" : ""}`}>{match.score2}</span>
+									<span className={`font-bold ${CompletedMatch.isWinner(match, match.player2.id) ? "text-green-600" : ""}`}>{match.score2}</span>
 								)}
 							</div>
 						</div>
@@ -159,12 +159,12 @@ export function QualifiedPlayersList({
 					</TableHeader>
 					<TableBody>
 						{standings.map((standing) => (
-							<TableRow key={standing.playerId}>
+							<TableRow key={standing.player.id}>
 								<TableCell>
-									<PlayerDisplay player={{ id: standing.playerId, name: standing.playerName }} />
+									<PlayerDisplay player={standing.player} />
 								</TableCell>
 								<TableCell className="text-center">
-									<Link href={`/tournaments/${year}/groups/${standing.groupId}`}>
+									<Link href={`/tournaments/${year}/groups/${standing.groupName}`}>
 										<Badge variant="outline">{standing.groupName}</Badge>
 									</Link>
 								</TableCell>

@@ -1,0 +1,4 @@
+INSERT INTO tournaments (id, name, year, description, venue, image, start_time, end_time)
+VALUES
+('2025', 'Tournament 2025', '2025', 'Stronger. Bolder. Bigger. The second chapter of mgm’s billiards tradition returns with rising talents', 'The Billiards Club - 37 Pasteur, Danang', '/tournament-2025.jpg', '2025-08-03T01:30:00.000Z', '2025-08-24T05:00:00.000Z'),
+('2024', 'Tournament 2024', '2024', 'The starting point of a story written in focus and finesse—mgm’s first-ever billiards tournament', 'The Billiards Club - 37 Pasteur, Danang', '/tournament-2024.jpg', '2024-08-10T01:30:00.000Z', '2024-08-25T05:00:00.000Z');

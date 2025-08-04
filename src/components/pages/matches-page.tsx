@@ -143,12 +143,12 @@ function MatchesTable({ matches }: { matches: (Match & { tournament: Tournament 
 												{match.tournament.name}
 											</Link>
 											<Badge variant="outline" className="text-xs">
-												{match.name}
+												{Match.getName(match)}
 											</Badge>
 										</div>
 									</TableCell>
 									<TableCell>
-										<PlayerDisplay player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined} />
+										<PlayerDisplay player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined} />
 									</TableCell>
 									<TableCell className="text-center">
 										{CompletedMatch.isInstance(match) ? (
@@ -160,7 +160,7 @@ function MatchesTable({ matches }: { matches: (Match & { tournament: Tournament 
 										)}
 									</TableCell>
 									<TableCell>
-										<PlayerDisplay player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined} />
+										<PlayerDisplay player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined} />
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
@@ -198,7 +198,7 @@ export function MatchesPageClient({
 	const filteredMatches = matches.filter((match) => {
 		const matchesSearch =
 			DefinedPlayersMatch.isInstance(match) &&
-			(match.player1Name.toLowerCase().includes(searchTerm.toLowerCase()) || match.player2Name.toLowerCase().includes(searchTerm.toLowerCase()));
+			(match.player1.name.toLowerCase().includes(searchTerm.toLowerCase()) || match.player2.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
 		const matchesTournament = selectedTournament === "all" || selectedTournament === `${match.tournament.year}`;
 		const matchesStatus = selectedStatus === "all" || Match.getStatus(match) === selectedStatus;

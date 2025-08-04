@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { sumBy } from "es-toolkit";
 import { Users, Trophy, Calendar, TrendingUp, ArrowRight } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
@@ -14,14 +15,8 @@ import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 
-export async function generateStaticParams() {
-	const tournaments = await new TournamentRepository().getAll();
-
-	return tournaments.map((tournament) => ({ year: tournament.year }));
-}
-
 interface Props {
-	params: Promise<{ year: string }>;
+	params: Promise<{ tournamentId: string }>;
 }
 
 const completionPercentage = (completed: number, total: number) => {
@@ -29,17 +24,14 @@ const completionPercentage = (completed: number, total: number) => {
 };
 
 export default async function GroupsIndexPage({ params }: Props) {
-	const { year } = await params;
-	const tournamentRepo = new TournamentRepository();
+	const { tournamentId } = await params;
 
-	const tournamentInfo = await tournamentRepo.getInfoByYear({ year });
-	const groups = await tournamentRepo.getGroupSummaries(year);
+	const { name, groups } = await new TournamentRepository().getSummary({ tournamentId });
 
-	const overallProgress =
-		(groups.reduce((acc, group) => acc + group.completedMatches, 0) / groups.reduce((acc, group) => acc + group.matches.length, 0)) * 100;
+	const overallProgress = (sumBy(groups, (group) => group.completedMatches) / sumBy(groups, (group) => group.matches.length)) * 100;
 
 	return (
-		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, tournamentInfo.name), Links.Tournaments.Year.Groups.get(year)]}>
+		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Year.get(tournamentId, name), Links.Tournaments.Year.Groups.get(tournamentId)]}>
 			<PageHeader title="Groups" description="View the current standings and matchups across all tournament groups" />
 
 			{/* Overall Progress */}
@@ -59,8 +51,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 						</div>
 						<Progress className="h-2" value={overallProgress} />
 						<p className="text-xs text-muted-foreground">
-							{groups.reduce((acc, group) => acc + group.completedMatches, 0)} of {groups.reduce((acc, group) => acc + group.matches.length, 0)} total
-							matches completed
+							{sumBy(groups, (group) => group.completedMatches)} of {sumBy(groups, (group) => group.matches.length)} total matches completed
 						</p>
 					</div>
 
@@ -119,7 +110,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 						<Card key={group.id} className="transition-shadow hover:shadow-lg">
 							<CardHeader className="pb-3">
 								<div className="flex items-center justify-between">
-									<CardTitle className="text-xl">{group.name}</CardTitle>
+									<CardTitle className="text-xl">{`Group ${group.name}`}</CardTitle>
 									<Badge className={getStatusColor(group.status)}>{toLabel(group.status)}</Badge>
 								</div>
 								<CardDescription>{group.players.length} players competing</CardDescription>
@@ -155,7 +146,7 @@ export default async function GroupsIndexPage({ params }: Props) {
 
 								{/* Action Button */}
 								<Button asChild className="w-full" variant={group.status === "upcoming" ? "outline" : "default"}>
-									<Link className="flex items-center gap-2" href={`/tournaments/${year}/groups/${group.id}`}>
+									<Link className="flex items-center gap-2" href={`/tournaments/${tournamentId}/groups/${group.name}`}>
 										{group.status === "upcoming" ? "Preview Group" : "View Details"}
 										<ArrowRight className="h-4 w-4" />
 									</Link>

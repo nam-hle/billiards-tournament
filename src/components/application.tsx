@@ -9,9 +9,9 @@ import { ThemeProvider } from "@/components/layouts/theme-provider";
 import { NavigationBar } from "@/components/layouts/navigation-bar/navigation-bar";
 
 import { type Container } from "@/types";
-import { type TournamentOverview } from "@/interfaces";
+import { type TournamentSummary } from "@/interfaces";
 
-export const Application: React.FC<Container & { tournaments: TournamentOverview[] }> = ({ children, tournaments }) => {
+export const Application: React.FC<Container & { tournaments: TournamentSummary[] }> = ({ children, tournaments }) => {
 	const pathname = usePathname();
 
 	if (pathname === "/" || pathname === "/auth") {

@@ -1,223 +1,125 @@
 import { assert } from "@/utils";
 import { Elo } from "@/utils/elo";
-import { BaseRepository } from "@/repositories/base.repository";
-import { GroupRepository } from "@/repositories/group.repository";
+import { isArray } from "@/utils/arrays";
+import { MATCH_SELECT } from "@/constants";
+import { supabaseClient } from "@/services/supabase/server";
 import { PlayerRepository } from "@/repositories/player.repository";
-import { TournamentRepository } from "@/repositories/tournament.repository";
-import {
-	Match,
-	type Group,
-	GroupMatch,
-	KnockoutMatch,
-	CompletedMatch,
-	ScheduledMatch,
-	type Tournament,
-	type MatchDetails,
-	DefinedPlayersMatch,
-	type WithDefinedPlayers
-} from "@/interfaces";
+import { Match, CompletedMatch, ScheduledMatch, type GroupMatch, type MatchDetails, type WithCompleted, type WithDefinedPlayers } from "@/interfaces";
 
-export class MatchRepository extends BaseRepository {
-	async getAllByYear(params: { year: string }): Promise<Match[]> {
-		const matches = await this.dataSource.getMatches(params);
+interface MatchQuery {
+	limit?: number;
+	groupId?: string;
+	playerId?: string;
+	ascending?: boolean;
+	completed?: boolean;
+	tournamentId?: string;
+}
 
-		const groups = await new GroupRepository().getByYear(params);
-		const playerRepository = new PlayerRepository();
+type MatchResult<Q extends MatchQuery> = Q["completed"] extends true
+	? Q["groupId"] extends string
+		? WithCompleted<GroupMatch>
+		: CompletedMatch
+	: Q["groupId"] extends string
+		? GroupMatch
+		: Match;
 
-		return Promise.all(
-			matches.map(async (match) => {
-				const player1Name = match.player1Id ? (await playerRepository.getById(match.player1Id)).name : undefined;
-				const player2Name = match.player2Id ? (await playerRepository.getById(match.player2Id)).name : undefined;
+export class MatchRepository {
+	async query<Q extends MatchQuery>(params?: Q): Promise<MatchResult<Q>[]> {
+		let query = supabaseClient.from("matches").select(MATCH_SELECT);
 
-				return {
-					...match,
-					player1Name,
-					player2Name,
-					name: await this.computeMatchName(match, groups),
-					placeholder1: await this.computePlaceholder(params.year, match, 1),
-					placeholder2: await this.computePlaceholder(params.year, match, 2)
-				};
-			})
-		);
+		if (params?.groupId) {
+			query = query.eq("group_id", params.groupId);
+		}
+
+		if (params?.playerId) {
+			query = query.or(`player_id_1.eq.${params.playerId},player_id_2.eq.${params.playerId}`);
+		}
+
+		if (params?.tournamentId) {
+			query = query.eq("tournament_id", params.tournamentId);
+		}
+
+		if (params?.completed) {
+			query = query.not("score_1", "is", null).not("score_2", "is", null);
+		}
+
+		if (params?.limit) {
+			query = query.limit(params.limit);
+		}
+
+		const { data, error } = await query.order("scheduled_at", { ascending: params?.ascending ?? true });
+
+		if (error) {
+			throw error;
+		}
+
+		if (data.every(Match.isInstance)) {
+			return data as any;
+		}
+
+		throw new Error("Invalid match data: not all matches are completed");
 	}
 
-	async computePlaceholder(year: string, match: Match, player: 1 | 2) {
-		if (!KnockoutMatch.isInstance(match)) {
-			return undefined;
+	async getHeadToHeadMatches(params: { player1Id: string; player2Id: string }): Promise<CompletedMatch[]> {
+		const { player1Id, player2Id } = params;
+
+		const { data } = await supabaseClient
+			.from("matches")
+			.select(MATCH_SELECT)
+			.or(`and(player_id_1.eq.${player1Id},player_id_2.eq.${player2Id}),and(player_id_1.eq.${player2Id},player_id_2.eq.${player1Id})`)
+			.not("score_1", "is", null)
+			.not("score_2", "is", null);
+
+		if (!data) {
+			return [];
 		}
 
-		const configuredPlaceholder = match[`placeholder${player}`];
-
-		if (configuredPlaceholder) {
-			return configuredPlaceholder;
+		if (isArray(data, CompletedMatch.isInstance)) {
+			return data as CompletedMatch[];
 		}
 
-		if (match.type === "quarter-final") {
-			const { quarterFinalSelectionRules = [] } = await new TournamentRepository().getByYear(year);
-			const rule = quarterFinalSelectionRules.find(({ targetQuarterFinalMatchOrder }) => targetQuarterFinalMatchOrder === match.order);
-
-			if (!rule) {
-				return undefined;
-			}
-
-			return `Quarter-finalist #${rule[`player${player}Position`]}`;
-		}
-
-		return undefined;
+		throw new Error("Incorrect match data: not all matches are completed");
 	}
 
-	async getAllMatchesByGroup(params: { year: string; groupId: string }): Promise<GroupMatch[]> {
-		const matches = await this.getAllByYear(params);
+	async getById(params: { matchId: string }): Promise<Match> {
+		const { data: match } = await supabaseClient.from("matches").select(MATCH_SELECT).eq("id", params.matchId).single();
 
-		return matches.filter((match): match is GroupMatch => GroupMatch.isInstance(match) && match.groupId === params.groupId);
-	}
+		assert(match && Match.isInstance(match), `Match ID ${params.matchId} not found`);
 
-	private async computeMatchName(match: Match, groups: Group[]): Promise<string> {
-		if (GroupMatch.isInstance(match)) {
-			const group = groups.find((g) => g.id === match.groupId);
-
-			assert(group, `Group with ID ${match.groupId} not found`);
-
-			return group.name;
-		}
-
-		if (match.type === "final") {
-			return "Final";
-		}
-
-		if (match.type === "semi-final") {
-			return "Semi Final";
-		}
-
-		if (match.type === "quarter-final") {
-			return "Quarter Final";
-		}
-
-		throw new Error(`Unknown match type: ${JSON.stringify(match)}`);
-	}
-
-	async getAllCompletedMatches(): Promise<CompletedMatch[]> {
-		const completedMatches: CompletedMatch[] = [];
-
-		for (const tournament of await new TournamentRepository().getAll()) {
-			const matches = await new MatchRepository().getAllByYear({ year: tournament.year });
-
-			completedMatches.push(...matches.filter(CompletedMatch.isInstance));
-		}
-
-		return completedMatches;
-	}
-
-	async getAll(): Promise<(Match & { tournament: Tournament })[]> {
-		const matches: (Match & { tournament: Tournament })[] = [];
-
-		for (const tournament of await new TournamentRepository().getAll()) {
-			const tournamentMatches = await this.getAllByYear({ year: tournament.year });
-			matches.push(...tournamentMatches.map((match) => ({ ...match, tournament })));
-		}
-
-		return matches;
-	}
-
-	async getHeadToHeadMatches(params: { player1Id: string; player2Id: string }): Promise<(CompletedMatch & { tournament: Tournament })[]> {
-		const allMatches = await this.getAll();
-
-		return Promise.all(
-			allMatches
-				.filter(CompletedMatch.isInstance)
-				.filter((match) => Match.hasPlayer(match, params.player1Id) && Match.hasPlayer(match, params.player2Id))
-				.map(async (match) => {
-					const tournament = await this.getTournament({ matchId: match.id });
-
-					return { ...match, tournament };
-				})
-		);
-	}
-
-	async getMatchesByYear(): Promise<{ matches: Match[]; tournament: Tournament }[]> {
-		const tournaments = await new TournamentRepository().getAll();
-		const results: { matches: Match[]; tournament: Tournament }[] = [];
-
-		for (const tournament of tournaments) {
-			results.push({ tournament, matches: await this.getAllByYear({ year: tournament.year }) });
-		}
-
-		return results;
-	}
-
-	async getTournament(params: { matchId: string }): Promise<Tournament> {
-		const matchesByYear = await this.getMatchesByYear();
-
-		for (const { matches, tournament } of matchesByYear) {
-			if (matches.some((match) => match.id === params.matchId)) {
-				return tournament;
-			}
-		}
-
-		throw new Error(`Tournament not found for match ID ${params.matchId}`);
-	}
-
-	async getById(params: { matchId: string }): Promise<{ match: Match; tournament: Tournament }> {
-		const matchesByYear = await this.getMatchesByYear();
-
-		for (const { matches, tournament } of matchesByYear) {
-			const match = matches.find((m) => m.id === params.matchId);
-
-			if (match) {
-				return { match, tournament };
-			}
-		}
-
-		throw new Error(`Tournament not found for match ID ${params.matchId}`);
+		return match;
 	}
 
 	async getDetails(params: { matchId: string }): Promise<MatchDetails> {
-		const { tournament, match: targetMatch } = await this.getById(params);
+		const targetMatch = await this.getById(params);
 
-		const recentMatches = await Promise.all(
-			(await this.getAllCompletedMatches())
-				.sort(ScheduledMatch.descendingComparator)
-				.slice(0, 5)
-				.map(async (match) => {
-					const tournament = await this.getTournament({ matchId: match.id });
-
-					return { ...match, tournament };
-				})
-		);
-
-		const player1 = targetMatch.player1Id ? await new PlayerRepository().getStat({ playerId: targetMatch.player1Id }) : undefined;
-		const player2 = targetMatch.player2Id ? await new PlayerRepository().getStat({ playerId: targetMatch.player2Id }) : undefined;
+		const player1Stat = targetMatch.player1?.id ? await new PlayerRepository().getOverallStat({ playerId: targetMatch.player1.id }) : undefined;
+		const player2Stat = targetMatch.player2?.id ? await new PlayerRepository().getOverallStat({ playerId: targetMatch.player2.id }) : undefined;
 
 		const prediction =
-			player1 && player2
+			player1Stat && player2Stat
 				? {
-						player1WinChance: Elo.expectedScore(player1.eloRating, player2.eloRating),
-						player2WinChance: Elo.expectedScore(player2.eloRating, player1.eloRating)
+						player2WinChance: Elo.expectedScore(player2Stat.eloRating, player1Stat.eloRating),
+						player1WinChance: Elo.expectedScore(player1Stat.eloRating, player2Stat.eloRating)
 					}
 				: undefined;
 
-		const headToHeadMatches = player1 && player2 ? await this.getHeadToHeadMatches({ player1Id: player1.id, player2Id: player2.id }) : [];
+		const headToHeadMatches =
+			targetMatch.player1 && targetMatch.player2
+				? await this.getHeadToHeadMatches({ player1Id: targetMatch.player1.id, player2Id: targetMatch.player2.id })
+				: [];
 
-		return { ...targetMatch, player1, player2, tournament, prediction, recentMatches, headToHeadMatches, lastMatch: recentMatches[0] };
+		return { ...targetMatch, prediction, player1Stat, player2Stat, headToHeadMatches };
 	}
 
-	async getAllUpcomingMatches(): Promise<ScheduledMatch[]> {
-		const matches: ScheduledMatch[] = [];
+	async getUpcomingMatchesByPlayer(params: { playerId: string }): Promise<WithDefinedPlayers<ScheduledMatch>[]> {
+		const { data } = await supabaseClient
+			.from("matches")
+			.select(MATCH_SELECT)
+			.gt("scheduled_at", new Date().toISOString())
+			.or(`player_id_1.eq.${params.playerId},player_id_2.eq.${params.playerId}`);
 
-		for (const tournament of await new TournamentRepository().getAll()) {
-			const tournamentMatches = await this.getAllByYear({ year: tournament.year });
-
-			matches.push(...tournamentMatches.filter(ScheduledMatch.isInstance).filter((match) => match.scheduledAt > new Date().toISOString()));
-		}
+		const matches = (data ?? []) as WithDefinedPlayers<ScheduledMatch>[];
 
 		return matches.sort(ScheduledMatch.ascendingComparator);
-	}
-
-	async getUpcomingMatchesByPlayer(playerId: string): Promise<WithDefinedPlayers<ScheduledMatch>[]> {
-		const upcomingMatches = await this.getAllUpcomingMatches();
-
-		return upcomingMatches
-			.filter((match): match is WithDefinedPlayers<ScheduledMatch> => DefinedPlayersMatch.isInstance(match) && Match.hasPlayer(match, playerId))
-			.sort(ScheduledMatch.ascendingComparator);
 	}
 }
