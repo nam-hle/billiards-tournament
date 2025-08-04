@@ -192,7 +192,8 @@
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "ltnguyen",
-			"player2Id": "tttran"
+			"player2Id": "tttran",
+			"scheduledAt": "2025-08-08T05:15:00.000Z"
 		},
 		{
 			"id": "71",
@@ -215,7 +216,8 @@
 			"type": "group",
 			"groupId": "C",
 			"player1Id": "bvqhuynh",
-			"player2Id": "ltnguyen"
+			"player2Id": "ltnguyen",
+			"scheduledAt": "2025-08-09T02:00:00.000Z"
 		},
 		{
 			"id": "74",
@@ -239,7 +241,7 @@
 			"groupId": "C",
 			"player1Id": "thnguyen",
 			"player2Id": "ltnguyen",
-			"scheduledAt": "2025-08-06T05:00:00.000Z"
+			"scheduledAt": "2025-08-06T05:15:00.000Z"
 		},
 		{
 			"id": "77",
