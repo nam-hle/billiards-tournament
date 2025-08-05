@@ -13,7 +13,8 @@
 					"startDate": { "type": "string", "format": "date-string" },
 					"endDate": { "type": "string", "format": "date-string" },
 					"name": { "type": "string" },
-					"venue": { "type": "string" }
+					"venue": { "type": "string" },
+					"googleMapsUrl": { "type": "string", "format": "uri" }
 				}
 			}
 		}

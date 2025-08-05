@@ -9,6 +9,7 @@ import { Progress } from "@/components/shadcn/progress";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/shadcn/avatar";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/shadcn/tabs";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/shadcn/tooltip";
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { CountdownTimer } from "@/components/countdown-timer";
@@ -340,7 +341,22 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 							</div>
 							<div className="flex items-center gap-1">
 								<MapPin className="h-4 w-4" />
-								{match.tournament.venue}
+								{match.tournament.googleMapsUrl ? (
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<a target="_blank" rel="noopener noreferrer" href={match.tournament.googleMapsUrl}>
+													{match.tournament.venue}
+												</a>
+											</TooltipTrigger>
+											<TooltipContent>
+												<p>Click to open in Google Maps</p>
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								) : (
+									<span>{match.tournament.venue}</span>
+								)}
 							</div>
 						</div>
 					</div>
@@ -351,7 +367,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 
 			{/* Countdown Timer */}
 			{ScheduledMatch.isInstance(match) && Match.getStatus(match) === "upcoming" && (
-				<Card className="space-y-8 py-8">
+				<Card className="space-y-8 border-none py-8">
 					<CardHeader>
 						<CardTitle className="flex items-center justify-center gap-2 text-center text-2xl">
 							<Zap className="h-5 w-5" />

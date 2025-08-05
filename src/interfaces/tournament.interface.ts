@@ -32,6 +32,8 @@ export interface Tournament {
 
 	knockoutAdvanceRules: KnockoutAdvanceRule[];
 	quarterFinalSelectionRules?: QuarterFinalSelectionRule[];
+
+	googleMapsUrl?: string;
 }
 export type TournamentStatus = "upcoming" | "ongoing" | "completed";
 export interface TournamentOverview extends Tournament {
