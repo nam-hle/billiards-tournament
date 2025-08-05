@@ -148,7 +148,8 @@
 			"type": "group",
 			"groupId": "B",
 			"player1Id": "qanguyen",
-			"player2Id": "hnnguyen"
+			"player2Id": "hnnguyen",
+			"scheduledAt": "2025-08-06T05:15:00.000Z"
 		},
 		{
 			"id": "65",
