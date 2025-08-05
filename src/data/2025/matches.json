@@ -35,7 +35,9 @@
 			"groupId": "A",
 			"player1Id": "hqnguyen",
 			"player2Id": "nhle",
-			"scheduledAt": "2025-08-05T11:15:00.000Z"
+			"scheduledAt": "2025-08-05T11:15:00.000Z",
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "51",
