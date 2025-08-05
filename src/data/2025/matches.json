@@ -66,7 +66,8 @@
 			"type": "group",
 			"groupId": "A",
 			"player1Id": "atvo",
-			"player2Id": "dple"
+			"player2Id": "dple",
+			"scheduledAt": "2025-08-09T02:00:00.000Z"
 		},
 		{
 			"id": "55",
