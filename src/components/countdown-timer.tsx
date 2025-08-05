@@ -34,7 +34,7 @@ export function CountdownTimer({ targetTime }: { targetTime: ISOTime }) {
 
 	return (
 		<div className="animate-fade-in flex items-center justify-center">
-			<div className="flex gap-8">
+			<div className="grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-4 lg:gap-x-8">
 				{[
 					{ label: "Day", value: timeLeft.days },
 					{ label: "Hour", value: timeLeft.hours },
@@ -42,10 +42,12 @@ export function CountdownTimer({ targetTime }: { targetTime: ISOTime }) {
 					{ label: "Second", value: timeLeft.seconds }
 				].map((item) => (
 					<div key={item.label} className="mx-6 flex flex-col items-center justify-center">
-						<div className="mb-6 backdrop-blur-lg">
-							<span className="font-mono text-9xl font-bold tracking-wider">{String(item.value).padStart(2, "0")}</span>
+						<div className="mb-2 backdrop-blur-lg lg:mb-6">
+							<span className="font-mono text-8xl font-bold tracking-wider lg:text-9xl">{String(item.value).padStart(2, "0")}</span>
 						</div>
-						<span className="text-sm font-bold uppercase tracking-wide text-muted-foreground">{item.value > 1 ? item.label + "s" : item.label}</span>
+						<span className="text-xs font-bold uppercase tracking-wide text-muted-foreground lg:text-sm">
+							{item.value > 1 ? item.label + "s" : item.label}
+						</span>
 					</div>
 				))}
 			</div>
