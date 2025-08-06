@@ -256,7 +256,9 @@
 			"groupId": "C",
 			"player1Id": "thnguyen",
 			"player2Id": "ltnguyen",
-			"scheduledAt": "2025-08-06T05:15:00.000Z"
+			"scheduledAt": "2025-08-06T05:15:00.000Z",
+			"score1": 5,
+			"score2": 4
 		},
 		{
 			"id": "77",
