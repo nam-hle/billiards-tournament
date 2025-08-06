@@ -17,7 +17,9 @@
 			"groupId": "A",
 			"player1Id": "atvo",
 			"player2Id": "nhle",
-			"scheduledAt": "2025-08-06T05:15:00.000Z"
+			"scheduledAt": "2025-08-06T05:15:00.000Z",
+			"score1": 0,
+			"score2": 5
 		},
 		{
 			"id": "49",
@@ -152,7 +154,9 @@
 			"groupId": "B",
 			"player1Id": "qanguyen",
 			"player2Id": "hnnguyen",
-			"scheduledAt": "2025-08-06T05:15:00.000Z"
+			"scheduledAt": "2025-08-06T05:15:00.000Z",
+			"score1": 5,
+			"score2": 0
 		},
 		{
 			"id": "65",
