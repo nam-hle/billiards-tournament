@@ -48,18 +48,18 @@ export class PlayerRepository {
 
 		const matchWins = completedMatches.filter((match) => CompletedMatch.isWinner(match, params.playerId)).length;
 		const matchLosses = completedMatches.length - matchWins;
-		const rackWins = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackWins(match, playerId), 0);
-		const rackLosses = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackLosses(match, playerId), 0);
+		const rackWins = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackWins(match, player.id), 0);
+		const rackLosses = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackLosses(match, player.id), 0);
 		const { eloRating } = await this.getEloRating({ playerId: player.id });
 
 		return {
 			...player,
+			rackWins,
 			eloRating,
 			matchWins,
-			rackWins,
 			matchLosses,
-			group: await new GroupRepository().getByPlayer(params),
 			rackDiffs: rackWins - rackLosses,
+			group: await new GroupRepository().getByPlayer(params),
 
 			status: "active", // TODO: Determine status based on matches
 			playedMatches: completedMatches.length,
