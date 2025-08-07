@@ -57,7 +57,9 @@
 			"groupId": "A",
 			"player1Id": "dple",
 			"player2Id": "hqtran",
-			"scheduledAt": "2025-08-07T05:15:00.000Z"
+			"scheduledAt": "2025-08-07T05:15:00.000Z",
+			"score1": 0,
+			"score2": 5
 		},
 		{
 			"id": "53",
@@ -225,7 +227,9 @@
 			"groupId": "C",
 			"player1Id": "thnguyen",
 			"player2Id": "bvqhuynh",
-			"scheduledAt": "2025-08-07T05:15:00.000Z"
+			"scheduledAt": "2025-08-07T05:15:00.000Z",
+			"score1": 5,
+			"score2": 1
 		},
 		{
 			"id": "73",
@@ -249,7 +253,9 @@
 			"groupId": "C",
 			"player1Id": "ltnguyen",
 			"player2Id": "shvu",
-			"scheduledAt": "2025-08-07T05:15:00.000Z"
+			"scheduledAt": "2025-08-07T05:15:00.000Z",
+			"score1": 5,
+			"score2": 1
 		},
 		{
 			"id": "76",
