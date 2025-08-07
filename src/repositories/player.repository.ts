@@ -1,6 +1,5 @@
 import { sumBy } from "es-toolkit";
 
-import { assert } from "@/utils";
 import { Elo } from "@/utils/elo";
 import { DEFAULT_LIMIT } from "@/constants";
 import { supabaseClient } from "@/services/supabase/server";
@@ -20,17 +19,23 @@ import {
 
 export class PlayerRepository {
 	public async getAll(): Promise<Player[]> {
-		const { data } = await supabaseClient.from("players").select("*");
+		const { data, error } = await supabaseClient.from("players").select("*");
 
-		return data ?? [];
+		if (error) {
+			throw error;
+		}
+
+		return data;
 	}
 
 	public async getById(params: { playerId: string }): Promise<Player> {
-		const { data: player } = await supabaseClient.from("players").select("*").eq("id", params.playerId).single();
+		const { data, error } = await supabaseClient.from("players").select("*").eq("id", params.playerId).single();
 
-		assert(player, `Player with ID ${params.playerId} not found`);
+		if (error) {
+			throw error;
+		}
 
-		return player;
+		return data;
 	}
 
 	public async getAllByTournament(params: { tournamentId: string }): Promise<Player[]> {
@@ -98,15 +103,15 @@ export class PlayerRepository {
 			...player,
 			...(await this.getEloRating({ ...params, playerId })),
 			maxStreak,
-			matchWins,
-			matchLosses,
+
 			runnerUps: achievements.filter((achievement) => achievement.type === "runner-up").length,
 			championships: achievements.filter((achievement) => achievement.type === "champion").length,
 			semiFinals: achievements.filter((achievement) => achievement.type === "semi-finalist").length,
 			quarterFinals: achievements.filter((achievement) => achievement.type === "quarter-finalist").length,
 
+			matchWins,
+			matchLosses,
 			totalMatches: completedMatches.length,
-
 			racksWinRate: rackWins / (rackWins + rackLosses),
 			matchWinRate: matchWins / completedMatches.length,
 			recentMatches: completedMatches.slice(-DEFAULT_LIMIT),
@@ -118,7 +123,7 @@ export class PlayerRepository {
 		const results: PlayerAchievement[] = [];
 
 		for (const tournament of await new TournamentRepository().getAll()) {
-			const result = await new TournamentRepository().getPlayerTournamentAchievements({ ...params, tournamentId: tournament.id });
+			const result = await new TournamentRepository().getTournamentAchievements({ ...params, tournamentId: tournament.id });
 
 			results.push(...result);
 		}
@@ -142,13 +147,9 @@ export class PlayerRepository {
 	async getEloRatings(params?: { skipLast?: number }): Promise<Record<string, number>> {
 		const skipLast = params?.skipLast;
 		const players = await this.getAll();
-		const elo = new Elo(players.map((player) => player.id));
+		const matches = (await new MatchRepository().query({ completed: true })).slice(0, skipLast ? -skipLast : undefined);
 
-		for (const match of (await new MatchRepository().query({ completed: true })).slice(0, skipLast ? -skipLast : undefined)) {
-			elo.processMatch(CompletedMatch.getWinnerId(match), CompletedMatch.getLoserId(match));
-		}
-
-		return elo.getRatings();
+		return new Elo(players.map((player) => player.id)).compute(matches);
 	}
 
 	async getUpComingMatchesWithPredictions(params: { playerId: string }): Promise<WithScheduled<DefinedPlayersMatch & { winChance: number }>[]> {

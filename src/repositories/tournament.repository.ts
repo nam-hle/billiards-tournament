@@ -1,4 +1,3 @@
-import { assert } from "@/utils";
 import { supabaseClient } from "@/services/supabase/server";
 import { DEFAULT_LIMIT, TOURNAMENT_SELECT } from "@/constants";
 import { GroupRepository } from "@/repositories/group.repository";
@@ -17,15 +16,21 @@ import {
 
 export class TournamentRepository {
 	public async getAll(): Promise<Tournament[]> {
-		const { data } = await supabaseClient.from("tournaments").select(TOURNAMENT_SELECT).order("year", { ascending: false });
+		const { data, error } = await supabaseClient.from("tournaments").select(TOURNAMENT_SELECT).order("year", { ascending: false });
 
-		return data ?? [];
+		if (error) {
+			throw error;
+		}
+
+		return data;
 	}
 
 	public async getById(params: { tournamentId: string }): Promise<Tournament> {
-		const { data } = await supabaseClient.from("tournaments").select(TOURNAMENT_SELECT).eq("id", params.tournamentId).single();
+		const { data, error } = await supabaseClient.from("tournaments").select(TOURNAMENT_SELECT).eq("id", params.tournamentId).single();
 
-		assert(data, `Tournament ID ${params.tournamentId} not found`);
+		if (error) {
+			throw error;
+		}
 
 		return data;
 	}
@@ -62,7 +67,7 @@ export class TournamentRepository {
 		};
 	}
 
-	async getPlayerTournamentAchievements(params: { playerId: string; tournamentId: string }): Promise<PlayerAchievement[]> {
+	async getTournamentAchievements(params: { playerId: string; tournamentId: string }): Promise<PlayerAchievement[]> {
 		const matches = await new MatchRepository().query(params);
 
 		const tournament = await this.getById(params);

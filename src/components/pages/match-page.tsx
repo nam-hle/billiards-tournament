@@ -27,8 +27,7 @@ import {
 	CompletedMatch,
 	type MatchDetails,
 	DefinedPlayersMatch,
-	type PlayerOverallStat,
-	type CompletedMatchWithTournament
+	type PlayerOverallStat
 } from "@/interfaces";
 
 function MatchResult({ match }: { match: MatchDetails }) {
@@ -180,18 +179,11 @@ function WinPrediction(props: { match: MatchDetails }) {
 	);
 }
 
-export function HeadToHeadHistory({
-	player1,
-	player2,
-	headToHeadMatches
-}: {
-	player2: Player;
-	player1: Player;
-	headToHeadMatches: CompletedMatchWithTournament[];
-}) {
-	const lastMatch: CompletedMatchWithTournament | undefined = headToHeadMatches[0];
-	const player1Wins = headToHeadMatches.filter((match) => CompletedMatch.isWinner(match, player1.id)).length;
-	const player2Wins = headToHeadMatches.filter((match) => CompletedMatch.isWinner(match, player2.id)).length;
+export function HeadToHeadHistory(props: { player2: Player; player1: Player; headToHeadMatches?: CompletedMatch[] }) {
+	const { player1, player2, headToHeadMatches } = props;
+	const lastMatch: CompletedMatch | undefined = headToHeadMatches?.[0];
+	const player1Wins = headToHeadMatches?.filter((match) => CompletedMatch.isWinner(match, player1.id)).length ?? 0;
+	const player2Wins = headToHeadMatches?.filter((match) => CompletedMatch.isWinner(match, player2.id)).length ?? 0;
 
 	return (
 		<Card>
@@ -203,7 +195,7 @@ export function HeadToHeadHistory({
 				<CardDescription>Previous meetings between these players</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6">
-				{headToHeadMatches.length === 0 ? (
+				{!headToHeadMatches?.length ? (
 					<div className="py-12 text-center">
 						<h3 className="mb-2 text-lg font-semibold">No data found</h3>
 					</div>
@@ -236,7 +228,7 @@ export function HeadToHeadHistory({
 					</div>
 				)}
 
-				{headToHeadMatches.length > 0 && (
+				{!!headToHeadMatches?.length && (
 					<div className="border-t pt-4">
 						<h4 className="mb-3 font-medium">Recent Results</h4>
 						<div className="space-y-2">

@@ -35,9 +35,13 @@ export class GroupRepository {
 
 	async getAllByTournament(params: { tournamentId: string }): Promise<Group[]> {
 		const tournament = await new TournamentRepository().getById(params);
-		const { data } = await supabaseClient.from("groups").select(GROUP_SELECT).eq("tournament_id", tournament.id);
+		const { data, error } = await supabaseClient.from("groups").select(GROUP_SELECT).eq("tournament_id", tournament.id);
 
-		return data?.map(postProcessGroupResult) ?? [];
+		if (error) {
+			throw error;
+		}
+
+		return data.map(postProcessGroupResult);
 	}
 
 	async findByName(params: { groupName: string; tournamentId: string }): Promise<Group | null> {
