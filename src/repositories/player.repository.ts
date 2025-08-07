@@ -86,7 +86,7 @@ export class PlayerRepository {
 
 		const accumulatedStreaks = completedMatches.reduce<number[]>((streaks, match, matchIndex) => {
 			if (matchIndex === 0) {
-				return [CompletedMatch.isWinner(match, playerId) ? 1 : 0];
+				return [+CompletedMatch.isWinner(match, playerId)];
 			}
 
 			if (CompletedMatch.getLoserId(match) === playerId) {
@@ -160,7 +160,7 @@ export class PlayerRepository {
 			matches
 				.filter((match) => ScheduledMatch.isInstance(match) && DefinedPlayersMatch.isInstance(match))
 				.map(async (match) => {
-					const opponentId = DefinedPlayersMatch.getOpponentId(match, params.playerId);
+					const opponentId = DefinedPlayersMatch.getOpponent(match, params.playerId).id;
 					const opponentElo = await this.getEloRating({ playerId: opponentId });
 
 					return { ...match, winChance: Elo.expectedScore(playerElo.eloRating, opponentElo.eloRating) };

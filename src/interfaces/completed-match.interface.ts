@@ -1,3 +1,4 @@
+import { type Player } from "@/interfaces/player.interface";
 import { Match, type BaseMatch } from "@/interfaces/match.interface";
 import { type WithScheduled } from "@/interfaces/scheduled-match.interface";
 import { type WithDefinedPlayers } from "@/interfaces/defined-players-match.interface";
@@ -8,6 +9,10 @@ export type CompletedMatch = WithCompleted<Match>;
 export namespace CompletedMatch {
 	export function isInstance<M extends BaseMatch>(match: M): match is WithCompleted<M> {
 		return match.score1 !== undefined && match.score2 !== undefined && [match.score1, match.score2].includes(Match.getRaceScore(match));
+	}
+
+	export function getWinner(match: CompletedMatch): Player {
+		return isWinner(match, match.player1.id) ? match.player1 : match.player2;
 	}
 
 	export function isWinner(match: CompletedMatch, playerId: string): boolean {
@@ -34,7 +39,7 @@ export namespace CompletedMatch {
 		return getWinnerId(match) === match.player1.id ? match.player2.id : match.player1.id;
 	}
 
-	export function getLoserRacksWon(match: CompletedMatch): number {
+	export function getLoserRackWins(match: CompletedMatch): number {
 		if (match.score1 > match.score2) {
 			return match.score2;
 		}
@@ -46,7 +51,7 @@ export namespace CompletedMatch {
 		throw new Error("Match is a draw, cannot determine loser racks won");
 	}
 
-	export function getWinnerRacksWon(match: CompletedMatch): number {
+	export function getWinnerRackWins(match: CompletedMatch): number {
 		if (match.score1 > match.score2) {
 			return match.score1;
 		}

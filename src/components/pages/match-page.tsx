@@ -221,8 +221,7 @@ export function HeadToHeadHistory(props: { player2: Player; player1: Player; hea
 								<Badge variant="outline">{`${lastMatch.score1}-${lastMatch.score2}`}</Badge>
 							</div>
 							<div className="text-sm text-muted-foreground">
-								{CompletedMatch.isWinner(lastMatch, player1.id) ? player1.name : player2.name} won •{" "}
-								{ISOTime.formatDate(lastMatch.scheduledAt, { weekday: undefined })}
+								{CompletedMatch.getWinner(lastMatch).name} won • {ISOTime.formatDate(lastMatch.scheduledAt, { weekday: undefined })}
 							</div>
 						</div>
 					</div>
@@ -275,7 +274,7 @@ function RecentForm({ player }: { player: PlayerOverallStat }) {
 						{player.recentMatches.slice(0, 5).map((match, index) => (
 							<TableRow key={index}>
 								<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { weekday: undefined })}</TableCell>
-								<TableCell className="font-medium">{DefinedPlayersMatch.getOpponentName(match, player.id)}</TableCell>
+								<TableCell className="font-medium">{DefinedPlayersMatch.getOpponent(match, player.id).name}</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="font-mono">
 										{`${match.score1} - ${match.score2}`}

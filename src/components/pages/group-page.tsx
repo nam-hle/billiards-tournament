@@ -153,7 +153,7 @@ export function GroupPage(props: {
 									<TableCell>
 										<div className="flex justify-start gap-1">
 											{standing.completedMatches.map((completedMatch) => {
-												const opponentName = DefinedPlayersMatch.getOpponentName(completedMatch, standing.player.id);
+												const opponentName = DefinedPlayersMatch.getOpponent(completedMatch, standing.player.id);
 												const isWin = CompletedMatch.isWinner(completedMatch, standing.player.id);
 
 												return (
@@ -162,8 +162,8 @@ export function GroupPage(props: {
 															className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${isWin ? "bg-green-400" : "bg-red-400"}`}
 															title={
 																isWin
-																	? `Won vs ${opponentName}, score ${CompletedMatch.getWinnerRacksWon(completedMatch)}-${CompletedMatch.getLoserRacksWon(completedMatch)}`
-																	: `Lost to ${opponentName}, score ${CompletedMatch.getLoserRacksWon(completedMatch)}-${CompletedMatch.getWinnerRacksWon(completedMatch)}`
+																	? `Won vs ${opponentName}, score ${CompletedMatch.getWinnerRackWins(completedMatch)}-${CompletedMatch.getLoserRackWins(completedMatch)}`
+																	: `Lost to ${opponentName}, score ${CompletedMatch.getLoserRackWins(completedMatch)}-${CompletedMatch.getWinnerRackWins(completedMatch)}`
 															}></div>
 													</Link>
 												);

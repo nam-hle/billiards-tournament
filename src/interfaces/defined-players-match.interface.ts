@@ -8,25 +8,13 @@ export namespace DefinedPlayersMatch {
 		return match.player1 !== null && match.player2 !== null;
 	}
 
-	export function getOpponentName(match: DefinedPlayersMatch, playerId: string): string {
+	export function getOpponent(match: DefinedPlayersMatch, playerId: string): Player {
 		if (match.player1.id === playerId) {
-			return match.player2.name;
+			return match.player2;
 		}
 
 		if (match.player2.id === playerId) {
-			return match.player1.name;
-		}
-
-		throw new Error(`Player ID "${playerId}" not found in match ${JSON.stringify(match)}`);
-	}
-
-	export function getOpponentId(match: DefinedPlayersMatch, playerId: string): string {
-		if (match.player1.id === playerId) {
-			return match.player2.id;
-		}
-
-		if (match.player2.id === playerId) {
-			return match.player1.id;
+			return match.player1;
 		}
 
 		throw new Error(`Player ID "${playerId}" not found in match ${JSON.stringify(match)}`);

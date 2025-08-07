@@ -56,15 +56,13 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 									</Badge>
 								</TableCell>
 								<TableCell>
-									<PlayerDisplay
-										player={{ id: DefinedPlayersMatch.getOpponentId(match, playerId), name: DefinedPlayersMatch.getOpponentName(match, playerId) }}
-									/>
+									<PlayerDisplay player={DefinedPlayersMatch.getOpponent(match, playerId)} />
 								</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="font-mono">
 										{CompletedMatch.isWinner(match, playerId)
-											? `${CompletedMatch.getWinnerRacksWon(match)} - ${CompletedMatch.getLoserRacksWon(match)}`
-											: `${CompletedMatch.getLoserRacksWon(match)} - ${CompletedMatch.getWinnerRacksWon(match)}`}
+											? `${CompletedMatch.getWinnerRackWins(match)} - ${CompletedMatch.getLoserRackWins(match)}`
+											: `${CompletedMatch.getLoserRackWins(match)} - ${CompletedMatch.getWinnerRackWins(match)}`}
 									</Badge>
 								</TableCell>
 								<TableCell className="text-center">
@@ -267,8 +265,6 @@ export function PlayerPage({
 							</TableHeader>
 							<TableBody>
 								{upcomingMatches.map((match) => {
-									const opponentId = DefinedPlayersMatch.getOpponentId(match, playerStat.id);
-
 									return (
 										<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
 											<TableCell className="text-center font-mono">{Match.formatId(match)}</TableCell>
@@ -279,7 +275,7 @@ export function PlayerPage({
 												</Badge>
 											</TableCell>
 											<TableCell>
-												<PlayerDisplay player={{ id: opponentId, name: DefinedPlayersMatch.getOpponentName(match, playerStat.id) }} />
+												<PlayerDisplay player={DefinedPlayersMatch.getOpponent(match, playerStat.id)} />
 											</TableCell>
 
 											<TableCell className="text-center">{formatRatio(match.winChance)}</TableCell>
