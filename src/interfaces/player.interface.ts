@@ -13,7 +13,9 @@ export interface PlayerTournamentStat extends Player {
 
 	group: Group;
 
+	rackWins: number;
 	matchWins: number;
+	rackDiffs: number;
 	matchLosses: number;
 	playedMatches: number;
 

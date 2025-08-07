@@ -65,4 +65,20 @@ export namespace CompletedMatch {
 
 		throw new Error("Match is a draw, cannot determine loser racks won");
 	}
+
+	export function getRackWins(match: CompletedMatch, playerId: string): number {
+		if (!Match.hasPlayer(match, playerId)) {
+			throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Id}" and "${match.player2Id}"`);
+		}
+
+		return match.player1Id === playerId ? match.score1 : match.score2;
+	}
+
+	export function getRackLosses(match: CompletedMatch, playerId: string): number {
+		if (!Match.hasPlayer(match, playerId)) {
+			throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Id}" and "${match.player2Id}"`);
+		}
+
+		return match.player1Id === playerId ? match.score2 : match.score1;
+	}
 }

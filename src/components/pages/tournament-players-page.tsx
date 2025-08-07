@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/layouts/page-header";
 import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
-import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
+import { toLabel, getStatusColor } from "@/utils/strings";
 import { type Group, type Tournament, type PlayerTournamentStat } from "@/interfaces";
 
 namespace TournamentPlayersPageClient {
@@ -199,9 +199,9 @@ function PlayersTable({ players }: { players: PlayerTournamentStat[] }) {
 							<TableHead>Player</TableHead>
 							<TableHead className="text-center">Group</TableHead>
 							<TableHead className="text-center">Played</TableHead>
-							<TableHead className="text-center">Wins</TableHead>
-							<TableHead className="text-center">Losses</TableHead>
-							<TableHead className="text-center">Win Rate</TableHead>
+							<TableHead className="text-center">Points</TableHead>
+							<TableHead className="text-center">Rack Diff</TableHead>
+							<TableHead className="text-center">Rack Wins</TableHead>
 							<TableHead className="text-center">Status</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -223,16 +223,18 @@ function PlayersTable({ players }: { players: PlayerTournamentStat[] }) {
 									</TableCell>
 									<TableCell className="text-center">{player.playedMatches}</TableCell>
 									<TableCell className="text-center">
-										<Badge variant="secondary" className="bg-green-100 text-green-800">
-											{player.matchWins}
+										<Badge>{player.matchWins * 3}</Badge>
+									</TableCell>
+									<TableCell className="text-center">
+										<Badge
+											variant="secondary"
+											className={{ "0": "", "-1": "bg-red-100 text-red-800", "1": "bg-green-100 text-green-800" }[Math.sign(player.rackDiffs)]}>
+											{player.rackDiffs}
 										</Badge>
 									</TableCell>
 									<TableCell className="text-center">
-										<Badge variant="secondary" className="bg-red-100 text-red-800">
-											{player.matchLosses}
-										</Badge>
+										<Badge className="bg-green-100 text-green-800">{player.rackWins}</Badge>
 									</TableCell>
-									<TableCell className="text-center">{formatRatio(player.matchWinRate)}</TableCell>
 									<TableCell className="text-center">
 										<Badge className={getStatusColor(player.status)}>{toLabel(player.status)}</Badge>
 									</TableCell>
