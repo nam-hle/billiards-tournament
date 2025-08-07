@@ -42,7 +42,7 @@ export function TournamentPlayersPageClient(props: TournamentPlayersPageClient.P
 
 			return matchesSearch && matchesGroup && matchesStatus;
 		})
-		.sort((a, b) => b.eloRating - a.eloRating);
+		.sort((a, b) => b.matchWins - a.matchWins || b.rackDiffs - a.rackDiffs || b.rackWins - a.rackWins);
 
 	const totalPlayers = players.length;
 	const activePlayers = players.filter((p) => p.status === "active").length;
@@ -223,7 +223,7 @@ function PlayersTable({ players }: { players: PlayerTournamentStat[] }) {
 									</TableCell>
 									<TableCell className="text-center">{player.playedMatches}</TableCell>
 									<TableCell className="text-center">
-										<Badge>{player.matchWins * 3}</Badge>
+										<Badge variant={player.matchWins === 0 ? "secondary" : undefined}>{player.matchWins * 3}</Badge>
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge
