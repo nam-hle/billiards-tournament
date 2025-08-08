@@ -1,8 +1,8 @@
-import { PlayersPageClient } from "@/components/pages/players-page";
+import { PlayersPage } from "@/components/pages/players-page";
 
 import { PlayerRepository } from "@/repositories/player.repository";
 
-export default async function PlayersPage() {
+export default async function Page() {
 	const playerRepo = new PlayerRepository();
 	const players = await playerRepo.getAll();
 
@@ -19,5 +19,5 @@ export default async function PlayersPage() {
 		)
 	).sort((a, b) => a.rank - b.rank);
 
-	return <PlayersPageClient players={currentStats} />;
+	return <PlayersPage players={currentStats} />;
 }

@@ -17,7 +17,7 @@ import { TableBooking } from "@/components/interactive/table-booking";
 import { TournamentSchedule } from "@/components/interactive/tournament-schedule";
 import { LeaderboardDisplay } from "@/components/interactive/leaderboard-display";
 
-export default function LandingPage() {
+export function LandingPage() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [email, setEmail] = useState("");
 	const [isMenuOpen, setIsMenuOpen] = useState(false);

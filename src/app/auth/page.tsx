@@ -9,7 +9,7 @@ import { Button } from "@/components/shadcn/button";
 import { Alert, AlertDescription } from "@/components/shadcn/alert";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 
-export default function AuthPage() {
+export default function Page() {
 	const [error, setError] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);

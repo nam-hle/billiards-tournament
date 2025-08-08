@@ -1,11 +1,11 @@
-import { ClientTournamentsPage } from "@/components/pages/tournaments-page";
+import { TournamentsPage } from "@/components/pages/tournaments-page";
 
 import { TournamentRepository } from "@/repositories/tournament.repository";
 
-export default async function TournamentsPage() {
+export default async function Page() {
 	const tournamentRepo = new TournamentRepository();
 	const tournaments = await tournamentRepo.getAll();
 	const tournamentSummaries = await Promise.all(tournaments.map((tournament) => tournamentRepo.getSummary({ tournamentId: tournament.id })));
 
-	return <ClientTournamentsPage tournaments={tournamentSummaries} />;
+	return <TournamentsPage tournaments={tournamentSummaries} />;
 }

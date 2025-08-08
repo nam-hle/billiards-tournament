@@ -302,7 +302,7 @@ namespace MatchDetailsPage {
 	}
 }
 
-export const MatchDetailsPage = ({ matchDetails }: MatchDetailsPage.Props) => {
+export const MatchPage = ({ matchDetails }: MatchDetailsPage.Props) => {
 	const isPending = !CompletedMatch.isInstance(matchDetails);
 
 	return (

@@ -22,7 +22,7 @@ export namespace TournamentsPage {
 	}
 }
 
-export function ClientTournamentsPage(props: TournamentsPage.Props) {
+export function TournamentsPage(props: TournamentsPage.Props) {
 	const { tournaments } = props;
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState("all");

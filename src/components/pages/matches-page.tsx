@@ -180,7 +180,7 @@ function MatchesTable({ matches }: { matches: (Match & { tournament: Tournament 
 	);
 }
 
-export function MatchesPageClient({
+export function MatchesPage({
 	matches,
 	players,
 	tournaments

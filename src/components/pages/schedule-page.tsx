@@ -22,7 +22,7 @@ const GROUP_QUERY_KEY = "group";
 const STATUS_QUERY_KEY = "status";
 const PLAYER_QUERY_KEY = "player";
 
-export function SchedulePageClient({ tournament }: { tournament: TournamentSummary }) {
+export function SchedulePage({ tournament }: { tournament: TournamentSummary }) {
 	const { groups, players, matches } = tournament;
 	const searchParams = useSearchParams();
 	const router = useRouter();

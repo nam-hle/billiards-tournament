@@ -17,13 +17,13 @@ import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
 import { type PlayerOverallStat } from "@/interfaces";
 
-namespace PlayersPageClient {
+namespace PlayersPage {
 	export interface Props {
 		players: (PlayerOverallStat & { rankDiff: number })[];
 	}
 }
 
-export function PlayersPageClient(props: PlayersPageClient.Props) {
+export function PlayersPage(props: PlayersPage.Props) {
 	const { players } = props;
 	const [searchTerm, setSearchTerm] = useState("");
 

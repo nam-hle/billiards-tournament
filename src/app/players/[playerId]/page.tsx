@@ -14,7 +14,7 @@ interface Props {
 	params: Promise<{ playerId: string }>;
 }
 
-export default async function OverallPlayerProfilePage({ params }: Props) {
+export default async function Page({ params }: Props) {
 	const { playerId } = await params;
 
 	const playerStat = await new PlayerRepository().getOverallStat({ playerId });
