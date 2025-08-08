@@ -27,7 +27,7 @@ interface Props {
 export default async function TournamentKnockoutPage({ params }: Props) {
 	const { tournamentId } = await params;
 	const tournament = await new TournamentRepository().getSummary({ tournamentId });
-	const knockoutMatches = (await new MatchRepository().query({ tournamentId })).filter(KnockoutMatch.isInstance);
+	const knockoutMatches = (await new MatchRepository().query({ tournamentId })).filter(KnockoutMatch.isInstance).sort((a, b) => a.order - b.order);
 	const qualifiedPlayers = await new GroupRepository().getAdvancedPlayers({ tournamentId });
 
 	const finalMatch = knockoutMatches.find((match) => match.type === "final");
