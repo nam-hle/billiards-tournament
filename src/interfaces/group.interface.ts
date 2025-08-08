@@ -32,10 +32,8 @@ export interface GroupStanding {
 	rackWins: number;
 	rackLosses: number;
 	racksDifference: number;
-
-	top1Prob: number;
-	top2Prob: number;
 }
+
 export namespace GroupStanding {
 	export function createComparator(matches: Match[], options?: { orderAlphabetical?: boolean }) {
 		const orderAlphabetically = options?.orderAlphabetical ?? true;
