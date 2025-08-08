@@ -13,7 +13,7 @@ import { Match, ISOTime, CompletedMatch, type GroupStanding, type KnockoutMatch,
 function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: KnockoutMatch }) {
 	return (
 		<Link passHref href={`/matches/${match.id}`}>
-			<Card className={`${isFinal ? "bg-yellow-50 ring-2 ring-yellow-400" : ""} transition-shadow hover:shadow-md`}>
+			<Card className={`${isFinal ? "ring-2 ring-yellow-400" : ""} transition-shadow hover:shadow-md`}>
 				<CardContent className="p-4">
 					<div className="space-y-3">
 						{/* Match Header */}
@@ -23,7 +23,7 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 									{Match.formatId(match)}
 								</Badge>
 								<Badge variant="outline" className="text-xs">
-									{toLabel(match.type)} {match.type !== "final" ? match.order : ""}
+									{toLabel(match.type)} {match.type !== "final" ? match.order + 1 : ""}
 								</Badge>
 							</div>
 							<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
