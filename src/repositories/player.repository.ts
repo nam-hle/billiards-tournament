@@ -55,7 +55,7 @@ export class PlayerRepository {
 		const matchLosses = completedMatches.length - matchWins;
 		const rackWins = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackWins(match, player.id), 0);
 		const rackLosses = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackLosses(match, player.id), 0);
-		const { eloRating } = await this.getEloRating({ playerId: player.id });
+		const { eloRating } = await this.getEloRatingAndRank({ playerId: player.id });
 
 		return {
 			...player,
@@ -99,10 +99,13 @@ export class PlayerRepository {
 
 		const achievements = await this.getTournamentResults({ playerId });
 
+		const upcomingMatches = await this.getUpcomingMatchesWithPredictions({ playerId });
+
 		return {
 			...player,
-			...(await this.getEloRating({ ...params, playerId })),
+			...(await this.getEloRatingAndRank({ ...params, playerId })),
 			maxStreak,
+			upcomingMatches,
 
 			runnerUps: achievements.filter((achievement) => achievement.type === "runner-up").length,
 			championships: achievements.filter((achievement) => achievement.type === "champion").length,
@@ -131,16 +134,17 @@ export class PlayerRepository {
 		return results;
 	}
 
-	async getEloRating(params: { playerId: string; skipLast?: number }): Promise<{ rank: number; eloRating: number }> {
+	async getEloRatingAndRank(params: { playerId: string; skipLast?: number }): Promise<{ rank: number; eloRating: number }> {
 		const eloRatings = await this.getEloRatings(params);
 
 		const eloRating = eloRatings[params.playerId];
 
 		return {
 			eloRating,
-			rank: Object.values(eloRatings)
-				.sort((a, b) => b - a)
-				.indexOf(eloRating)
+			rank:
+				Object.values(eloRatings)
+					.sort((a, b) => b - a)
+					.indexOf(eloRating) + 1
 		};
 	}
 
@@ -149,22 +153,21 @@ export class PlayerRepository {
 		const players = await this.getAll();
 		const matches = (await new MatchRepository().query({ completed: true })).slice(0, skipLast ? -skipLast : undefined);
 
-		return new Elo(players.map((player) => player.id)).compute(matches);
+		return new Elo().compute(
+			players.map((player) => player.id),
+			matches
+		);
 	}
 
-	async getUpComingMatchesWithPredictions(params: { playerId: string }): Promise<WithScheduled<DefinedPlayersMatch & { winChance: number }>[]> {
+	async getUpcomingMatchesWithPredictions(params: { playerId: string }): Promise<WithScheduled<DefinedPlayersMatch & { winChance: number }>[]> {
 		const matches = await new MatchRepository().getUpcomingMatchesByPlayer(params);
-		const playerElo = await this.getEloRating(params);
 
-		return Promise.all(
-			matches
-				.filter((match) => ScheduledMatch.isInstance(match) && DefinedPlayersMatch.isInstance(match))
-				.map(async (match) => {
-					const opponentId = DefinedPlayersMatch.getOpponent(match, params.playerId).id;
-					const opponentElo = await this.getEloRating({ playerId: opponentId });
+		const ratings = await this.getEloRatings();
 
-					return { ...match, winChance: Elo.expectedScore(playerElo.eloRating, opponentElo.eloRating) };
-				})
+		return matches.flatMap((match) =>
+			ScheduledMatch.isInstance(match) && DefinedPlayersMatch.isInstance(match)
+				? { ...match, winChance: Elo.expectedScore(ratings[params.playerId], ratings[DefinedPlayersMatch.getOpponent(match, params.playerId).id]) }
+				: []
 		);
 	}
 }

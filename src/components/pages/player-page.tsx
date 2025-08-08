@@ -14,15 +14,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
-import {
-	Match,
-	ISOTime,
-	CompletedMatch,
-	type WithScheduled,
-	DefinedPlayersMatch,
-	type PlayerOverallStat,
-	type PlayerAchievement
-} from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, DefinedPlayersMatch, type PlayerOverallStat, type PlayerAchievement } from "@/interfaces";
 
 function RecentMatches({ matches, playerId }: { playerId: string; matches: CompletedMatch[] }) {
 	const router = useRouter();
@@ -131,14 +123,9 @@ function PlayerAchievements({ achievements }: { achievements: PlayerAchievement[
 	);
 }
 
-export function PlayerPage({
-	playerStat,
-	upcomingMatches
-}: {
-	playerStat: PlayerOverallStat;
-	upcomingMatches: WithScheduled<DefinedPlayersMatch & { winChance: number }>[];
-}) {
+export function PlayerPage({ playerStat }: { playerStat: PlayerOverallStat }) {
 	const router = useRouter();
+	const { upcomingMatches } = playerStat;
 
 	return (
 		<PageContainer items={[Links.Players.get(), Links.Players.Player.get(playerStat.id, playerStat.name)]}>
@@ -246,7 +233,7 @@ export function PlayerPage({
 
 			<PlayerAchievements achievements={playerStat.achievements} />
 
-			{upcomingMatches?.length && (
+			{upcomingMatches?.length ? (
 				<Card>
 					<CardHeader>
 						<CardTitle>Upcoming Matches</CardTitle>
@@ -286,7 +273,7 @@ export function PlayerPage({
 						</Table>
 					</CardContent>
 				</Card>
-			)}
+			) : null}
 
 			<RecentMatches playerId={playerStat.id} matches={playerStat.recentMatches} />
 		</PageContainer>

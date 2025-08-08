@@ -7,7 +7,7 @@ export default async function PlayersPage() {
 	const players = await playerRepo.getAll();
 	const previousRanks = await Promise.all(
 		players.map(async (player) => {
-			const ratings = await playerRepo.getEloRating({ skipLast: 10, playerId: player.id });
+			const ratings = await playerRepo.getEloRatingAndRank({ skipLast: 10, playerId: player.id });
 
 			return { ...ratings, playerId: player.id };
 		})

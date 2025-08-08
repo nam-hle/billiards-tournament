@@ -1,5 +1,7 @@
 import { type Group } from "@/interfaces/group.interface";
+import { type WithScheduled } from "@/interfaces/scheduled-match.interface";
 import { type CompletedMatch } from "@/interfaces/completed-match.interface";
+import { type DefinedPlayersMatch } from "@/interfaces/defined-players-match.interface";
 
 export interface Player {
 	id: string;
@@ -40,6 +42,7 @@ export interface PlayerOverallStat extends Player {
 
 	recentMatches: CompletedMatch[];
 	achievements: PlayerAchievement[];
+	upcomingMatches: WithScheduled<DefinedPlayersMatch & { winChance: number }>[];
 }
 
 export type PlayerAchievementType = "champion" | "runner-up" | "semi-finalist" | "quarter-finalist" | "group-stage";

@@ -10,7 +10,6 @@ export async function generateStaticParams() {
 	return tournaments.map((tournament) => ({ tournamentId: tournament.id }));
 }
 
-
 interface Props {
 	params: Promise<{ tournamentId: string }>;
 }
