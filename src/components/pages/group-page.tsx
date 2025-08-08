@@ -7,6 +7,7 @@ import React, { use, Suspense } from "react";
 import { Target, Calendar, CircleQuestionMark } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
+import { Skeleton } from "@/components/shadcn/skeleton";
 import { Separator } from "@/components/shadcn/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/shadcn/tooltip";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
@@ -173,7 +174,7 @@ export function GroupPage(props: {
 										</div>
 									</TableCell>
 									<TableCell className="text-center">
-										<Suspense fallback={<div>Loading...</div>}>
+										<Suspense fallback={<Skeleton className="h-8 w-full" />}>
 											<PredictionOutput playerId={standing.player.id} predictions={props.predictions} />
 										</Suspense>
 									</TableCell>

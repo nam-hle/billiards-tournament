@@ -31,7 +31,7 @@ function postProcessGroupResult(result: {
 }
 
 export class GroupRepository {
-	private static SIMULATION_ITERATION = 10_000;
+	private static SIMULATION_ITERATION = 20_000;
 
 	async getAllByTournament(params: { tournamentId: string }): Promise<Group[]> {
 		const tournament = await new TournamentRepository().getById(params);
