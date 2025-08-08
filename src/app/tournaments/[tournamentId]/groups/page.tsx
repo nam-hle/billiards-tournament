@@ -15,6 +15,12 @@ import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 
+export async function generateStaticParams() {
+	const tournaments = await new TournamentRepository().getAll();
+
+	return tournaments.map((tournament) => ({ tournamentId: tournament.id }));
+}
+
 interface Props {
 	params: Promise<{ tournamentId: string }>;
 }
