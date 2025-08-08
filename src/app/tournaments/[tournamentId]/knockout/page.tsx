@@ -17,24 +17,24 @@ import { TournamentRepository } from "@/repositories/tournament.repository";
 export async function generateStaticParams() {
 	const tournaments = await new TournamentRepository().getAll();
 
-	return tournaments.map((tournament) => ({ year: tournament.year }));
+	return tournaments.map((tournament) => ({ tournamentId: tournament.id }));
 }
 
 interface Props {
-	params: Promise<{ year: string }>;
+	params: Promise<{ tournamentId: string }>;
 }
 
 export default async function TournamentKnockoutPage({ params }: Props) {
-	const { year } = await params;
-	const tournament = await new TournamentRepository().getInfoByYear({ year });
-	const knockoutMatches = (await new MatchRepository().getAllByYear({ year })).filter(KnockoutMatch.isInstance);
-	const qualifiedPlayers = await new GroupRepository().getAdvancedPlayers({ year });
+	const { tournamentId } = await params;
+	const tournament = await new TournamentRepository().getSummary({ tournamentId });
+	const knockoutMatches = (await new MatchRepository().query({ tournamentId })).filter(KnockoutMatch.isInstance);
+	const qualifiedPlayers = await new GroupRepository().getAdvancedPlayers({ tournamentId });
 
 	const finalMatch = knockoutMatches.find((match) => match.type === "final");
 	const championId = finalMatch && CompletedMatch.isInstance(finalMatch) ? CompletedMatch.getWinnerId(finalMatch) : undefined;
-	const champion = qualifiedPlayers.find((player) => player.playerId === championId);
+	const champion = qualifiedPlayers.find((player) => player.player.id === championId);
 	const runnerUpId = finalMatch && CompletedMatch.isInstance(finalMatch) ? CompletedMatch.getLoserId(finalMatch) : undefined;
-	const runnerUp = qualifiedPlayers.find((player) => player.playerId === runnerUpId);
+	const runnerUp = qualifiedPlayers.find((player) => player.player.id === runnerUpId);
 
 	return (
 		<PageContainer
@@ -57,8 +57,8 @@ export default async function TournamentKnockoutPage({ params }: Props) {
 								<h2 className="text-2xl font-bold text-yellow-800">Tournament Champion</h2>
 								<div className="mt-2 flex items-center justify-center gap-3">
 									<div>
-										<p className="text-xl font-semibold text-yellow-800">{champion.playerName}</p>
-										<p className="text-sm text-yellow-600">Defeated {runnerUp.playerName} in the final</p>
+										<p className="text-xl font-semibold text-yellow-800">{champion.player.name}</p>
+										<p className="text-sm text-yellow-600">Defeated {runnerUp.player.name} in the final</p>
 									</div>
 								</div>
 							</div>
@@ -77,7 +77,7 @@ export default async function TournamentKnockoutPage({ params }: Props) {
 			<Separator />
 
 			{/* Qualified Players */}
-			<QualifiedPlayersList year={year} standings={qualifiedPlayers} />
+			<QualifiedPlayersList year={tournamentId} standings={qualifiedPlayers} />
 		</PageContainer>
 	);
 }

@@ -38,7 +38,6 @@ export function GroupPage(props: {
 }) {
 	const { group, matches, standings, tournament, advancedPlayerIds } = props;
 	const { year } = tournament;
-	const groupId = group.id;
 
 	const router = useRouter();
 
@@ -48,13 +47,13 @@ export function GroupPage(props: {
 				Links.Tournaments.get(),
 				Links.Tournaments.Year.get(year, tournament.name),
 				Links.Tournaments.Year.Groups.get(year),
-				Links.Tournaments.Year.Groups.Group.get(year, groupId)
+				Links.Tournaments.Year.Groups.Group.get(year, group.name)
 			]}>
 			{/* Header */}
 			<div className="flex items-center gap-3">
 				<Target className="h-8 w-8 text-primary" />
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight">{group.name}</h1>
+					<h1 className="text-3xl font-bold tracking-tight">{`Group ${group.name}`}</h1>
 					<p className="text-muted-foreground">{tournament.name}</p>
 				</div>
 			</div>
@@ -102,16 +101,16 @@ export function GroupPage(props: {
 						<TableBody>
 							{standings.map((standing, index) => (
 								<TableRow
-									key={standing.playerId}
+									key={standing.player.id}
 									className={clsx({
-										"bg-secondary/95 transition-colors": advancedPlayerIds.includes(standing.playerId)
+										"bg-secondary/95 transition-colors": advancedPlayerIds.includes(standing.player.id)
 									})}>
 									<TableCell className="font-medium">
 										<div className="flex items-center gap-2">
 											<Badge variant={index === 0 ? "default" : "outline"} className="flex h-6 w-6 items-center justify-center p-0 text-xs">
 												{index + 1}
 											</Badge>
-											<PlayerDisplay showAvatar={false} player={{ id: standing.playerId, name: standing.playerName }} />
+											<PlayerDisplay showAvatar={false} player={standing.player} />
 										</div>
 									</TableCell>
 									<TableCell className="text-center">{standing.completedMatches.length}</TableCell>
@@ -154,8 +153,8 @@ export function GroupPage(props: {
 									<TableCell>
 										<div className="flex justify-start gap-1">
 											{standing.completedMatches.map((completedMatch) => {
-												const opponentName = CompletedMatch.getOpponentName(completedMatch, standing.playerId);
-												const isWin = CompletedMatch.isWinner(completedMatch, standing.playerId);
+												const opponentName = DefinedPlayersMatch.getOpponent(completedMatch, standing.player.id);
+												const isWin = CompletedMatch.isWinner(completedMatch, standing.player.id);
 
 												return (
 													<Link key={completedMatch.id} href={`/matches/${completedMatch.id}`}>
@@ -163,8 +162,8 @@ export function GroupPage(props: {
 															className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${isWin ? "bg-green-400" : "bg-red-400"}`}
 															title={
 																isWin
-																	? `Won vs ${opponentName}, score ${CompletedMatch.getWinnerRacksWon(completedMatch)}-${CompletedMatch.getLoserRacksWon(completedMatch)}`
-																	: `Lost to ${opponentName}, score ${CompletedMatch.getLoserRacksWon(completedMatch)}-${CompletedMatch.getWinnerRacksWon(completedMatch)}`
+																	? `Won vs ${opponentName}, score ${CompletedMatch.getWinnerRackWins(completedMatch)}-${CompletedMatch.getLoserRackWins(completedMatch)}`
+																	: `Lost to ${opponentName}, score ${CompletedMatch.getLoserRackWins(completedMatch)}-${CompletedMatch.getWinnerRackWins(completedMatch)}`
 															}></div>
 													</Link>
 												);
@@ -218,8 +217,8 @@ export function GroupPage(props: {
 											<PlayerDisplay
 												showAvatar={false}
 												containerClassName="justify-end"
-												highlight={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1Id)}
-												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player1Id, name: match.player1Name } : undefined}
+												player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined}
+												highlight={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1.id)}
 											/>
 										</TableCell>
 										<TableCell className="text-center">
@@ -234,8 +233,8 @@ export function GroupPage(props: {
 										<TableCell>
 											<PlayerDisplay
 												showAvatar={false}
-												highlight={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2Id)}
-												player={DefinedPlayersMatch.isInstance(match) ? { id: match.player2Id, name: match.player2Name } : undefined}
+												player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined}
+												highlight={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2.id)}
 											/>
 										</TableCell>
 										<TableCell className="text-center">

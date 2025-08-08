@@ -1,11 +1,12 @@
 import { type Group } from "@/interfaces/group.interface";
+import { type WithScheduled } from "@/interfaces/scheduled-match.interface";
 import { type CompletedMatch } from "@/interfaces/completed-match.interface";
+import { type DefinedPlayersMatch } from "@/interfaces/defined-players-match.interface";
 
 export interface Player {
 	id: string;
 	name: string;
-	nickname?: string;
-	location?: string;
+	nickname: string | null;
 }
 
 export interface PlayerTournamentStat extends Player {
@@ -22,7 +23,7 @@ export interface PlayerTournamentStat extends Player {
 	matchWinRate: number;
 	status: "active" | "eliminated" | "qualified";
 }
-export interface PlayerStat extends Player {
+export interface PlayerOverallStat extends Player {
 	rank: number;
 	eloRating: number;
 
@@ -33,8 +34,6 @@ export interface PlayerStat extends Player {
 	racksWinRate: number;
 	matchWinRate: number;
 
-	tournaments: number;
-
 	maxStreak: number;
 	runnerUps: number;
 	semiFinals: number;
@@ -43,6 +42,7 @@ export interface PlayerStat extends Player {
 
 	recentMatches: CompletedMatch[];
 	achievements: PlayerAchievement[];
+	upcomingMatches: WithScheduled<DefinedPlayersMatch & { winChance: number }>[];
 }
 
 export type PlayerAchievementType = "champion" | "runner-up" | "semi-finalist" | "quarter-finalist" | "group-stage";

@@ -138,7 +138,7 @@ export function TournamentPlayersPageClient(props: TournamentPlayersPageClient.P
 							<SelectContent>
 								<SelectItem value="all">All Groups</SelectItem>
 								{groups.map((group) => (
-									<SelectItem key={group.id} value={group.id}>
+									<SelectItem key={group.id} value={String(group.id)}>
 										{group.name}
 									</SelectItem>
 								))}

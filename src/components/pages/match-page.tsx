@@ -25,18 +25,17 @@ import {
 	type Player,
 	ScheduledMatch,
 	CompletedMatch,
-	type PlayerStat,
 	type MatchDetails,
 	DefinedPlayersMatch,
-	type CompletedMatchWithTournament
+	type PlayerOverallStat
 } from "@/interfaces";
 
 function MatchResult({ match }: { match: MatchDetails }) {
-	if (!CompletedMatch.isInstance(match) || !match.player1 || !match.player2) {
+	if (!CompletedMatch.isInstance(match) || !match.player1Stat || !match.player2Stat) {
 		return null;
 	}
 
-	const winner = CompletedMatch.isWinner(match, match.player1.id) ? match.player1 : match.player2;
+	const winner = CompletedMatch.isWinner(match, match.player1Stat.id) ? match.player1Stat : match.player2Stat;
 
 	return (
 		<Card className="border-green-200 bg-gradient-to-r from-green-50 to-green-100">
@@ -56,34 +55,34 @@ function MatchResult({ match }: { match: MatchDetails }) {
 
 					{/* Final Score */}
 					<div className="flex items-center justify-center gap-8">
-						<Link href={`/players/${match.player1Id}`}>
+						<Link href={`/players/${match.player1.id}`}>
 							<div className="text-center">
 								<Avatar className="mx-auto mb-2 h-16 w-16">
-									<AvatarImage alt={match.player1.name} />
-									<AvatarFallback className={getRandomGradient(match.player1Name)}>{getAbbrName(match.player1.name)}</AvatarFallback>
+									<AvatarImage alt={match.player1Stat.name} />
+									<AvatarFallback className={getRandomGradient(match.player1.name)}>{getAbbrName(match.player1Stat.name)}</AvatarFallback>
 								</Avatar>
-								<div className="font-medium">{match.player1.name}</div>
+								<div className="font-medium">{match.player1Stat.name}</div>
 							</div>
 						</Link>
 
 						<div className="text-center">
 							<div className="mb-2 text-4xl font-bold">
-								<span className={winner.id === match.player1.id ? "text-green-600" : "text-gray-600"}>{match.score1}</span>
+								<span className={winner.id === match.player1Stat.id ? "text-green-600" : "text-gray-600"}>{match.score1}</span>
 								<span className="mx-2 text-gray-400">-</span>
-								<span className={winner.id === match.player2.id ? "text-green-600" : "text-gray-600"}>{match.score2}</span>
+								<span className={winner.id === match.player2Stat.id ? "text-green-600" : "text-gray-600"}>{match.score2}</span>
 							</div>
 							<Badge variant="outline" className="text-sm">
 								Final Score
 							</Badge>
 						</div>
 
-						<Link href={`/players/${match.player2Id}`}>
+						<Link href={`/players/${match.player2.id}`}>
 							<div className="text-center">
 								<Avatar className="mx-auto mb-2 h-16 w-16">
-									<AvatarImage alt={match.player2.name} />
-									<AvatarFallback className={getRandomGradient(match.player2Name)}>{getAbbrName(match.player2.name)}</AvatarFallback>
+									<AvatarImage alt={match.player2Stat.name} />
+									<AvatarFallback className={getRandomGradient(match.player2.name)}>{getAbbrName(match.player2.name)}</AvatarFallback>
 								</Avatar>
-								<div className="font-medium">{match.player2.name}</div>
+								<div className="font-medium">{match.player2Stat.name}</div>
 							</div>
 						</Link>
 					</div>
@@ -93,7 +92,7 @@ function MatchResult({ match }: { match: MatchDetails }) {
 	);
 }
 
-function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?: boolean; isPlayer1?: boolean }) {
+function PlayerCard({ player, isWinner }: { isWinner?: boolean; isPlayer1?: boolean; player: PlayerOverallStat }) {
 	return (
 		<Card className={isWinner ? "bg-green-50 ring-2 ring-green-400" : ""}>
 			<CardContent className="pt-6">
@@ -143,9 +142,9 @@ function PlayerCard({ player, isWinner }: { player: PlayerStat; isWinner?: boole
 }
 
 function WinPrediction(props: { match: MatchDetails }) {
-	const { player2, player1, prediction } = props.match;
+	const { player1, player2, prediction, player1Stat, player2Stat } = props.match;
 
-	if (!prediction || !player1 || !player2) {
+	if (!prediction || !player1 || !player2 || !player1Stat || !player2Stat) {
 		return null;
 	}
 
@@ -180,18 +179,11 @@ function WinPrediction(props: { match: MatchDetails }) {
 	);
 }
 
-export function HeadToHeadHistory({
-	player1,
-	player2,
-	headToHeadMatches
-}: {
-	player2: Player;
-	player1: Player;
-	headToHeadMatches: CompletedMatchWithTournament[];
-}) {
-	const lastMatch: CompletedMatchWithTournament | undefined = headToHeadMatches[0];
-	const player1Wins = headToHeadMatches.filter((match) => CompletedMatch.isWinner(match, player1.id)).length;
-	const player2Wins = headToHeadMatches.filter((match) => CompletedMatch.isWinner(match, player2.id)).length;
+export function HeadToHeadHistory(props: { player2: Player; player1: Player; headToHeadMatches?: CompletedMatch[] }) {
+	const { player1, player2, headToHeadMatches } = props;
+	const lastMatch: CompletedMatch | undefined = headToHeadMatches?.[0];
+	const player1Wins = headToHeadMatches?.filter((match) => CompletedMatch.isWinner(match, player1.id)).length ?? 0;
+	const player2Wins = headToHeadMatches?.filter((match) => CompletedMatch.isWinner(match, player2.id)).length ?? 0;
 
 	return (
 		<Card>
@@ -203,7 +195,7 @@ export function HeadToHeadHistory({
 				<CardDescription>Previous meetings between these players</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6">
-				{headToHeadMatches.length === 0 ? (
+				{!headToHeadMatches?.length ? (
 					<div className="py-12 text-center">
 						<h3 className="mb-2 text-lg font-semibold">No data found</h3>
 					</div>
@@ -229,14 +221,13 @@ export function HeadToHeadHistory({
 								<Badge variant="outline">{`${lastMatch.score1}-${lastMatch.score2}`}</Badge>
 							</div>
 							<div className="text-sm text-muted-foreground">
-								{CompletedMatch.isWinner(lastMatch, player1.id) ? player1.name : player2.name} won •{" "}
-								{ISOTime.formatDate(lastMatch.scheduledAt, { weekday: undefined })}
+								{CompletedMatch.getWinner(lastMatch).name} won • {ISOTime.formatDate(lastMatch.scheduledAt, { weekday: undefined })}
 							</div>
 						</div>
 					</div>
 				)}
 
-				{headToHeadMatches.length > 0 && (
+				{!!headToHeadMatches?.length && (
 					<div className="border-t pt-4">
 						<h4 className="mb-3 font-medium">Recent Results</h4>
 						<div className="space-y-2">
@@ -262,7 +253,7 @@ export function HeadToHeadHistory({
 	);
 }
 
-function RecentForm({ player }: { player: PlayerStat }) {
+function RecentForm({ player }: { player: PlayerOverallStat }) {
 	return (
 		<Card>
 			<CardHeader>
@@ -283,7 +274,7 @@ function RecentForm({ player }: { player: PlayerStat }) {
 						{player.recentMatches.slice(0, 5).map((match, index) => (
 							<TableRow key={index}>
 								<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt, { weekday: undefined })}</TableCell>
-								<TableCell className="font-medium">{DefinedPlayersMatch.getOpponentName(match, player.id)}</TableCell>
+								<TableCell className="font-medium">{DefinedPlayersMatch.getOpponent(match, player.id).name}</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="font-mono">
 										{`${match.score1} - ${match.score2}`}
@@ -307,46 +298,46 @@ function RecentForm({ player }: { player: PlayerStat }) {
 
 namespace MatchDetailsPage {
 	export interface Props {
-		readonly match: MatchDetails;
+		readonly matchDetails: MatchDetails;
 	}
 }
 
-export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
-	const isPending = !CompletedMatch.isInstance(match);
+export const MatchDetailsPage = ({ matchDetails }: MatchDetailsPage.Props) => {
+	const isPending = !CompletedMatch.isInstance(matchDetails);
 
 	return (
-		<PageContainer items={[Links.Matches.get(), Links.Matches.Match.get(match.id)]}>
+		<PageContainer items={[Links.Matches.get(), Links.Matches.Match.get(matchDetails.id)]}>
 			{/* Match Header */}
 			<Card>
 				<CardContent className="pt-6">
 					<div className="space-y-4 text-center">
 						<div className="flex items-center justify-center space-x-2">
-							<h1 className="text-2xl font-bold">Match {Match.formatId(match)}</h1>
+							<h1 className="text-2xl font-bold">Match {Match.formatId(matchDetails)}</h1>
 						</div>
 
 						<div className="flex justify-center gap-2 text-sm">
-							<Badge variant="outline">{match.tournament.name}</Badge>
-							<Badge variant="outline">{match.name}</Badge>
-							<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
+							<Badge variant="outline">{matchDetails.tournament.name}</Badge>
+							<Badge variant="outline">{Match.getName(matchDetails)}</Badge>
+							<Badge className={getStatusColor(Match.getStatus(matchDetails))}>{toLabel(Match.getStatus(matchDetails))}</Badge>
 						</div>
 
 						<div className="flex justify-center gap-8 text-sm text-muted-foreground">
 							<div className="flex items-center gap-1">
 								<Calendar className="h-4 w-4" />
-								{ISOTime.formatDate(match.scheduledAt)}
+								{ISOTime.formatDate(matchDetails.scheduledAt)}
 							</div>
 							<div className="flex items-center gap-1">
 								<Clock className="h-4 w-4" />
-								{ISOTime.formatTime(match.scheduledAt)}
+								{ISOTime.formatTime(matchDetails.scheduledAt)}
 							</div>
 							<div className="flex items-center gap-1">
 								<MapPin className="h-4 w-4" />
-								{match.tournament.googleMapsUrl ? (
+								{matchDetails.tournament.googleMapsUrl ? (
 									<TooltipProvider>
 										<Tooltip>
 											<TooltipTrigger asChild>
-												<a target="_blank" rel="noopener noreferrer" href={match.tournament.googleMapsUrl}>
-													{match.tournament.venue}
+												<a target="_blank" rel="noopener noreferrer" href={matchDetails.tournament.googleMapsUrl}>
+													{matchDetails.tournament.venue}
 												</a>
 											</TooltipTrigger>
 											<TooltipContent>
@@ -355,7 +346,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 										</Tooltip>
 									</TooltipProvider>
 								) : (
-									<span>{match.tournament.venue}</span>
+									<span>{matchDetails.tournament.venue}</span>
 								)}
 							</div>
 						</div>
@@ -363,10 +354,10 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 				</CardContent>
 			</Card>
 
-			<MatchResult match={match} />
+			<MatchResult match={matchDetails} />
 
 			{/* Countdown Timer */}
-			{ScheduledMatch.isInstance(match) && Match.getStatus(match) === "upcoming" && (
+			{ScheduledMatch.isInstance(matchDetails) && Match.getStatus(matchDetails) === "upcoming" && (
 				<Card className="space-y-8 border-none py-8">
 					<CardHeader>
 						<CardTitle className="flex items-center justify-center gap-2 text-center text-2xl">
@@ -375,49 +366,53 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<CountdownTimer targetTime={match.scheduledAt} />
+						<CountdownTimer targetTime={matchDetails.scheduledAt} />
 					</CardContent>
 				</Card>
 			)}
 
-			{match.player1 && match.player2 && isPending && (
+			{matchDetails.player1Stat && matchDetails.player2Stat && isPending && (
 				<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 					<PlayerCard
 						isPlayer1
-						player={match.player1}
-						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1.id)}
+						player={matchDetails.player1Stat}
+						isWinner={CompletedMatch.isInstance(matchDetails) && CompletedMatch.isWinner(matchDetails, matchDetails.player1Stat.id)}
 					/>
 					<PlayerCard
 						isPlayer1={false}
-						player={match.player2}
-						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2.id)}
+						player={matchDetails.player2Stat}
+						isWinner={CompletedMatch.isInstance(matchDetails) && CompletedMatch.isWinner(matchDetails, matchDetails.player2Stat.id)}
 					/>
 				</div>
 			)}
 
-			{isPending && <WinPrediction match={match} />}
+			{isPending && <WinPrediction match={matchDetails} />}
 
-			{isPending && match.player1 && match.player2 && (
+			{isPending && matchDetails.player1Stat && matchDetails.player2Stat && (
 				<Tabs className="space-y-6" defaultValue="head-to-head">
 					<TabsList className="grid w-full grid-cols-3">
-						<TabsTrigger value="form1">{match.player1.name}</TabsTrigger>
+						<TabsTrigger value="form1">{matchDetails.player1Stat.name}</TabsTrigger>
 						<TabsTrigger value="head-to-head">Head-to-Head</TabsTrigger>
-						<TabsTrigger value="form2">{match.player2.name}</TabsTrigger>
+						<TabsTrigger value="form2">{matchDetails.player2Stat.name}</TabsTrigger>
 					</TabsList>
 
 					<TabsContent value="form1">
-						<RecentForm player={match.player1} />
+						<RecentForm player={matchDetails.player1Stat} />
 					</TabsContent>
 
 					<TabsContent value="head-to-head">
-						<HeadToHeadHistory player1={match.player1} player2={match.player2} headToHeadMatches={match.headToHeadMatches} />
+						<HeadToHeadHistory
+							player2={matchDetails.player2Stat}
+							player1={matchDetails.player1Stat}
+							headToHeadMatches={matchDetails.headToHeadMatches}
+						/>
 					</TabsContent>
 
 					<TabsContent value="form2">
-						<RecentForm player={match.player2} />
+						<RecentForm player={matchDetails.player2Stat} />
 					</TabsContent>
 				</Tabs>
 			)}
 		</PageContainer>
 	);
-}
+};

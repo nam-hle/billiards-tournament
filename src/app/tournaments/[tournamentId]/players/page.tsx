@@ -7,20 +7,18 @@ import { TournamentRepository } from "@/repositories/tournament.repository";
 export async function generateStaticParams() {
 	const tournaments = await new TournamentRepository().getAll();
 
-	return tournaments.map((tournament) => ({ year: tournament.year }));
+	return tournaments.map((tournament) => ({ tournamentId: tournament.id }));
 }
 
 interface Props {
-	params: Promise<{ year: string }>;
+	params: Promise<{ tournamentId: string }>;
 }
 
 export default async function TournamentPlayersPage({ params }: Props) {
-	const { year } = await params;
-	const tournament = await new TournamentRepository().getByYear(year);
-	const playerRepo = new PlayerRepository();
-	const players = await playerRepo.getAllByYear(year);
-	const playerStats = await Promise.all(players.map((player) => playerRepo.getStatsByTournament(player.id, year)));
-	const groups = await new GroupRepository().getByYear({ year });
+	const { tournamentId } = await params;
+	const tournament = await new TournamentRepository().getById({ tournamentId });
+	const playerStats = await new PlayerRepository().getTournamentStats({ tournamentId });
+	const groups = await new GroupRepository().getAllByTournament({ tournamentId: tournamentId });
 
 	return <TournamentPlayersPageClient groups={groups} players={playerStats} tournament={tournament} />;
 }

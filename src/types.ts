@@ -1,6 +1,6 @@
 import type React from "react";
 
-import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_NUMBER } from "@/constants";
+import { DEFAULT_LIMIT, DEFAULT_PAGE_NUMBER } from "@/constants";
 
 export interface Container {
 	children: React.ReactNode;
@@ -25,7 +25,7 @@ export interface Pagination {
 }
 export namespace Pagination {
 	export function getDefault(): Pagination {
-		return { pageSize: DEFAULT_PAGE_SIZE, pageNumber: DEFAULT_PAGE_NUMBER };
+		return { pageSize: DEFAULT_LIMIT, pageNumber: DEFAULT_PAGE_NUMBER };
 	}
 
 	export function toRange(pagination: Pagination): [number, number] {

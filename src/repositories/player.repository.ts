@@ -1,102 +1,106 @@
-import { assert } from "@/utils";
+import { sumBy, mapValues } from "es-toolkit";
+
 import { Elo } from "@/utils/elo";
-import { BaseRepository } from "@/repositories/base.repository";
+import { DEFAULT_LIMIT } from "@/constants";
+import { supabaseClient } from "@/services/supabase/server";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 import {
 	Match,
-	ISOTime,
 	type Player,
 	CompletedMatch,
 	ScheduledMatch,
-	type PlayerStat,
 	type WithScheduled,
 	DefinedPlayersMatch,
+	type PlayerOverallStat,
 	type PlayerAchievement,
 	type PlayerTournamentStat
 } from "@/interfaces";
 
-export class PlayerRepository extends BaseRepository {
-	public getAll(): Promise<Player[]> {
-		return this.dataSource.getPlayers();
+export class PlayerRepository {
+	public async getAll(): Promise<Player[]> {
+		const { data, error } = await supabaseClient.from("players").select("*");
+
+		if (error) {
+			throw error;
+		}
+
+		return data;
 	}
 
-	public async findById(id: string): Promise<Player | undefined> {
-		const players = await this.getAll();
+	public async getById(params: { playerId: string }): Promise<Player> {
+		const { data, error } = await supabaseClient.from("players").select("*").eq("id", params.playerId).single();
 
-		return players.find((player) => player.id === id);
+		if (error) {
+			throw error;
+		}
+
+		return data;
 	}
 
-	public async getById(id: string): Promise<Player> {
-		const player = await this.findById(id);
+	public async getAllByTournament(params: { tournamentId: string }): Promise<Player[]> {
+		const groups = await new GroupRepository().getAllByTournament(params);
+		const groupIds = groups.map((group) => group.id);
 
-		assert(player, `Player with ID ${id} not found`);
+		const { data: players } = await supabaseClient.from("group_players").select(`player:players (*)`).in("group_id", groupIds);
 
-		return player;
+		return players?.map(({ player }) => player) ?? [];
 	}
 
-	public async getAllByYear(year: string): Promise<Player[]> {
-		const players = await this.getAll();
-		const groups = await new GroupRepository().getByYear({ year });
-		const groupPlayers = groups.flatMap((group) => group.players);
+	public async getTournamentStats(params: { tournamentId: string }): Promise<PlayerTournamentStat[]> {
+		const players = await this.getAllByTournament(params);
 
-		return players.filter((player) => groupPlayers.includes(player.id));
+		const tournamentCompletedMatches = await new MatchRepository().query({ ...params, completed: true });
+		const groups = await new GroupRepository().getAllByTournament(params);
+
+		const eloRatings = await this.getEloRatings();
+
+		return players.map((player) => {
+			const playerCompletedMatches = tournamentCompletedMatches.filter((match) => Match.hasPlayer(match, player.id));
+			const matchWins = playerCompletedMatches.filter((match) => CompletedMatch.isWinner(match, player.id)).length;
+			const matchLosses = playerCompletedMatches.length - matchWins;
+
+			const rackWins = sumBy(playerCompletedMatches, (match) => CompletedMatch.getRackWins(match, player.id));
+			const rackLosses = sumBy(playerCompletedMatches, (match) => CompletedMatch.getRackLosses(match, player.id));
+
+			const group = groups.find((group) => group.players.some((p) => p.id === player.id));
+
+			if (!group) {
+				throw new Error(`Group for player ID ${player.id} in tournament ID ${params.tournamentId} not found`);
+			}
+
+			return {
+				...player,
+				group,
+				rackWins,
+				matchWins,
+				matchLosses,
+				eloRating: eloRatings[player.id],
+				rackDiffs: rackWins - rackLosses,
+
+				status: "active", // TODO: Determine status based on matches
+				playedMatches: tournamentCompletedMatches.length,
+				matchWinRate: matchWins / tournamentCompletedMatches.length
+			};
+		});
 	}
 
-	public async getStatsByTournament(playerId: string, year: string): Promise<PlayerTournamentStat> {
-		const player = await this.getById(playerId);
-		const groups = await new GroupRepository().getByYear({ year });
-		const matches = (await new MatchRepository().getAllByYear({ year })).filter((match) => Match.hasPlayer(match, playerId));
-		const completedMatches = matches.filter(CompletedMatch.isInstance);
-
-		const group = groups.find((group) => group.players.includes(playerId));
-		assert(group);
-
-		const wins = completedMatches.filter((match) => CompletedMatch.isWinner(match, playerId)).length;
-		const losses = completedMatches.length - wins;
-		const rackWins = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackWins(match, playerId), 0);
-		const rackLosses = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackLosses(match, playerId), 0);
-		const { eloRating } = await this.getEloRating({ playerId: player.id });
-
-		return {
-			...player,
-			group,
-			rackWins,
-			eloRating,
-			matchWins: wins,
-			matchLosses: losses,
-			rackDiffs: rackWins - rackLosses,
-
-			status: "active", // TODO: Determine status based on matches
-			playedMatches: completedMatches.length,
-			matchWinRate: wins / completedMatches.length
-		};
-	}
-
-	async getStat(params: { playerId: string; skipLast?: number }): Promise<PlayerStat> {
+	async getOverallStat(params: { playerId: string; skipLast?: number }): Promise<PlayerOverallStat> {
 		const { playerId } = params;
-		const player = await this.getById(playerId);
+		const player = await this.getById(params);
 
-		const completedMatches = await this.getCompletedMatches({ order: "asc", playerId: params.playerId });
+		const completedMatches = await new MatchRepository().query({ completed: true, playerId: params.playerId });
 
-		const totalWins = completedMatches.filter((match) => CompletedMatch.isWinner(match, params.playerId)).length;
-		const totalLosses = completedMatches.length - totalWins;
+		const matchWins = completedMatches.filter((match) => CompletedMatch.isWinner(match, params.playerId)).length;
+		const matchLosses = completedMatches.length - matchWins;
 
-		const totalRacksWins = completedMatches.reduce(
-			(sum, match) =>
-				sum + (CompletedMatch.isWinner(match, params.playerId) ? CompletedMatch.getWinnerRacksWon(match) : CompletedMatch.getLoserRacksWon(match)),
-			0
-		);
-		const totalRacksLost = completedMatches.reduce(
-			(sum, match) =>
-				sum + (CompletedMatch.isWinner(match, params.playerId) ? CompletedMatch.getLoserRacksWon(match) : CompletedMatch.getWinnerRacksWon(match)),
-			0
-		);
+		const rackWins = sumBy(completedMatches, (match) => CompletedMatch.getRackWins(match, playerId));
+		const rackLosses = sumBy(completedMatches, (match) => CompletedMatch.getRackLosses(match, playerId));
 
 		const accumulatedStreaks = completedMatches.reduce<number[]>((streaks, match, matchIndex) => {
 			if (matchIndex === 0) {
-				return [CompletedMatch.isWinner(match, playerId) ? 1 : 0];
+				return [+CompletedMatch.isWinner(match, playerId)];
 			}
 
 			if (CompletedMatch.getLoserId(match) === playerId) {
@@ -109,111 +113,70 @@ export class PlayerRepository extends BaseRepository {
 
 		const achievements = await this.getTournamentResults({ playerId });
 
-		const championships = achievements.filter((achievement) => achievement.type === "champion").length;
-		const semiFinals = achievements.filter((achievement) => achievement.type === "semi-finalist").length;
-		const quarterFinals = achievements.filter((achievement) => achievement.type === "quarter-finalist").length;
-		const runnerUps = achievements.filter((achievement) => achievement.type === "runner-up").length;
-		const { rank, eloRating } = await this.getEloRating({ ...params, playerId: player.id });
+		const upcomingMatches = await this.getUpcomingMatchesWithPredictions({ playerId });
 
 		return {
 			...player,
-			rank,
+			...(await this.getEloRatingAndRank(params))[playerId],
 			maxStreak,
-			runnerUps,
-			eloRating,
-			semiFinals,
-			championships,
-			quarterFinals,
-			matchWins: totalWins,
-			matchLosses: totalLosses,
+			upcomingMatches,
 
-			tournaments: achievements.length,
+			runnerUps: achievements.filter((achievement) => achievement.type === "runner-up").length,
+			championships: achievements.filter((achievement) => achievement.type === "champion").length,
+			semiFinals: achievements.filter((achievement) => achievement.type === "semi-finalist").length,
+			quarterFinals: achievements.filter((achievement) => achievement.type === "quarter-finalist").length,
+
+			matchWins,
+			matchLosses,
 			totalMatches: completedMatches.length,
-
-			recentMatches: completedMatches.slice(-5),
-			matchWinRate: totalWins / completedMatches.length,
-			achievements: await this.getTournamentResults({ playerId }),
-			racksWinRate: totalRacksWins / (totalRacksWins + totalRacksLost)
+			racksWinRate: rackWins / (rackWins + rackLosses),
+			matchWinRate: matchWins / completedMatches.length,
+			recentMatches: completedMatches.slice(-DEFAULT_LIMIT),
+			achievements: await this.getTournamentResults({ playerId })
 		};
-	}
-
-	async getCompletedMatches(params: { limit?: number; playerId: string; order?: "desc" | "asc" }): Promise<CompletedMatch[]> {
-		const { limit, playerId, order = "desc" } = params;
-
-		const completedMatches: CompletedMatch[] = [];
-
-		for (const tournament of await new TournamentRepository().getAll()) {
-			const matches = await new MatchRepository().getAllByYear({ year: tournament.year });
-
-			completedMatches.push(...matches.filter(CompletedMatch.isInstance).filter((match) => Match.hasPlayer(match, playerId)));
-		}
-
-		const comparator = ISOTime.createComparator(order);
-
-		const sortedCompletedMatches = completedMatches.sort((matchA, matchB) => comparator(matchA.scheduledAt, matchB.scheduledAt));
-
-		if (limit === undefined) {
-			return sortedCompletedMatches;
-		}
-
-		return sortedCompletedMatches.slice(0, limit);
 	}
 
 	async getTournamentResults(params: { playerId: string }): Promise<PlayerAchievement[]> {
 		const results: PlayerAchievement[] = [];
 
 		for (const tournament of await new TournamentRepository().getAll()) {
-			const result = await new TournamentRepository().getPlayerTournamentAchievements({ ...params, year: tournament.year });
+			const result = await new TournamentRepository().getTournamentAchievements({ ...params, tournamentId: tournament.id });
 
-			if (result) {
-				results.push(...result);
-			}
+			results.push(...result);
 		}
 
 		return results;
 	}
 
-	async getEloRating(params: { playerId: string; skipLast?: number }): Promise<{ rank: number; eloRating: number }> {
-		const eloRatings = await this.getEloRatings(params.skipLast);
+	async getEloRatingAndRank(params: { skipLast?: number }): Promise<Record<string, { rank: number; eloRating: number }>> {
+		const eloRatingsMap = await this.getEloRatings(params);
+		const eloRatings = Object.values(eloRatingsMap);
 
-		const eloRating = eloRatings[params.playerId];
-
-		const rank =
-			Object.values(eloRatings)
-				.sort((a, b) => b - a)
-				.indexOf(eloRating) + 1;
-
-		return { rank, eloRating };
+		return mapValues(eloRatingsMap, (eloRating) => {
+			return { eloRating, rank: eloRatings.sort((a, b) => b - a).indexOf(eloRating) + 1 };
+		});
 	}
 
-	async getEloRatings(skipLast?: number): Promise<Record<string, number>> {
+	async getEloRatings(params?: { skipLast?: number }): Promise<Record<string, number>> {
+		const skipLast = params?.skipLast;
 		const players = await this.getAll();
-		const elo = new Elo(players.map((player) => player.id));
+		const matches = (await new MatchRepository().query({ completed: true })).slice(0, skipLast ? -skipLast : undefined);
 
-		for (const match of (await new MatchRepository().getAllCompletedMatches())
-			.sort(ScheduledMatch.ascendingComparator)
-			.slice(0, skipLast ? -skipLast : undefined)) {
-			elo.processMatch(CompletedMatch.getWinnerId(match), CompletedMatch.getLoserId(match));
-		}
-
-		return elo.getRatings();
+		return new Elo().compute(
+			players.map((player) => player.id),
+			matches
+		);
 	}
 
-	async getUpComingMatchesWithPredictions(playerId: string): Promise<WithScheduled<DefinedPlayersMatch & { winChance: number }>[]> {
-		const matches = await new MatchRepository().getUpcomingMatchesByPlayer(playerId);
-		const playerElo = await this.getEloRating({ playerId });
+	async getUpcomingMatchesWithPredictions(params: { playerId: string }): Promise<WithScheduled<DefinedPlayersMatch & { winChance: number }>[]> {
+		const matches = await new MatchRepository().getUpcomingMatchesByPlayer(params);
 
-		const filteredMatches = matches.filter((match) => ScheduledMatch.isInstance(match) && DefinedPlayersMatch.isInstance(match));
+		const ratings = await this.getEloRatings();
 
-		return Promise.all(
-			filteredMatches.map(async (match) => {
-				const opponentId = match.player1Id === playerId ? match.player2Id : match.player1Id;
-				const opponentElo = await this.getEloRating({ playerId: opponentId });
-
-				const winChance = Elo.expectedScore(playerElo.eloRating, opponentElo.eloRating);
-
-				return { ...match, winChance };
-			})
+		return matches.flatMap((match) =>
+			ScheduledMatch.isInstance(match) && DefinedPlayersMatch.isInstance(match)
+				? { ...match, winChance: Elo.expectedScore(ratings[params.playerId], ratings[DefinedPlayersMatch.getOpponent(match, params.playerId).id]) }
+				: []
 		);
 	}
 }

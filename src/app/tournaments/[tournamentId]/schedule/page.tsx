@@ -5,17 +5,15 @@ import { TournamentRepository } from "@/repositories/tournament.repository";
 export async function generateStaticParams() {
 	const tournaments = await new TournamentRepository().getAll();
 
-	return tournaments.map((tournament) => ({ year: tournament.year }));
+	return tournaments.map((tournament) => ({ tournamentId: tournament.id }));
 }
 
 interface Props {
-	params: Promise<{ year: string }>;
+	params: Promise<{ tournamentId: string }>;
 }
 
 export default async function TournamentSchedulePage({ params }: Props) {
-	const { year } = await params;
-	const schedule = await new TournamentRepository().getSchedule(year);
-	const tournament = await new TournamentRepository().getByYear(year);
+	const { tournamentId } = await params;
 
-	return <SchedulePageClient schedule={schedule} tournament={tournament} />;
+	return <SchedulePageClient tournament={await new TournamentRepository().getSummary({ tournamentId })} />;
 }

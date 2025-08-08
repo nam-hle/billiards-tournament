@@ -16,7 +16,7 @@ export namespace ISOTime {
 		return format(new Date(isoTime), "yyyy-MM-dd");
 	}
 
-	export const formatDate = (isoTime: ISOTime | undefined, options?: Intl.DateTimeFormatOptions & { fallback?: string }) => {
+	export const formatDate = (isoTime: ISOTime | null, options?: Intl.DateTimeFormatOptions & { fallback?: string }) => {
 		if (!isoTime) {
 			return options?.fallback || "TBD";
 		}
@@ -30,7 +30,7 @@ export namespace ISOTime {
 		});
 	};
 
-	export const formatTime = (isoTime: ISOTime | undefined, options?: { fallback?: string }) => {
+	export const formatTime = (isoTime: ISOTime | null, options?: { fallback?: string }) => {
 		if (!isoTime) {
 			return options?.fallback || "TBD";
 		}
@@ -38,7 +38,7 @@ export namespace ISOTime {
 		return new Date(isoTime).toLocaleTimeString("en-US", { hour12: true, hour: "2-digit", minute: "2-digit" });
 	};
 
-	export const formatDateTime = (isoTime: ISOTime | undefined, options?: Intl.DateTimeFormatOptions & { fallback?: string }) => {
+	export const formatDateTime = (isoTime: ISOTime | null, options?: Intl.DateTimeFormatOptions & { fallback?: string }) => {
 		if (!isoTime) {
 			return options?.fallback || "TBD";
 		}

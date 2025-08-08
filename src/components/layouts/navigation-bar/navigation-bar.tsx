@@ -13,7 +13,7 @@ import { Logo } from "@/components/layouts/navigation-bar/logo";
 import { TournamentSwitcher } from "@/components/tournament-switcher";
 import { Tabs, type Tab } from "@/components/layouts/navigation-bar/tabs";
 
-import type { TournamentOverview } from "@/interfaces";
+import { type TournamentSummary } from "@/interfaces";
 
 const mainPages = [
 	{
@@ -38,7 +38,7 @@ const mainPages = [
 	}
 ] as const;
 
-export const NavigationBar: React.FC<{ tournaments: TournamentOverview[] }> = ({ tournaments }) => {
+export const NavigationBar: React.FC<{ tournaments: TournamentSummary[] }> = ({ tournaments }) => {
 	const pathname = usePathname();
 
 	const inSpecificTournament = match("/tournaments/:year", { end: false })(pathname);

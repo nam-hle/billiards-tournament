@@ -1,23 +1,19 @@
 import Chance from "chance";
 
 import { Elo } from "@/utils/elo";
+import { type Group } from "@/interfaces/group.interface";
 import { type ISOTime } from "@/interfaces/iso-time.interface";
-import { type PlayerStat } from "@/interfaces/player.interface";
 import { type Tournament } from "@/interfaces/tournament.interface";
 import { CompletedMatch } from "@/interfaces/completed-match.interface";
 import { ScheduledMatch } from "@/interfaces/scheduled-match.interface";
 import { DefinedPlayersMatch } from "@/interfaces/defined-players-match.interface";
-
-export type CompletedMatchWithTournament = CompletedMatch & { tournament: Tournament };
+import { type Player, type PlayerOverallStat } from "@/interfaces/player.interface";
 
 export type MatchDetails = Match & {
-	readonly player1?: PlayerStat;
-	readonly player2?: PlayerStat;
-	readonly tournament: Tournament;
 	readonly prediction?: MatchPrediction;
-	readonly lastMatch?: CompletedMatchWithTournament;
-	readonly recentMatches: CompletedMatchWithTournament[];
-	readonly headToHeadMatches: CompletedMatchWithTournament[];
+	readonly player2Stat?: PlayerOverallStat;
+	readonly player1Stat?: PlayerOverallStat;
+	readonly headToHeadMatches?: CompletedMatch[];
 };
 
 export type MatchPrediction = {
@@ -29,29 +25,30 @@ export interface BaseMatch {
 	id: string;
 
 	type: string;
-	scheduledAt?: ISOTime;
+	order: number | null;
+	tournament: Tournament;
+	scheduledAt: ISOTime | null;
+	group: Pick<Group, "id" | "name"> | null;
 
-	score1?: number;
-	score2?: number;
-	player1Id?: string;
-	player2Id?: string;
-	placeholder1?: string;
-	placeholder2?: string;
+	score1: number | null;
+	score2: number | null;
+	player1: Player | null;
+	player2: Player | null;
+	placeholder1: string | null;
+	placeholder2: string | null;
 }
 
 export interface GroupMatch extends BaseMatch {
-	name: string;
 	type: "group";
-	groupId: string;
+	group: Pick<Group, "id" | "name">;
 }
 export namespace GroupMatch {
 	export function isInstance(match: BaseMatch): match is GroupMatch {
-		return match.type === "group";
+		return match.type === "group" && match.group !== null;
 	}
 }
 
 export interface KnockoutMatch extends BaseMatch {
-	name: string;
 	order: number;
 	type: "quarter-final" | "semi-final" | "final";
 }
@@ -65,14 +62,39 @@ export type Match = GroupMatch | KnockoutMatch;
 
 export type MatchStatus = "scheduling" | "scheduled" | "upcoming" | "waiting" | "ongoing" | "completed";
 export namespace Match {
+	export function isInstance(match: BaseMatch): match is Match {
+		return GroupMatch.isInstance(match) || KnockoutMatch.isInstance(match);
+	}
+
+	export function getName(match: Match) {
+		if (GroupMatch.isInstance(match)) {
+			return `Group ${match.group.name}`;
+		}
+
+		if (match.type === "final") {
+			return "Final";
+		}
+
+		if (match.type === "semi-final") {
+			return "Semi Final";
+		}
+
+		if (match.type === "quarter-final") {
+			return "Quarter Final";
+		}
+
+		throw new Error(`Unknown match type: ${JSON.stringify(match)}`);
+	}
+
 	export function findHeadMatch<M extends Match>(matches: M[], player1Id: string, player2Id: string): M | undefined {
 		return matches.find(
-			(match) => (match.player1Id === player1Id && match.player2Id === player2Id) || (match.player1Id === player2Id && match.player2Id === player1Id)
+			(match) =>
+				(match.player1?.id === player1Id && match.player2?.id === player2Id) || (match.player1?.id === player2Id && match.player2?.id === player1Id)
 		);
 	}
 
 	export function hasPlayer(match: Match, playerId: string): boolean {
-		return match.player1Id === playerId || match.player2Id === playerId;
+		return match.player1?.id === playerId || match.player2?.id === playerId;
 	}
 
 	export function getStatus(match: Match): MatchStatus {

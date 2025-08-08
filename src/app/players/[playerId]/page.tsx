@@ -17,8 +17,7 @@ interface Props {
 export default async function OverallPlayerProfilePage({ params }: Props) {
 	const { playerId } = await params;
 
-	const playerStat = await new PlayerRepository().getStat({ playerId });
-	const upcomingMatches = await new PlayerRepository().getUpComingMatchesWithPredictions(playerId);
+	const playerStat = await new PlayerRepository().getOverallStat({ playerId });
 
-	return <PlayerPage playerStat={playerStat} upcomingMatches={upcomingMatches} />;
+	return <PlayerPage playerStat={playerStat} />;
 }

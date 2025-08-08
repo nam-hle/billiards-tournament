@@ -1,32 +1,30 @@
+import { CompletedMatch } from "@/interfaces";
+
 export class Elo {
-	private readonly ratings: Record<string, number>;
-	public static readonly DEFAULT_RATING = 1500;
-	public static readonly K = 32;
-
-	public constructor(playerIds: string[]) {
-		this.ratings = Object.fromEntries(playerIds.map((playerId) => [playerId, Elo.DEFAULT_RATING]));
-	}
-
-	public getRatings() {
-		return this.ratings;
-	}
-
-	public getRating(playerId: string): number {
-		return this.ratings[playerId];
-	}
+	private static readonly DEFAULT_RATING = 1500;
+	private static readonly K = 32;
 
 	static expectedScore(rA: number, rB: number): number {
 		return 1 / (1 + 10 ** ((rB - rA) / 400));
 	}
 
-	public processMatch(winnerId: string, loserId: string): void {
-		const rWinner = this.getRating(winnerId);
-		const rLoser = this.getRating(loserId);
+	public compute(playerIds: string[], matches: CompletedMatch[]): Record<string, number> {
+		const ratings = Object.fromEntries(playerIds.map((playerId) => [playerId, Elo.DEFAULT_RATING]));
 
-		const eWinner = Elo.expectedScore(rWinner, rLoser);
-		const eLoser = Elo.expectedScore(rLoser, rWinner);
+		for (const match of matches) {
+			const winnerId = CompletedMatch.getWinnerId(match);
+			const loserId = CompletedMatch.getLoserId(match);
 
-		this.ratings[winnerId] = rWinner + Elo.K * (1 - eWinner);
-		this.ratings[loserId] = rLoser + Elo.K * (0 - eLoser);
+			const winnerRating = ratings[winnerId];
+			const loserRating = ratings[loserId];
+
+			const expectedWinnerScore = Elo.expectedScore(winnerRating, loserRating);
+			const expectedLoserScore = Elo.expectedScore(loserRating, winnerRating);
+
+			ratings[winnerId] = winnerRating + Elo.K * (1 - expectedWinnerScore);
+			ratings[loserId] = loserRating + Elo.K * (0 - expectedLoserScore);
+		}
+
+		return ratings;
 	}
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { groupBy } from "es-toolkit";
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Users, Trophy, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
@@ -15,13 +16,14 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { ALL_FILTER } from "@/constants";
-import { Match, ISOTime, GroupMatch, ScheduledMatch, CompletedMatch, type Tournament, type TournamentSchedule } from "@/interfaces";
+import { Match, ISOTime, GroupMatch, ScheduledMatch, CompletedMatch, type TournamentSummary } from "@/interfaces";
 
 const GROUP_QUERY_KEY = "group";
 const STATUS_QUERY_KEY = "status";
 const PLAYER_QUERY_KEY = "player";
 
-export function SchedulePageClient({ schedule, tournament }: { tournament: Tournament; schedule: TournamentSchedule }) {
+export function SchedulePageClient({ tournament }: { tournament: TournamentSummary }) {
+	const { groups, players, matches } = tournament;
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
@@ -49,28 +51,15 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 		[router, searchParams]
 	);
 	// Filter matches
-	const filteredMatches = schedule.matches.filter((match) => {
-		const groupMatch = selectedGroupId === "all" || (GroupMatch.isInstance(match) && match.groupId === selectedGroupId);
+	const filteredMatches = matches.filter((match) => {
+		const groupMatch = selectedGroupId === "all" || (GroupMatch.isInstance(match) && match.group.id === selectedGroupId);
 		const statusMatch = selectedStatus === "all" || Match.getStatus(match) === selectedStatus;
-		const playerMatch = selectedPlayerId === "all" || match.player1Id === selectedPlayerId || match.player2Id === selectedPlayerId;
+		const playerMatch = selectedPlayerId === "all" || match.player1?.id === selectedPlayerId || match.player2?.id === selectedPlayerId;
 
 		return groupMatch && statusMatch && playerMatch;
 	});
 
-	// Group matches by date
-	const matchesByDate = filteredMatches.reduce<Record<string, ScheduledMatch[]>>((acc, match) => {
-		if (!ScheduledMatch.isInstance(match)) {
-			return acc;
-		}
-
-		const date = ISOTime.getDate(match.scheduledAt);
-
-		acc[date] ??= [];
-		acc[date].push(match);
-
-		return acc;
-	}, {});
-
+	const matchesByDate = groupBy(filteredMatches.filter(ScheduledMatch.isInstance), (match) => ISOTime.getDate(match.scheduledAt));
 	const dates = Object.keys(matchesByDate).sort();
 	const currentDateIndex = dates.indexOf(currentDate);
 
@@ -145,8 +134,8 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 			<Card>
 				<CardContent className="pt-6">
 					<ScheduleFilters
-						groups={schedule.groups}
-						players={schedule.players}
+						groups={groups}
+						players={players}
 						selectedGroup={selectedGroupId}
 						selectedStatus={selectedStatus}
 						selectedPlayer={selectedPlayerId}
@@ -167,9 +156,9 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 
 				<TabsContent value="all" className="space-y-6">
 					{dates.map((date) => (
-						<DaySchedule key={date} date={date} groups={schedule.groups} matches={matchesByDate[date]} />
+						<DaySchedule key={date} date={date} groups={groups} matches={matchesByDate[date]} />
 					))}
-					{unscheduledMatches.length > 0 && <DaySchedule date="unscheduled" groups={schedule.groups} matches={unscheduledMatches} />}
+					{unscheduledMatches.length > 0 && <DaySchedule groups={groups} date="unscheduled" matches={unscheduledMatches} />}
 				</TabsContent>
 
 				<TabsContent value="daily" className="space-y-6">
@@ -191,11 +180,11 @@ export function SchedulePageClient({ schedule, tournament }: { tournament: Tourn
 						</Button>
 					</div>
 
-					<DaySchedule date={currentDate} matches={todayMatches} groups={schedule.groups} />
+					<DaySchedule groups={groups} date={currentDate} matches={todayMatches} />
 				</TabsContent>
 
 				<TabsContent value="upcoming" className="space-y-6">
-					<DaySchedule date="upcoming" groups={schedule.groups} matches={upcomingMatches} />
+					<DaySchedule date="upcoming" groups={groups} matches={upcomingMatches} />
 				</TabsContent>
 			</Tabs>
 		</PageContainer>

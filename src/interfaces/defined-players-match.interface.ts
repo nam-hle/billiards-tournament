@@ -1,40 +1,22 @@
-import { type Match } from "@/interfaces/match.interface";
+import { type Player } from "@/interfaces/player.interface";
+import { type Match, type BaseMatch } from "@/interfaces/match.interface";
 
-export type WithDefinedPlayers<M extends Match> = M & Required<Pick<M, "player1Id" | "player2Id">> & { player1Name: string; player2Name: string };
+export type WithDefinedPlayers<M extends BaseMatch> = M & { player2: Player; player1: Player };
 export type DefinedPlayersMatch = WithDefinedPlayers<Match>;
 export namespace DefinedPlayersMatch {
 	export function isInstance<M extends Match>(match: M): match is WithDefinedPlayers<M> {
-		return (
-			match.player1Id !== undefined &&
-			match.player2Id !== undefined &&
-			"player1Name" in match &&
-			match.player1Name !== undefined &&
-			"player2Name" in match &&
-			match.player2Name !== undefined
-		);
+		return match.player1 !== null && match.player2 !== null;
 	}
 
-	export function getOpponentName(match: DefinedPlayersMatch, playerId: string): string {
-		if (match.player1Id === playerId) {
-			return match.player2Name;
+	export function getOpponent(match: DefinedPlayersMatch, playerId: string): Player {
+		if (match.player1.id === playerId) {
+			return match.player2;
 		}
 
-		if (match.player2Id === playerId) {
-			return match.player1Name;
+		if (match.player2.id === playerId) {
+			return match.player1;
 		}
 
-		throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Name}" and "${match.player2Name}"`);
-	}
-
-	export function getOpponentId(match: DefinedPlayersMatch, playerId: string): string {
-		if (match.player1Id === playerId) {
-			return match.player2Id;
-		}
-
-		if (match.player2Id === playerId) {
-			return match.player1Id;
-		}
-
-		throw new Error(`Player ID "${playerId}" not found in match with players "${match.player1Name}" and "${match.player2Name}"`);
+		throw new Error(`Player ID "${playerId}" not found in match ${JSON.stringify(match)}`);
 	}
 }

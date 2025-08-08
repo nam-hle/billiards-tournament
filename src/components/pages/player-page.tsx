@@ -14,7 +14,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { formatRatio } from "@/utils/strings";
-import { Match, ISOTime, CompletedMatch, type PlayerStat, type WithScheduled, DefinedPlayersMatch, type PlayerAchievement } from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, DefinedPlayersMatch, type PlayerOverallStat, type PlayerAchievement } from "@/interfaces";
 
 function RecentMatches({ matches, playerId }: { playerId: string; matches: CompletedMatch[] }) {
 	const router = useRouter();
@@ -44,19 +44,17 @@ function RecentMatches({ matches, playerId }: { playerId: string; matches: Compl
 								<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt)}</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="text-xs">
-										{match.name}
+										{Match.getName(match)}
 									</Badge>
 								</TableCell>
 								<TableCell>
-									<PlayerDisplay
-										player={{ id: DefinedPlayersMatch.getOpponentId(match, playerId), name: DefinedPlayersMatch.getOpponentName(match, playerId) }}
-									/>
+									<PlayerDisplay player={DefinedPlayersMatch.getOpponent(match, playerId)} />
 								</TableCell>
 								<TableCell className="text-center">
 									<Badge variant="outline" className="font-mono">
 										{CompletedMatch.isWinner(match, playerId)
-											? `${CompletedMatch.getWinnerRacksWon(match)} - ${CompletedMatch.getLoserRacksWon(match)}`
-											: `${CompletedMatch.getLoserRacksWon(match)} - ${CompletedMatch.getWinnerRacksWon(match)}`}
+											? `${CompletedMatch.getWinnerRackWins(match)} - ${CompletedMatch.getLoserRackWins(match)}`
+											: `${CompletedMatch.getLoserRackWins(match)} - ${CompletedMatch.getWinnerRackWins(match)}`}
 									</Badge>
 								</TableCell>
 								<TableCell className="text-center">
@@ -125,14 +123,9 @@ function PlayerAchievements({ achievements }: { achievements: PlayerAchievement[
 	);
 }
 
-export function PlayerPage({
-	playerStat,
-	upcomingMatches
-}: {
-	playerStat: PlayerStat;
-	upcomingMatches: WithScheduled<DefinedPlayersMatch & { winChance: number }>[];
-}) {
+export function PlayerPage({ playerStat }: { playerStat: PlayerOverallStat }) {
 	const router = useRouter();
+	const { upcomingMatches } = playerStat;
 
 	return (
 		<PageContainer items={[Links.Players.get(), Links.Players.Player.get(playerStat.id, playerStat.name)]}>
@@ -240,7 +233,7 @@ export function PlayerPage({
 
 			<PlayerAchievements achievements={playerStat.achievements} />
 
-			{upcomingMatches?.length && (
+			{upcomingMatches?.length ? (
 				<Card>
 					<CardHeader>
 						<CardTitle>Upcoming Matches</CardTitle>
@@ -259,19 +252,17 @@ export function PlayerPage({
 							</TableHeader>
 							<TableBody>
 								{upcomingMatches.map((match) => {
-									const opponentId = DefinedPlayersMatch.getOpponentId(match, playerStat.id);
-
 									return (
 										<TableRow key={match.id} className="cursor-pointer hover:bg-muted" onClick={() => router.push(`/matches/${match.id}`)}>
 											<TableCell className="text-center font-mono">{Match.formatId(match)}</TableCell>
 											<TableCell className="font-mono text-sm">{ISOTime.formatDate(match.scheduledAt)}</TableCell>
 											<TableCell className="text-center">
 												<Badge variant="outline" className="text-xs">
-													{match.name}
+													{Match.getName(match)}
 												</Badge>
 											</TableCell>
 											<TableCell>
-												<PlayerDisplay player={{ id: opponentId, name: DefinedPlayersMatch.getOpponentName(match, playerStat.id) }} />
+												<PlayerDisplay player={DefinedPlayersMatch.getOpponent(match, playerStat.id)} />
 											</TableCell>
 
 											<TableCell className="text-center">{formatRatio(match.winChance)}</TableCell>
@@ -282,7 +273,7 @@ export function PlayerPage({
 						</Table>
 					</CardContent>
 				</Card>
-			)}
+			) : null}
 
 			<RecentMatches playerId={playerStat.id} matches={playerStat.recentMatches} />
 		</PageContainer>
