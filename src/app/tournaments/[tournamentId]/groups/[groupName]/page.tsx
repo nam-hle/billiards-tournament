@@ -13,16 +13,20 @@ interface Props {
 
 export default async function ServerGroupPage({ params }: Props) {
 	const { groupName, tournamentId } = await params;
-	const tournament = await new TournamentRepository().getById({ tournamentId });
 	const group = await new GroupRepository().findByName({ groupName, tournamentId });
 
 	if (!group) {
 		return notFound();
 	}
 
-	const matches = await new MatchRepository().query({ groupId: group.id });
-	const standings = await new GroupRepository().getStandings({ prediction: true, groupId: group.id });
-	const advancedPlayerIds = (await new GroupRepository().getAdvancedPlayers({ tournamentId: tournamentId })).map((standing) => standing.player.id);
+	const [tournament, matches, standings, advancedPlayers] = await Promise.all([
+		new TournamentRepository().getById({ tournamentId }),
+		new MatchRepository().query({ groupId: group.id }),
+		new GroupRepository().getStandings({ prediction: true, groupId: group.id }),
+		new GroupRepository().getAdvancedPlayers({ tournamentId: tournamentId })
+	]);
+
+	const advancedPlayerIds = advancedPlayers.map((standing) => standing.player.id);
 	const prediction = new GroupRepository().getPrediction({ groupId: group.id });
 
 	return (
