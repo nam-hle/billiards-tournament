@@ -17,9 +17,7 @@ interface Props {
 export default async function TournamentPlayersPage({ params }: Props) {
 	const { tournamentId } = await params;
 	const tournament = await new TournamentRepository().getById({ tournamentId });
-	const playerRepo = new PlayerRepository();
-	const players = await playerRepo.getAllByTournament({ tournamentId });
-	const playerStats = await Promise.all(players.map((player) => playerRepo.getTournamentStat({ tournamentId, playerId: player.id })));
+	const playerStats = await new PlayerRepository().getTournamentStats({ tournamentId });
 	const groups = await new GroupRepository().getAllByTournament({ tournamentId: tournamentId });
 
 	return <TournamentPlayersPageClient groups={groups} players={playerStats} tournament={tournament} />;

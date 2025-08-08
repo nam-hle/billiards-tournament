@@ -7,6 +7,7 @@ import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 import {
+	Match,
 	type Player,
 	CompletedMatch,
 	ScheduledMatch,
@@ -47,29 +48,42 @@ export class PlayerRepository {
 		return players?.map(({ player }) => player) ?? [];
 	}
 
-	public async getTournamentStat(params: { playerId: string; tournamentId: string }): Promise<PlayerTournamentStat> {
-		const player = await this.getById(params);
-		const completedMatches = await new MatchRepository().query({ ...params, completed: true });
+	public async getTournamentStats(params: { tournamentId: string }): Promise<PlayerTournamentStat[]> {
+		const players = await this.getAllByTournament(params);
 
-		const matchWins = completedMatches.filter((match) => CompletedMatch.isWinner(match, params.playerId)).length;
-		const matchLosses = completedMatches.length - matchWins;
-		const rackWins = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackWins(match, player.id), 0);
-		const rackLosses = completedMatches.reduce((sum, match) => sum + CompletedMatch.getRackLosses(match, player.id), 0);
-		const { eloRating } = await this.getEloRatingAndRank({ playerId: player.id });
+		const tournamentCompletedMatches = await new MatchRepository().query({ ...params, completed: true });
+		const groups = await new GroupRepository().getAllByTournament(params);
 
-		return {
-			...player,
-			rackWins,
-			eloRating,
-			matchWins,
-			matchLosses,
-			rackDiffs: rackWins - rackLosses,
-			group: await new GroupRepository().getByPlayer(params),
+		const eloRatings = await this.getEloRatings();
 
-			status: "active", // TODO: Determine status based on matches
-			playedMatches: completedMatches.length,
-			matchWinRate: matchWins / completedMatches.length
-		};
+		return players.map((player) => {
+			const playerCompletedMatches = tournamentCompletedMatches.filter((match) => Match.hasPlayer(match, player.id));
+			const matchWins = playerCompletedMatches.filter((match) => CompletedMatch.isWinner(match, player.id)).length;
+			const matchLosses = playerCompletedMatches.length - matchWins;
+
+			const rackWins = sumBy(playerCompletedMatches, (match) => CompletedMatch.getRackWins(match, player.id));
+			const rackLosses = sumBy(playerCompletedMatches, (match) => CompletedMatch.getRackLosses(match, player.id));
+
+			const group = groups.find((group) => group.players.some((p) => p.id === player.id));
+
+			if (!group) {
+				throw new Error(`Group for player ID ${player.id} in tournament ID ${params.tournamentId} not found`);
+			}
+
+			return {
+				...player,
+				group,
+				rackWins,
+				matchWins,
+				matchLosses,
+				eloRating: eloRatings[player.id],
+				rackDiffs: rackWins - rackLosses,
+
+				status: "active", // TODO: Determine status based on matches
+				playedMatches: tournamentCompletedMatches.length,
+				matchWinRate: matchWins / tournamentCompletedMatches.length
+			};
+		});
 	}
 
 	async getOverallStat(params: { playerId: string; skipLast?: number }): Promise<PlayerOverallStat> {
