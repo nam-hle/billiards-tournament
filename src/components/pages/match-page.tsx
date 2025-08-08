@@ -298,46 +298,46 @@ function RecentForm({ player }: { player: PlayerOverallStat }) {
 
 namespace MatchDetailsPage {
 	export interface Props {
-		readonly match: MatchDetails;
+		readonly matchDetails: MatchDetails;
 	}
 }
 
-export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
-	const isPending = !CompletedMatch.isInstance(match);
+export const MatchDetailsPage = ({ matchDetails }: MatchDetailsPage.Props) => {
+	const isPending = !CompletedMatch.isInstance(matchDetails);
 
 	return (
-		<PageContainer items={[Links.Matches.get(), Links.Matches.Match.get(match.id)]}>
+		<PageContainer items={[Links.Matches.get(), Links.Matches.Match.get(matchDetails.id)]}>
 			{/* Match Header */}
 			<Card>
 				<CardContent className="pt-6">
 					<div className="space-y-4 text-center">
 						<div className="flex items-center justify-center space-x-2">
-							<h1 className="text-2xl font-bold">Match {Match.formatId(match)}</h1>
+							<h1 className="text-2xl font-bold">Match {Match.formatId(matchDetails)}</h1>
 						</div>
 
 						<div className="flex justify-center gap-2 text-sm">
-							<Badge variant="outline">{match.tournament.name}</Badge>
-							<Badge variant="outline">{Match.getName(match)}</Badge>
-							<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
+							<Badge variant="outline">{matchDetails.tournament.name}</Badge>
+							<Badge variant="outline">{Match.getName(matchDetails)}</Badge>
+							<Badge className={getStatusColor(Match.getStatus(matchDetails))}>{toLabel(Match.getStatus(matchDetails))}</Badge>
 						</div>
 
 						<div className="flex justify-center gap-8 text-sm text-muted-foreground">
 							<div className="flex items-center gap-1">
 								<Calendar className="h-4 w-4" />
-								{ISOTime.formatDate(match.scheduledAt)}
+								{ISOTime.formatDate(matchDetails.scheduledAt)}
 							</div>
 							<div className="flex items-center gap-1">
 								<Clock className="h-4 w-4" />
-								{ISOTime.formatTime(match.scheduledAt)}
+								{ISOTime.formatTime(matchDetails.scheduledAt)}
 							</div>
 							<div className="flex items-center gap-1">
 								<MapPin className="h-4 w-4" />
-								{match.tournament.googleMapsUrl ? (
+								{matchDetails.tournament.googleMapsUrl ? (
 									<TooltipProvider>
 										<Tooltip>
 											<TooltipTrigger asChild>
-												<a target="_blank" rel="noopener noreferrer" href={match.tournament.googleMapsUrl}>
-													{match.tournament.venue}
+												<a target="_blank" rel="noopener noreferrer" href={matchDetails.tournament.googleMapsUrl}>
+													{matchDetails.tournament.venue}
 												</a>
 											</TooltipTrigger>
 											<TooltipContent>
@@ -346,7 +346,7 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 										</Tooltip>
 									</TooltipProvider>
 								) : (
-									<span>{match.tournament.venue}</span>
+									<span>{matchDetails.tournament.venue}</span>
 								)}
 							</div>
 						</div>
@@ -354,10 +354,10 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 				</CardContent>
 			</Card>
 
-			<MatchResult match={match} />
+			<MatchResult match={matchDetails} />
 
 			{/* Countdown Timer */}
-			{ScheduledMatch.isInstance(match) && Match.getStatus(match) === "upcoming" && (
+			{ScheduledMatch.isInstance(matchDetails) && Match.getStatus(matchDetails) === "upcoming" && (
 				<Card className="space-y-8 border-none py-8">
 					<CardHeader>
 						<CardTitle className="flex items-center justify-center gap-2 text-center text-2xl">
@@ -366,49 +366,53 @@ export function MatchDetailsPage({ match }: MatchDetailsPage.Props) {
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<CountdownTimer targetTime={match.scheduledAt} />
+						<CountdownTimer targetTime={matchDetails.scheduledAt} />
 					</CardContent>
 				</Card>
 			)}
 
-			{match.player1Stat && match.player2Stat && isPending && (
+			{matchDetails.player1Stat && matchDetails.player2Stat && isPending && (
 				<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 					<PlayerCard
 						isPlayer1
-						player={match.player1Stat}
-						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1Stat.id)}
+						player={matchDetails.player1Stat}
+						isWinner={CompletedMatch.isInstance(matchDetails) && CompletedMatch.isWinner(matchDetails, matchDetails.player1Stat.id)}
 					/>
 					<PlayerCard
 						isPlayer1={false}
-						player={match.player2Stat}
-						isWinner={CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2Stat.id)}
+						player={matchDetails.player2Stat}
+						isWinner={CompletedMatch.isInstance(matchDetails) && CompletedMatch.isWinner(matchDetails, matchDetails.player2Stat.id)}
 					/>
 				</div>
 			)}
 
-			{isPending && <WinPrediction match={match} />}
+			{isPending && <WinPrediction match={matchDetails} />}
 
-			{isPending && match.player1Stat && match.player2Stat && (
+			{isPending && matchDetails.player1Stat && matchDetails.player2Stat && (
 				<Tabs className="space-y-6" defaultValue="head-to-head">
 					<TabsList className="grid w-full grid-cols-3">
-						<TabsTrigger value="form1">{match.player1Stat.name}</TabsTrigger>
+						<TabsTrigger value="form1">{matchDetails.player1Stat.name}</TabsTrigger>
 						<TabsTrigger value="head-to-head">Head-to-Head</TabsTrigger>
-						<TabsTrigger value="form2">{match.player2Stat.name}</TabsTrigger>
+						<TabsTrigger value="form2">{matchDetails.player2Stat.name}</TabsTrigger>
 					</TabsList>
 
 					<TabsContent value="form1">
-						<RecentForm player={match.player1Stat} />
+						<RecentForm player={matchDetails.player1Stat} />
 					</TabsContent>
 
 					<TabsContent value="head-to-head">
-						<HeadToHeadHistory player2={match.player2Stat} player1={match.player1Stat} headToHeadMatches={match.headToHeadMatches} />
+						<HeadToHeadHistory
+							player2={matchDetails.player2Stat}
+							player1={matchDetails.player1Stat}
+							headToHeadMatches={matchDetails.headToHeadMatches}
+						/>
 					</TabsContent>
 
 					<TabsContent value="form2">
-						<RecentForm player={match.player2Stat} />
+						<RecentForm player={matchDetails.player2Stat} />
 					</TabsContent>
 				</Tabs>
 			)}
 		</PageContainer>
 	);
-}
+};

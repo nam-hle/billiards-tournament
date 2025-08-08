@@ -1,4 +1,4 @@
-import { sumBy } from "es-toolkit";
+import { sumBy, mapValues } from "es-toolkit";
 
 import { Elo } from "@/utils/elo";
 import { DEFAULT_LIMIT } from "@/constants";
@@ -117,7 +117,7 @@ export class PlayerRepository {
 
 		return {
 			...player,
-			...(await this.getEloRatingAndRank({ ...params, playerId })),
+			...(await this.getEloRatingAndRank(params))[playerId],
 			maxStreak,
 			upcomingMatches,
 
@@ -148,18 +148,13 @@ export class PlayerRepository {
 		return results;
 	}
 
-	async getEloRatingAndRank(params: { playerId: string; skipLast?: number }): Promise<{ rank: number; eloRating: number }> {
-		const eloRatings = await this.getEloRatings(params);
+	async getEloRatingAndRank(params: { skipLast?: number }): Promise<Record<string, { rank: number; eloRating: number }>> {
+		const eloRatingsMap = await this.getEloRatings(params);
+		const eloRatings = Object.values(eloRatingsMap);
 
-		const eloRating = eloRatings[params.playerId];
-
-		return {
-			eloRating,
-			rank:
-				Object.values(eloRatings)
-					.sort((a, b) => b - a)
-					.indexOf(eloRating) + 1
-		};
+		return mapValues(eloRatingsMap, (eloRating) => {
+			return { eloRating, rank: eloRatings.sort((a, b) => b - a).indexOf(eloRating) + 1 };
+		});
 	}
 
 	async getEloRatings(params?: { skipLast?: number }): Promise<Record<string, number>> {
