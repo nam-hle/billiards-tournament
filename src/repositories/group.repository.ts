@@ -31,7 +31,7 @@ function postProcessGroupResult(result: {
 }
 
 export class GroupRepository {
-	private static SIMULATION_ITERATION = 7_000;
+	private static SIMULATION_ITERATION = 20_000;
 
 	async getAllByTournament(params: { tournamentId: string }): Promise<Group[]> {
 		const tournament = await new TournamentRepository().getById(params);
@@ -108,9 +108,6 @@ export class GroupRepository {
 		const group = params.group ?? (await this.getById(params));
 		const matches = params.matches ?? (await new MatchRepository().query({ ...params, completed: true }));
 
-		const prediction: GroupPrediction =
-			params.matches === undefined && params.prediction ? await this.getPrediction({ groupId: params.groupId }) : { top1: {}, top2: {} };
-
 		return group.players
 			.map<GroupStanding>((player) => {
 				const playerId = player.id;
@@ -142,8 +139,6 @@ export class GroupRepository {
 					groupId: group.id,
 					points: matchWins * 3,
 					groupName: group.name,
-					top1Prob: prediction.top1[playerId],
-					top2Prob: prediction.top2[playerId],
 					racksDifference: rackWins - rackLosses,
 					completedMatches: playerMatches.sort(ScheduledMatch.ascendingComparator)
 				};
@@ -207,12 +202,13 @@ export class GroupRepository {
 			return prediction;
 		}
 
-		const N = GroupRepository.SIMULATION_ITERATION / incompletedMatches.length;
+		const N = GroupRepository.SIMULATION_ITERATION;
 
-		for (let iteration = 0; iteration < GroupRepository.SIMULATION_ITERATION / incompletedMatches.length; iteration++) {
+		for (let iteration = 0; iteration < N; iteration++) {
 			if (iteration % 1000 === 0) {
 				// eslint-disable-next-line no-console
 				console.log(`Simulation iteration ${iteration} for group ${params.groupId}`);
+				await tick();
 			}
 
 			const simulatedMatches: WithCompleted<GroupMatch>[] = incompletedMatches.map((match) => {
@@ -245,3 +241,5 @@ export class GroupRepository {
 }
 
 type IncompletedMatch = GroupMatch & WithDefinedPlayers<GroupMatch>;
+
+const tick = () => new Promise((r) => setImmediate(r));

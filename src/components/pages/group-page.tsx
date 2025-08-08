@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import React, { use, Suspense } from "react";
 import { Target, Calendar, CircleQuestionMark } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
+import { Skeleton } from "@/components/shadcn/skeleton";
 import { Separator } from "@/components/shadcn/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/shadcn/tooltip";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
@@ -17,6 +18,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
+import type { GroupPrediction } from "@/interfaces/prediction.interface";
 import {
 	Match,
 	ISOTime,
@@ -35,6 +37,7 @@ export function GroupPage(props: {
 	tournament: Tournament;
 	standings: GroupStanding[];
 	advancedPlayerIds: string[];
+	predictions: Promise<GroupPrediction>;
 }) {
 	const { group, matches, standings, tournament, advancedPlayerIds } = props;
 	const { year } = tournament;
@@ -171,7 +174,9 @@ export function GroupPage(props: {
 										</div>
 									</TableCell>
 									<TableCell className="text-center">
-										{formatRatio(standing.top1Prob)} / {formatRatio(standing.top2Prob)}
+										<Suspense fallback={<Skeleton className="h-8 w-full" />}>
+											<PredictionOutput playerId={standing.player.id} predictions={props.predictions} />
+										</Suspense>
 									</TableCell>
 								</TableRow>
 							))}
@@ -250,3 +255,13 @@ export function GroupPage(props: {
 		</PageContainer>
 	);
 }
+
+const PredictionOutput: React.FC<{ playerId: string; predictions: Promise<GroupPrediction> }> = (props) => {
+	const prediction = use(props.predictions);
+
+	return (
+		<>
+			{formatRatio(prediction.top1[props.playerId])} / {formatRatio(prediction.top2[props.playerId])}
+		</>
+	);
+};
