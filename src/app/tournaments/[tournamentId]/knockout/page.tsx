@@ -13,9 +13,12 @@ interface Props {
 
 export default async function Page({ params }: Props) {
 	const { tournamentId } = await params;
-	const tournament = await new TournamentRepository().getSummary({ tournamentId });
-	const knockoutMatches = (await new MatchRepository().query({ tournamentId })).filter(KnockoutMatch.isInstance).sort((a, b) => a.order - b.order);
-	const qualifiedPlayers = await new GroupRepository().getAdvancedPlayers({ tournamentId });
+
+	const tournament = new TournamentRepository().getSummary({ tournamentId });
+	const knockoutMatches = new MatchRepository()
+		.query({ tournamentId })
+		.then((matches) => matches.filter(KnockoutMatch.isInstance).sort((a, b) => a.order - b.order));
+	const qualifiedPlayers = new GroupRepository().getAdvancedPlayers({ tournamentId });
 
 	return <KnockoutPage tournament={tournament} knockoutMatches={knockoutMatches} qualifiedPlayers={qualifiedPlayers} />;
 }

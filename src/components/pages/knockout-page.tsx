@@ -1,15 +1,16 @@
 "use client";
-import React from "react";
 import Link from "next/link";
+import React, { use, Suspense } from "react";
 import { Medal, Crown, Award, Trophy, Calendar } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
+import { Skeleton } from "@/components/shadcn/skeleton";
 import { Separator } from "@/components/shadcn/separator";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
-import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@/components/shadcn/table";
 
 import { PlayerDisplay } from "@/components/player-display";
 import { PageHeader } from "@/components/layouts/page-header";
+import { SuspendableTable } from "@/components/suspendable-table";
 import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
@@ -17,16 +18,13 @@ import { toLabel, getStatusColor } from "@/utils/strings";
 import { Match, ISOTime, CompletedMatch, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch, type TournamentSummary } from "@/interfaces";
 
 export function KnockoutPage(props: {
-	tournament: TournamentSummary;
-	knockoutMatches: KnockoutMatch[];
-	qualifiedPlayers: (GroupStanding & { knockoutPosition: number })[];
+	tournament: Promise<TournamentSummary>;
+	knockoutMatches: Promise<KnockoutMatch[]>;
+	qualifiedPlayers: Promise<(GroupStanding & { knockoutPosition: number })[]>;
 }) {
-	const { tournament, knockoutMatches, qualifiedPlayers } = props;
-	const finalMatch = knockoutMatches.find((match) => match.type === "final");
-	const championId = finalMatch && CompletedMatch.isInstance(finalMatch) ? CompletedMatch.getWinnerId(finalMatch) : undefined;
-	const champion = qualifiedPlayers.find((player) => player.player.id === championId);
-	const runnerUpId = finalMatch && CompletedMatch.isInstance(finalMatch) ? CompletedMatch.getLoserId(finalMatch) : undefined;
-	const runnerUp = qualifiedPlayers.find((player) => player.player.id === runnerUpId);
+	const { knockoutMatches, qualifiedPlayers } = props;
+
+	const tournament = use(props.tournament);
 
 	return (
 		<PageContainer
@@ -40,25 +38,7 @@ export function KnockoutPage(props: {
 			<Separator />
 
 			{/* Champion Banner */}
-			{champion && runnerUp && (
-				<Card className="border-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-100">
-					<CardContent className="pt-6">
-						<div className="flex items-center justify-center gap-4">
-							<Crown className="h-8 w-8 text-yellow-600" />
-							<div className="text-center">
-								<h2 className="text-2xl font-bold text-yellow-800">Tournament Champion</h2>
-								<div className="mt-2 flex items-center justify-center gap-3">
-									<div>
-										<p className="text-xl font-semibold text-yellow-800">{champion.player.name}</p>
-										<p className="text-sm text-yellow-600">Defeated {runnerUp.player.name} in the final</p>
-									</div>
-								</div>
-							</div>
-							<Trophy className="h-8 w-8 text-yellow-600" />
-						</div>
-					</CardContent>
-				</Card>
-			)}
+			<ChampionBanner {...props} />
 
 			{/* Tournament Bracket */}
 			<div>
@@ -73,6 +53,46 @@ export function KnockoutPage(props: {
 		</PageContainer>
 	);
 }
+
+function ChampionBanner(props: {
+	knockoutMatches: Promise<KnockoutMatch[]>;
+	qualifiedPlayers: Promise<(GroupStanding & { knockoutPosition: number })[]>;
+}) {
+	const knockoutMatches = use(props.knockoutMatches);
+	const qualifiedPlayers = use(props.qualifiedPlayers);
+
+	const finalMatch = knockoutMatches.find((match) => match.type === "final");
+	const championId = finalMatch && CompletedMatch.isInstance(finalMatch) ? CompletedMatch.getWinnerId(finalMatch) : undefined;
+	const champion = qualifiedPlayers.find((player) => player.player.id === championId);
+	const runnerUpId = finalMatch && CompletedMatch.isInstance(finalMatch) ? CompletedMatch.getLoserId(finalMatch) : undefined;
+	const runnerUp = qualifiedPlayers.find((player) => player.player.id === runnerUpId);
+
+	if (!champion || !runnerUp) {
+		return null;
+	}
+
+	return (
+		<Card className="border-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-100">
+			<CardContent className="pt-6">
+				<div className="flex items-center justify-center gap-4">
+					<Crown className="h-8 w-8 text-yellow-600" />
+					<div className="text-center">
+						<h2 className="text-2xl font-bold text-yellow-800">Tournament Champion</h2>
+						<div className="mt-2 flex items-center justify-center gap-3">
+							<div>
+								<p className="text-xl font-semibold text-yellow-800">{champion.player.name}</p>
+								<p className="text-sm text-yellow-600">Defeated {runnerUp.player.name} in the final</p>
+							</div>
+						</div>
+					</div>
+					<Trophy className="h-8 w-8 text-yellow-600" />
+				</div>
+			</CardContent>
+		</Card>
+	);
+}
+
+const SkeletonMatchCard = () => <Skeleton className="h-[160px] w-[300px]" />;
 
 function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: KnockoutMatch }) {
 	return (
@@ -140,10 +160,23 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 	);
 }
 
-function TournamentBracket({ matches }: { matches: KnockoutMatch[] }) {
-	const quarterFinals = matches.filter((m) => m.type === "quarter-final");
-	const semiFinals = matches.filter((m) => m.type === "semi-final");
-	const final = matches.find((m) => m.type === "final");
+function MatchCards({ type, matches }: { type: KnockoutMatch["type"]; matches: Promise<KnockoutMatch[]> }) {
+	const matchesData = use(matches);
+	const filteredMatches = matchesData.filter((match) => match.type === type);
+
+	return (
+		<>
+			{filteredMatches.map((match) => (
+				<MatchCard match={match} key={match.id} />
+			))}
+		</>
+	);
+}
+
+function TournamentBracket({ matches }: { matches: Promise<KnockoutMatch[]> }) {
+	// const quarterFinals = matches.filter((m) => m.type === "quarter-final");
+	// const semiFinals = matches.filter((m) => m.type === "semi-final");
+	// const final = matches.find((m) => m.type === "final");
 
 	return (
 		<div className="space-y-8">
@@ -154,12 +187,14 @@ function TournamentBracket({ matches }: { matches: KnockoutMatch[] }) {
 					Quarter Finals
 				</h3>
 				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-					{quarterFinals.map((match) => (
-						<MatchCard match={match} key={match.id} />
-					))}
+					<Suspense
+						fallback={Array.from({ length: 4 }).map((_, index) => (
+							<SkeletonMatchCard key={index} />
+						))}>
+						<MatchCards matches={matches} type="quarter-final" />
+					</Suspense>
 				</div>
 			</div>
-
 			{/* Semi Finals */}
 			<div>
 				<h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
@@ -167,37 +202,36 @@ function TournamentBracket({ matches }: { matches: KnockoutMatch[] }) {
 					Semi Finals
 				</h3>
 				<div className="mx-auto grid max-w-2xl grid-cols-1 gap-6 md:grid-cols-2">
-					{semiFinals.map((match) => (
-						<MatchCard match={match} key={match.id} />
-					))}
+					<Suspense
+						fallback={Array.from({ length: 2 }).map((_, index) => (
+							<SkeletonMatchCard key={index} />
+						))}>
+						<MatchCards matches={matches} type="semi-final" />
+					</Suspense>
 				</div>
 			</div>
-
 			{/* Final */}
-			{final && (
-				<div>
-					<h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-						<Crown className="h-5 w-5 text-yellow-600" />
-						Final
-					</h3>
-					<div className="mx-auto max-w-md">
-						<MatchCard isFinal match={final} />
-					</div>
+			<div>
+				<h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+					<Crown className="h-5 w-5 text-yellow-600" />
+					Final
+				</h3>
+				<div className="mx-auto max-w-md">
+					<Suspense
+						fallback={Array.from({ length: 1 }).map((_, index) => (
+							<SkeletonMatchCard key={index} />
+						))}>
+						<MatchCards type="final" matches={matches} />
+					</Suspense>
 				</div>
-			)}
+			</div>
 		</div>
 	);
 }
 
-function QualifiedPlayersList({
-	year,
-	standings
-}: {
-	year: string;
-	standings: (GroupStanding & {
-		knockoutPosition: number;
-	})[];
-}) {
+function QualifiedPlayersList(props: { year: string; standings: Promise<(GroupStanding & { knockoutPosition: number })[]> }) {
+	const { year, standings } = props;
+
 	return (
 		<Card>
 			<CardHeader>
@@ -208,61 +242,68 @@ function QualifiedPlayersList({
 				<CardDescription>Top 8 players advancing to knockout phase</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>Player</TableHead>
-							<TableHead className="text-center">Group</TableHead>
-							<TableHead className="text-center">Group Position</TableHead>
-							<TableHead className="text-center">Played Matches</TableHead>
-							<TableHead className="text-center">Points</TableHead>
-							<TableHead className="text-center">Racks Difference</TableHead>
-							<TableHead className="text-center">Rack Wins</TableHead>
-							<TableHead className="w-[50px]">Rank</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{standings.map((standing) => (
-							<TableRow key={standing.player.id}>
-								<TableCell>
-									<PlayerDisplay player={standing.player} />
-								</TableCell>
-								<TableCell className="text-center">
-									<Link href={`/tournaments/${year}/groups/${standing.groupName}`}>
-										<Badge variant="outline">{standing.groupName}</Badge>
-									</Link>
-								</TableCell>
-								<TableCell className="text-center">
-									<Badge className="font-semibold" variant={standing.groupPosition === 1 ? "default" : "secondary"}>
-										{standing.groupPosition}
-									</Badge>
-								</TableCell>
-								<TableCell className="text-center">
-									<Badge variant="secondary" className="font-semibold">
-										{standing.completedMatches.length}
-									</Badge>
-								</TableCell>
-								<TableCell className="text-center">
-									<Badge variant="default" className="font-semibold">
-										{standing.points}
-									</Badge>
-								</TableCell>
-								<TableCell className="text-center">
-									<span
-										className={`text-sm font-medium ${standing.racksDifference > 0 ? "text-green-600" : standing.racksDifference < 0 ? "text-red-600" : ""}`}>
-										{standing.racksDifference}
-									</span>
-								</TableCell>
-								<TableCell className="text-center">
-									<span className="text-sm font-medium text-green-600">{standing.rackWins}</span>
-								</TableCell>
-								<TableCell>
-									<Badge variant="outline">{`#${standing.knockoutPosition}`}</Badge>
-								</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
+				<SuspendableTable
+					data={standings}
+					expectedNumberOfRows={8}
+					dataKeyGetter={({ row }) => row.player.id}
+					hrefGetter={({ row }) => `/players/${row.player.id}`}
+					columns={[
+						{
+							label: "Player",
+							alignment: "left",
+							dataGetter: ({ row }) => <PlayerDisplay player={row.player} />
+						},
+						{
+							label: "Group",
+							dataGetter: ({ row }) => (
+								<Link href={`/tournaments/${year}/groups/${row.groupName}`}>
+									<Badge variant="outline">{row.groupName}</Badge>
+								</Link>
+							)
+						},
+						{
+							label: "Group Position",
+							dataGetter: ({ row }) => (
+								<Badge className="font-semibold" variant={row.groupPosition === 1 ? "default" : "secondary"}>
+									{row.groupPosition}
+								</Badge>
+							)
+						},
+						{
+							label: "Played Matches",
+							dataGetter: ({ row }) => (
+								<Badge variant="secondary" className="font-semibold">
+									{row.completedMatches.length}
+								</Badge>
+							)
+						},
+						{
+							label: "Points",
+							dataGetter: ({ row }) => (
+								<Badge variant="default" className="font-semibold">
+									{row.points}
+								</Badge>
+							)
+						},
+						{
+							label: "Racks Difference",
+							dataGetter: ({ row }) => (
+								<span className={`text-sm font-medium ${row.racksDifference > 0 ? "text-green-600" : row.racksDifference < 0 ? "text-red-600" : ""}`}>
+									{row.racksDifference}
+								</span>
+							)
+						},
+						{
+							label: "Rack Wins",
+							dataGetter: ({ row }) => <span className="text-sm font-medium text-green-600">{row.rackWins}</span>
+						},
+						{
+							width: 50,
+							label: "Rank",
+							dataGetter: ({ row }) => <Badge variant="outline">{`#${row.knockoutPosition}`}</Badge>
+						}
+					]}
+				/>
 			</CardContent>
 		</Card>
 	);
