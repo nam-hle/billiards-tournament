@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { SchedulePage } from "@/components/pages/schedule-page";
 
 import { TournamentRepository } from "@/repositories/tournament.repository";
@@ -15,5 +17,9 @@ interface Props {
 export default async function Page({ params }: Props) {
 	const { tournamentId } = await params;
 
-	return <SchedulePage tournament={await new TournamentRepository().getSummary({ tournamentId })} />;
+	return (
+		<Suspense>
+			<SchedulePage tournament={await new TournamentRepository().getSummary({ tournamentId })} />
+		</Suspense>
+	);
 }

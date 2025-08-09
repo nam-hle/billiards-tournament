@@ -1,6 +1,6 @@
 import { mapValues } from "es-toolkit";
 
-import { supabaseClient } from "@/services/supabase/server";
+import { supabaseClient } from "@/services/supabase.service";
 import { GROUP_SELECT, QUARTER_FINALIST_NUM } from "@/constants";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";

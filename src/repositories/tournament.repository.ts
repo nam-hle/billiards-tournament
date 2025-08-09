@@ -1,4 +1,4 @@
-import { supabaseClient } from "@/services/supabase/server";
+import { supabaseClient } from "@/services/supabase.service";
 import { DEFAULT_LIMIT, TOURNAMENT_SELECT } from "@/constants";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";

@@ -2,7 +2,7 @@ import { sumBy, mapValues } from "es-toolkit";
 
 import { Elo } from "@/utils/elo";
 import { DEFAULT_LIMIT } from "@/constants";
-import { supabaseClient } from "@/services/supabase/server";
+import { supabaseClient } from "@/services/supabase.service";
 import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";

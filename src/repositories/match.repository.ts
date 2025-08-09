@@ -2,7 +2,7 @@ import { assert } from "@/utils";
 import { Elo } from "@/utils/elo";
 import { isArray } from "@/utils/arrays";
 import { MATCH_SELECT } from "@/constants";
-import { supabaseClient } from "@/services/supabase/server";
+import { supabaseClient } from "@/services/supabase.service";
 import { PlayerRepository } from "@/repositories/player.repository";
 import {
 	Match,

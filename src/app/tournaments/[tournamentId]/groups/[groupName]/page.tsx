@@ -7,6 +7,16 @@ import { MatchRepository } from "@/repositories/match.repository";
 import { GroupRepository } from "@/repositories/group.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 
+export async function generateStaticParams({ params: { tournamentId } }: { params: { tournamentId: string | undefined } }) {
+	if (tournamentId === undefined) {
+		return [];
+	}
+
+	const groups = await new GroupRepository().getAllByTournament({ tournamentId });
+
+	return groups.map((group) => ({ groupName: group.name }));
+}
+
 interface Props {
 	params: Promise<{ groupName: string; tournamentId: string }>;
 }
