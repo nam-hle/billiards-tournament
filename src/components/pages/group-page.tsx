@@ -25,7 +25,7 @@ export function GroupPage(props: {
 	tournament: Promise<Tournament>;
 	standings: Promise<GroupStanding[]>;
 	predictions: Promise<GroupPrediction>;
-	advancedPlayers: Promise<(GroupStanding & { knockoutPosition: number })[]>;
+	advancedPlayers: Promise<GroupStanding[]>;
 }) {
 	const { matches, groupName, standings } = props;
 

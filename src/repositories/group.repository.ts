@@ -126,44 +126,62 @@ export class GroupRepository {
 			.map((standing, index) => ({ ...standing, groupPosition: index + 1 }));
 	}
 
-	async getAdvancedPlayers(params: { tournamentId: string }): Promise<(GroupStanding & { knockoutPosition: number })[]> {
+	async getAdvancedPlayers(params: {
+		tournamentId: string;
+		includeEliminatedPlayer?: boolean;
+	}): Promise<(GroupStanding & { knockoutPosition?: number })[]> {
 		const groups = await this.getAllByTournament(params);
 		const groupsStandings = await Promise.all(groups.map((group) => this.getStandings({ ...params, groupId: group.id })));
-		const topPlayersNum = Math.floor(QUARTER_FINALIST_NUM / groups.length);
-		const topPlayers = groupsStandings.map((standings) => standings.slice(0, topPlayersNum)).flat();
 		const matches = await new MatchRepository().query(params);
-		const bestsOfRule =
-			QUARTER_FINALIST_NUM % groups.length === 0 ? undefined : { bestOf: topPlayersNum, count: QUARTER_FINALIST_NUM - topPlayers.length };
+		const { topPlayersNum, nextTiePlayerEachGroup } = this.computeAdvancedPlayersStrategy(groups);
 
-		const comparator = GroupStanding.createComparator(matches);
-		const bestsOfPlayers = bestsOfRule
+		const topPlayers = groupsStandings.map((standings) => standings.slice(0, topPlayersNum)).flat();
+		const nextTiePlayers = nextTiePlayerEachGroup
 			? groupsStandings
-					.map((standings) => standings[bestsOfRule.bestOf])
-					.sort(comparator)
-					.slice(0, bestsOfRule.count)
+					.map((standings) => standings[nextTiePlayerEachGroup.position])
+					.sort(GroupStanding.createComparator([]))
+					.slice(0, nextTiePlayerEachGroup.count)
 			: [];
-		const alphabeticalOrderedPlayers = [...topPlayers, ...bestsOfPlayers].sort(comparator);
 
-		const nonAlphabeticalPlayers: (GroupStanding & { knockoutPosition: number })[] = [];
+		const qualifiedPlayers = [...topPlayers, ...nextTiePlayers].sort(GroupStanding.createComparator([], { orderAlphabetical: true }));
+
+		const equatableQualifiedPlayers: (GroupStanding & { knockoutPosition: number })[] = [];
 		const nonAlphabeticalComparator = GroupStanding.createComparator(matches, { orderAlphabetical: false });
 
-		for (let index = 0; index < alphabeticalOrderedPlayers.length; index++) {
-			const currentPlayer = alphabeticalOrderedPlayers[index];
+		for (let qualifiedPlayerIndex = 0; qualifiedPlayerIndex < qualifiedPlayers.length; qualifiedPlayerIndex++) {
+			const quarterFinalist = qualifiedPlayers[qualifiedPlayerIndex];
 
-			if (index === 0) {
-				nonAlphabeticalPlayers.push({ ...currentPlayer, knockoutPosition: index + 1 });
+			if (qualifiedPlayerIndex === 0) {
+				equatableQualifiedPlayers.push({ ...quarterFinalist, knockoutPosition: qualifiedPlayerIndex });
 				continue;
 			}
 
-			const previousPlayer = nonAlphabeticalPlayers[index - 1];
+			const previousPlayer = equatableQualifiedPlayers[qualifiedPlayerIndex - 1];
 
-			nonAlphabeticalPlayers.push({
-				...currentPlayer,
-				knockoutPosition: nonAlphabeticalComparator(currentPlayer, previousPlayer) === 0 ? previousPlayer.knockoutPosition : index + 1
+			equatableQualifiedPlayers.push({
+				...quarterFinalist,
+				knockoutPosition: nonAlphabeticalComparator(quarterFinalist, previousPlayer) === 0 ? previousPlayer.knockoutPosition : qualifiedPlayerIndex
 			});
 		}
 
-		return nonAlphabeticalPlayers;
+		if (!params.includeEliminatedPlayer) {
+			return equatableQualifiedPlayers;
+		}
+
+		const remainPlayers = groupsStandings.flat().filter((standing) => !qualifiedPlayers.some((qf) => qf.player.id === standing.player.id));
+
+		return [...equatableQualifiedPlayers, ...remainPlayers];
+	}
+
+	private computeAdvancedPlayersStrategy(groups: Group[]) {
+		const topPlayersEachGroup = Math.floor(QUARTER_FINALIST_NUM / groups.length);
+
+		const nextTiePlayerEachGroup =
+			QUARTER_FINALIST_NUM % groups.length === 0
+				? undefined
+				: { position: topPlayersEachGroup, count: QUARTER_FINALIST_NUM - topPlayersEachGroup * groups.length };
+
+		return { nextTiePlayerEachGroup, topPlayersNum: topPlayersEachGroup };
 	}
 
 	async getPrediction(params: { groupId: string }): Promise<GroupPrediction> {

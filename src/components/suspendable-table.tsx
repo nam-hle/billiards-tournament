@@ -78,7 +78,7 @@ function SuspendableTableBody<RowType, ColumnType extends SuspendableTable.BaseC
 				const isHighlighted = props.isHighlighted?.({ row });
 
 				return (
-					<LinkedTableRow key={key} href={href} className={cn(rowClassName, clsx({ "bg-secondary/95 transition-colors": isHighlighted }))}>
+					<LinkedTableRow key={key} href={href} className={cn(rowClassName, clsx({ "bg-accent/95 transition-colors": isHighlighted }))}>
 						{columns.map((column) => {
 							return (
 								<TableCell

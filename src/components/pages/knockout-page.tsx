@@ -20,7 +20,7 @@ import { Match, ISOTime, CompletedMatch, type Tournament, type GroupStanding, ty
 export function KnockoutPage(props: {
 	tournament: Promise<Tournament>;
 	knockoutMatches: Promise<KnockoutMatch[]>;
-	qualifiedPlayers: Promise<(GroupStanding & { knockoutPosition: number })[]>;
+	qualifiedPlayers: Promise<(GroupStanding & { knockoutPosition?: number })[]>;
 }) {
 	const { knockoutMatches, qualifiedPlayers } = props;
 
@@ -51,10 +51,7 @@ export function KnockoutPage(props: {
 	);
 }
 
-function ChampionBanner(props: {
-	knockoutMatches: Promise<KnockoutMatch[]>;
-	qualifiedPlayers: Promise<(GroupStanding & { knockoutPosition: number })[]>;
-}) {
+function ChampionBanner(props: { knockoutMatches: Promise<KnockoutMatch[]>; qualifiedPlayers: Promise<GroupStanding[]> }) {
 	const knockoutMatches = use(props.knockoutMatches);
 	const qualifiedPlayers = use(props.qualifiedPlayers);
 
@@ -221,7 +218,7 @@ function TournamentBracket({ matches }: { matches: Promise<KnockoutMatch[]> }) {
 	);
 }
 
-function QualifiedPlayersList(props: { year: string; standings: Promise<(GroupStanding & { knockoutPosition: number })[]> }) {
+function QualifiedPlayersList(props: { year: string; standings: Promise<(GroupStanding & { knockoutPosition?: number })[]> }) {
 	const { year, standings } = props;
 
 	return (
@@ -239,6 +236,7 @@ function QualifiedPlayersList(props: { year: string; standings: Promise<(GroupSt
 					expectedNumberOfRows={8}
 					dataKeyGetter={({ row }) => row.player.id}
 					hrefGetter={({ row }) => `/players/${row.player.id}`}
+					isHighlighted={({ row }) => row.knockoutPosition === undefined}
 					columns={[
 						{
 							label: "Player",
@@ -292,7 +290,7 @@ function QualifiedPlayersList(props: { year: string; standings: Promise<(GroupSt
 						{
 							width: 50,
 							label: "Rank",
-							dataGetter: ({ row }) => <Badge variant="outline">{`#${row.knockoutPosition}`}</Badge>
+							dataGetter: ({ row }) => (row.knockoutPosition !== undefined ? <Badge variant="outline">{`#${row.knockoutPosition + 1}`}</Badge> : null)
 						}
 					]}
 				/>
