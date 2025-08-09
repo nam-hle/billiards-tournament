@@ -71,8 +71,9 @@ export function GroupPage(props: {
 						}
 						columns={[
 							{
-								width: 200,
+								width: 230,
 								label: "Players",
+								alignment: "left",
 								dataGetter: ({ row, rowIndex }) => (
 									<div className="flex items-center gap-2">
 										<Badge variant={rowIndex === 0 ? "default" : "outline"} className="flex h-6 w-6 items-center justify-center p-0 text-xs">

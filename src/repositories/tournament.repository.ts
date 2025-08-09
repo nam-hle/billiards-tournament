@@ -1,14 +1,21 @@
+import { mapValues } from "es-toolkit";
+
 import { supabaseClient } from "@/services/supabase.service";
-import { DEFAULT_LIMIT, TOURNAMENT_SELECT } from "@/constants";
-import { GroupRepository } from "@/repositories/group.repository";
 import { MatchRepository } from "@/repositories/match.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
+import { type KnockoutPrediction } from "@/interfaces/prediction.interface";
+import { DEFAULT_LIMIT, TOURNAMENT_SELECT, QUARTER_FINALIST_NUM } from "@/constants";
+import { GroupRepository, type IncompletedGroupMatch } from "@/repositories/group.repository";
 import {
 	Match,
+	GroupMatch,
+	type ISOTime,
 	GroupStanding,
 	CompletedMatch,
 	ScheduledMatch,
 	type Tournament,
+	type WithCompleted,
+	DefinedPlayersMatch,
 	type PlayerAchievement,
 	type TournamentSummary,
 	PlayerAchievementDescriptionMap
@@ -106,5 +113,77 @@ export class TournamentRepository {
 		}
 
 		return [];
+	}
+
+	async predictKnockout(params: { tournamentId: string }): Promise<KnockoutPrediction> {
+		const groups = await new GroupRepository().getAllByTournament(params);
+
+		const allGroupMatches = (await new MatchRepository().query(params)).filter((match) => GroupMatch.isInstance(match));
+		const completedGroupMatches = allGroupMatches.filter(CompletedMatch.isInstance);
+		const incompletedGroupMatches = allGroupMatches.filter((match): match is IncompletedGroupMatch => {
+			return DefinedPlayersMatch.isInstance(match) && !CompletedMatch.isInstance(match);
+		});
+		const predictions: KnockoutPrediction = {};
+
+		if (incompletedGroupMatches.length === 0) {
+			return predictions;
+		}
+
+		const SIMULATION_ITERATIONS = 10_000;
+		const eloRatings = await new PlayerRepository().getEloRatings();
+
+		const updatePrediction = (target: string, opponent: string, position: number) => {
+			predictions[target] ??= { advancedRate: 0, opponentsRate: {}, positionsRate: {} };
+			predictions[target].advancedRate += 1;
+
+			predictions[target].opponentsRate[opponent] ??= 0;
+			predictions[target].opponentsRate[opponent] += 1;
+
+			predictions[target].positionsRate[position] ??= 0;
+			predictions[target].positionsRate[position] += 1;
+		};
+
+		for (let iteration = 0; iteration < SIMULATION_ITERATIONS; iteration++) {
+			const simulatedGroupMatches: WithCompleted<GroupMatch>[] = incompletedGroupMatches.map((match) => {
+				const { score1, score2 } = Match.simulate({
+					player1Id: match.player1.id,
+					player2Id: match.player2.id,
+					raceTo: Match.getRaceScore(match),
+					player2Rating: eloRatings[match.player2.id],
+					player1Rating: eloRatings[match.player1.id]
+				});
+
+				return { ...match, score1, score2, scheduledAt: "" as ISOTime };
+			});
+
+			const allMatches = [...completedGroupMatches, ...simulatedGroupMatches];
+			const groupStandings: GroupStanding[][] = [];
+
+			for (const group of groups) {
+				groupStandings.push(await new GroupRepository().getStandings({ ...params, group, groupId: group.id, matches: allMatches }));
+			}
+
+			const { qualifiedPlayers } = new GroupRepository().computeAdvancedPlayersStrategy(groupStandings, groups);
+
+			Array.from({ length: QUARTER_FINALIST_NUM / 2 }).forEach((_, index) => {
+				const [firstPosition, secondPosition] = [index, QUARTER_FINALIST_NUM - 1 - index];
+				const [first, second] = [qualifiedPlayers[firstPosition], qualifiedPlayers[secondPosition]];
+
+				updatePrediction(first.player.id, second.player.name, firstPosition);
+				updatePrediction(second.player.id, first.player.name, secondPosition);
+			});
+		}
+
+		return mapValues(predictions, (prediction) => {
+			if (!prediction) {
+				return undefined;
+			}
+
+			return {
+				advancedRate: prediction.advancedRate / SIMULATION_ITERATIONS,
+				opponentsRate: mapValues(prediction.opponentsRate, (opponentRate) => opponentRate / SIMULATION_ITERATIONS),
+				positionsRate: mapValues(prediction.positionsRate, (positionRate) => positionRate / SIMULATION_ITERATIONS)
+			};
+		});
 	}
 }

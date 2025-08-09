@@ -14,11 +14,13 @@ import { SuspendableTable } from "@/components/suspendable-table";
 import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
-import { toLabel, getStatusColor } from "@/utils/strings";
+import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
+import { type KnockoutPrediction } from "@/interfaces/prediction.interface";
 import { Match, ISOTime, CompletedMatch, type Tournament, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
 
 export function KnockoutPage(props: {
 	tournament: Promise<Tournament>;
+	predictions: Promise<KnockoutPrediction>;
 	knockoutMatches: Promise<KnockoutMatch[]>;
 	qualifiedPlayers: Promise<(GroupStanding & { knockoutPosition?: number })[]>;
 }) {
@@ -46,7 +48,7 @@ export function KnockoutPage(props: {
 
 			<Separator />
 
-			<QualifiedPlayersList year={tournament.year} standings={qualifiedPlayers} />
+			<QualifiedPlayersList year={tournament.year} standings={qualifiedPlayers} predictions={props.predictions} />
 		</PageContainer>
 	);
 }
@@ -218,7 +220,11 @@ function TournamentBracket({ matches }: { matches: Promise<KnockoutMatch[]> }) {
 	);
 }
 
-function QualifiedPlayersList(props: { year: string; standings: Promise<(GroupStanding & { knockoutPosition?: number })[]> }) {
+function QualifiedPlayersList(props: {
+	year: string;
+	predictions: Promise<KnockoutPrediction>;
+	standings: Promise<(GroupStanding & { knockoutPosition?: number })[]>;
+}) {
 	const { year, standings } = props;
 
 	return (
@@ -291,6 +297,15 @@ function QualifiedPlayersList(props: { year: string; standings: Promise<(GroupSt
 							width: 50,
 							label: "Rank",
 							dataGetter: ({ row }) => (row.knockoutPosition !== undefined ? <Badge variant="outline">{`#${row.knockoutPosition + 1}`}</Badge> : null)
+						},
+						{
+							label: "Rates",
+							alignment: "left",
+							dataGetter: ({ row }) => (
+								<Suspense fallback={<Skeleton className="h-8 w-full" />}>
+									<PredictionOutput playerId={row.player.id} predictions={props.predictions} />
+								</Suspense>
+							)
 						}
 					]}
 				/>
@@ -298,3 +313,28 @@ function QualifiedPlayersList(props: { year: string; standings: Promise<(GroupSt
 		</Card>
 	);
 }
+
+const PredictionOutput: React.FC<{ playerId: string; predictions: Promise<KnockoutPrediction> }> = (props) => {
+	const predictions = use(props.predictions)[props.playerId];
+
+	if (!predictions) {
+		return "-";
+	}
+
+	const expectedOpponent = Object.entries(predictions.opponentsRate).sort((a, b) => b[1] - a[1])[0];
+	const expectedPosition = Object.entries(predictions.positionsRate).sort((a, b) => b[1] - a[1])[0];
+
+	return (
+		<>
+			<div>
+				<span className="font-bold">Qualified rate:</span> {formatRatio(predictions.advancedRate)}
+			</div>
+			<div>
+				<span className="font-bold">Position:</span> {+expectedPosition[0] + 1} ({formatRatio(expectedPosition[1])})
+			</div>
+			<div>
+				<span className="font-bold">Opponent:</span> {expectedOpponent[0]} ({formatRatio(expectedOpponent[1])})
+			</div>
+		</>
+	);
+};

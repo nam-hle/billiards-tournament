@@ -133,17 +133,7 @@ export class GroupRepository {
 		const groups = await this.getAllByTournament(params);
 		const groupsStandings = await Promise.all(groups.map((group) => this.getStandings({ ...params, groupId: group.id })));
 		const matches = await new MatchRepository().query(params);
-		const { topPlayersNum, nextTiePlayerEachGroup } = this.computeAdvancedPlayersStrategy(groups);
-
-		const topPlayers = groupsStandings.map((standings) => standings.slice(0, topPlayersNum)).flat();
-		const nextTiePlayers = nextTiePlayerEachGroup
-			? groupsStandings
-					.map((standings) => standings[nextTiePlayerEachGroup.position])
-					.sort(GroupStanding.createComparator([]))
-					.slice(0, nextTiePlayerEachGroup.count)
-			: [];
-
-		const qualifiedPlayers = [...topPlayers, ...nextTiePlayers].sort(GroupStanding.createComparator([], { orderAlphabetical: true }));
+		const { qualifiedPlayers } = this.computeAdvancedPlayersStrategy(groupsStandings, groups);
 
 		const equatableQualifiedPlayers: (GroupStanding & { knockoutPosition: number })[] = [];
 		const nonAlphabeticalComparator = GroupStanding.createComparator(matches, { orderAlphabetical: false });
@@ -173,7 +163,7 @@ export class GroupRepository {
 		return [...equatableQualifiedPlayers, ...remainPlayers];
 	}
 
-	private computeAdvancedPlayersStrategy(groups: Group[]) {
+	computeAdvancedPlayersStrategy(groupStandings: GroupStanding[][], groups: Group[]) {
 		const topPlayersEachGroup = Math.floor(QUARTER_FINALIST_NUM / groups.length);
 
 		const nextTiePlayerEachGroup =
@@ -181,13 +171,23 @@ export class GroupRepository {
 				? undefined
 				: { position: topPlayersEachGroup, count: QUARTER_FINALIST_NUM - topPlayersEachGroup * groups.length };
 
-		return { nextTiePlayerEachGroup, topPlayersNum: topPlayersEachGroup };
+		const topPlayers = groupStandings.map((standings) => standings.slice(0, topPlayersEachGroup)).flat();
+		const nextTiePlayers = nextTiePlayerEachGroup
+			? groupStandings
+					.map((standings) => standings[nextTiePlayerEachGroup.position])
+					.sort(GroupStanding.createComparator([]))
+					.slice(0, nextTiePlayerEachGroup.count)
+			: [];
+
+		const qualifiedPlayers = [...topPlayers, ...nextTiePlayers].sort(GroupStanding.createComparator([], { orderAlphabetical: true }));
+
+		return { qualifiedPlayers };
 	}
 
 	async getPrediction(params: { groupId: string }): Promise<GroupPrediction> {
 		const group = await this.getById(params);
 		const groupMatches = await new MatchRepository().query(params);
-		const incompletedMatches = groupMatches.filter((match): match is IncompletedMatch => {
+		const incompletedMatches = groupMatches.filter((match): match is IncompletedGroupMatch => {
 			return DefinedPlayersMatch.isInstance(match) && !CompletedMatch.isInstance(match);
 		});
 
@@ -195,11 +195,7 @@ export class GroupRepository {
 		const eloRatings = await new PlayerRepository().getEloRatings();
 		const prediction: GroupPrediction = { top2: {}, top1: {} };
 
-		if (incompletedMatches.length === 0) {
-			return prediction;
-		}
-
-		const N = GroupRepository.SIMULATION_ITERATION;
+		const N = incompletedMatches.length === 0 ? 1 : GroupRepository.SIMULATION_ITERATION;
 
 		for (let iteration = 0; iteration < N; iteration++) {
 			if (iteration % 1000 === 0) {
@@ -237,6 +233,6 @@ export class GroupRepository {
 	}
 }
 
-type IncompletedMatch = GroupMatch & WithDefinedPlayers<GroupMatch>;
+export type IncompletedGroupMatch = GroupMatch & WithDefinedPlayers<GroupMatch>;
 
 const tick = () => new Promise((r) => setImmediate(r));

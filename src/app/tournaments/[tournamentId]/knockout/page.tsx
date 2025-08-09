@@ -22,6 +22,7 @@ export default async function Page({ params }: Props) {
 	const tournament = new TournamentRepository().getById({ tournamentId });
 	const knockoutMatches = new MatchRepository().query({ tournamentId, groupId: null }).then((matches) => matches.sort((a, b) => a.order - b.order));
 	const qualifiedPlayers = new GroupRepository().getAdvancedPlayers({ tournamentId, includeEliminatedPlayer: true });
+	const predictions = new TournamentRepository().predictKnockout({ tournamentId });
 
-	return <KnockoutPage tournament={tournament} knockoutMatches={knockoutMatches} qualifiedPlayers={qualifiedPlayers} />;
+	return <KnockoutPage tournament={tournament} predictions={predictions} knockoutMatches={knockoutMatches} qualifiedPlayers={qualifiedPlayers} />;
 }
