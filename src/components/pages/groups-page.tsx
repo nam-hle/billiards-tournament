@@ -12,8 +12,8 @@ import { PageHeader } from "@/components/layouts/page-header";
 import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
-import { type TournamentSummary } from "@/interfaces";
 import { toLabel, getStatusColor } from "@/utils/strings";
+import { CompletedMatch, type GroupStanding, type TournamentSummary } from "@/interfaces";
 
 const completionPercentage = (completed: number, total: number) => {
 	return total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -22,7 +22,8 @@ const completionPercentage = (completed: number, total: number) => {
 export function GroupsPage({ tournament }: { tournament: TournamentSummary }) {
 	const { name, groups } = tournament;
 
-	const overallProgress = (sumBy(groups, (group) => group.completedMatches) / sumBy(groups, (group) => group.matches.length)) * 100;
+	const overallProgress =
+		(sumBy(groups, (group) => group.matches.filter(CompletedMatch.isInstance).length) / sumBy(groups, (group) => group.matches.length)) * 100;
 
 	return (
 		<PageContainer
@@ -50,7 +51,8 @@ export function GroupsPage({ tournament }: { tournament: TournamentSummary }) {
 						</div>
 						<Progress className="h-2" value={overallProgress} />
 						<p className="text-xs text-muted-foreground">
-							{sumBy(groups, (group) => group.completedMatches)} of {sumBy(groups, (group) => group.matches.length)} total matches completed
+							{sumBy(groups, (group) => group.matches.filter(CompletedMatch.isInstance).length)} of {sumBy(groups, (group) => group.matches.length)}{" "}
+							total matches completed
 						</p>
 					</div>
 
@@ -105,54 +107,59 @@ export function GroupsPage({ tournament }: { tournament: TournamentSummary }) {
 			<div>
 				<h2 className="mb-6 text-2xl font-semibold">Groups</h2>
 				<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-					{groups.map((group) => (
-						<Card key={group.id} className="transition-shadow hover:shadow-lg">
-							<CardHeader className="pb-3">
-								<div className="flex items-center justify-between">
-									<CardTitle className="text-xl">{`Group ${group.name}`}</CardTitle>
-									<Badge className={getStatusColor(group.status)}>{toLabel(group.status)}</Badge>
-								</div>
-								<CardDescription>{group.players.length} players competing</CardDescription>
-							</CardHeader>
-							<CardContent className="space-y-4">
-								{/* Match Progress */}
-								<div className="space-y-2">
-									<div className="flex justify-between text-sm">
-										<span>Matches</span>
-										<span>
-											{group.completedMatches}/{group.matches.length}
-										</span>
+					{groups.map((group) => {
+						const leader: GroupStanding | undefined = group.standings[0];
+						const completedMatches = group.matches.filter(CompletedMatch.isInstance).length;
+
+						return (
+							<Card key={group.id} className="transition-shadow hover:shadow-lg">
+								<CardHeader className="pb-3">
+									<div className="flex items-center justify-between">
+										<CardTitle className="text-xl">{`Group ${group.name}`}</CardTitle>
+										<Badge className={getStatusColor(group.status)}>{toLabel(group.status)}</Badge>
 									</div>
-									<Progress className="h-2" value={completionPercentage(group.completedMatches, group.matches.length)} />
-								</div>
+									<CardDescription>{group.players.length} players competing</CardDescription>
+								</CardHeader>
+								<CardContent className="space-y-4">
+									{/* Match Progress */}
+									<div className="space-y-2">
+										<div className="flex justify-between text-sm">
+											<span>Matches</span>
+											<span>
+												{completedMatches}/{group.matches.length}
+											</span>
+										</div>
+										<Progress className="h-2" value={completionPercentage(completedMatches, group.matches.length)} />
+									</div>
 
-								{/* Current Leader */}
-								<div className="space-y-1">
-									{group.leader && (
-										<>
-											<p className="text-sm font-medium">Current Leader</p>
-											<div className="flex items-center justify-between">
-												<span className="text-sm text-muted-foreground">{group.leader.name}</span>
-												{group.leader.points > 0 && (
-													<Badge variant="outline" className="text-xs">
-														{group.leader.points} pts
-													</Badge>
-												)}
-											</div>
-										</>
-									)}
-								</div>
+									{/* Current Leader */}
+									<div className="space-y-1">
+										{leader && (
+											<>
+												<p className="text-sm font-medium">Current Leader</p>
+												<div className="flex items-center justify-between">
+													<span className="text-sm text-muted-foreground">{leader.player.name}</span>
+													{leader.points > 0 && (
+														<Badge variant="outline" className="text-xs">
+															{leader.points} pts
+														</Badge>
+													)}
+												</div>
+											</>
+										)}
+									</div>
 
-								{/* Action Button */}
-								<Button asChild className="w-full" variant={group.status === "upcoming" ? "outline" : "default"}>
-									<Link className="flex items-center gap-2" href={`/tournaments/${tournament.id}/groups/${group.name}`}>
-										{group.status === "upcoming" ? "Preview Group" : "View Details"}
-										<ArrowRight className="h-4 w-4" />
-									</Link>
-								</Button>
-							</CardContent>
-						</Card>
-					))}
+									{/* Action Button */}
+									<Button asChild className="w-full" variant={group.status === "upcoming" ? "outline" : "default"}>
+										<Link className="flex items-center gap-2" href={`/tournaments/${tournament.id}/groups/${group.name}`}>
+											{group.status === "upcoming" ? "Preview Group" : "View Details"}
+											<ArrowRight className="h-4 w-4" />
+										</Link>
+									</Button>
+								</CardContent>
+							</Card>
+						);
+					})}
 				</div>
 			</div>
 		</PageContainer>

@@ -14,8 +14,7 @@ export interface Group {
 export interface GroupSummary extends Group {
 	status: GroupStatus;
 	matches: GroupMatch[];
-	completedMatches: number;
-	leader: Player & { points: number };
+	standings: GroupStanding[];
 }
 
 export interface GroupStanding {

@@ -78,9 +78,9 @@ export class GroupRepository {
 		const completedMatches = matches.filter((match) => CompletedMatch.isInstance(match));
 		const status = completedMatches.length === 0 ? "upcoming" : completedMatches.length < matches.length ? "ongoing" : "completed";
 
-		const [topPlayer] = await this.getStandings(params);
+		const standings = await this.getStandings({ ...params, matches: completedMatches });
 
-		return { ...group, status, matches, completedMatches: completedMatches.length, leader: { ...topPlayer.player, points: topPlayer.points } };
+		return { ...group, status, matches, standings };
 	}
 
 	async getStandings(params: { group?: Group; groupId: string; matches?: WithCompleted<GroupMatch>[] }): Promise<GroupStanding[]> {

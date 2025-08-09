@@ -16,7 +16,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { Match, ISOTime, DefinedPlayersMatch, type TournamentSummary } from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, DefinedPlayersMatch, type TournamentSummary } from "@/interfaces";
 
 function NavigationCards({ year }: { year: string }) {
 	const navigationItems = [
@@ -305,9 +305,9 @@ export function TournamentPage({ tournament }: { tournament: TournamentSummary }
 										<div className="flex items-center gap-3">
 											<Badge variant="outline">{group.name}</Badge>
 											<div>
-												<PlayerDisplay showLink={false} showAvatar={false} player={group.leader} />
+												<PlayerDisplay showLink={false} showAvatar={false} player={group.standings[0].player} />
 												<p className="text-xs text-muted-foreground">
-													{group.completedMatches}/{group.matches.length} matches
+													{group.matches.filter(CompletedMatch.isInstance).length}/{group.matches.length} matches
 												</p>
 											</div>
 										</div>
@@ -315,7 +315,7 @@ export function TournamentPage({ tournament }: { tournament: TournamentSummary }
 											<Badge variant="secondary" className={getStatusColor(group.status)}>
 												{toLabel(group.status)}
 											</Badge>
-											{!!group.leader?.points && <p className="mt-1 text-sm font-medium">{group.leader.points} pts</p>}
+											{group.standings[0]?.points !== undefined ? <p className="mt-1 text-sm font-medium">{group.standings[0].points} pts</p> : null}
 										</div>
 									</div>
 								</Link>

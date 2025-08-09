@@ -49,7 +49,8 @@ export class TournamentRepository {
 		const completedMatches = matches.filter(CompletedMatch.isInstance);
 		const recentMatches = completedMatches.sort(ScheduledMatch.descendingComparator).slice(0, DEFAULT_LIMIT);
 
-		const topStandings = (await Promise.all(groups.map(async (group) => new GroupRepository().getStandings({ groupId: group.id }))))
+		const topStandings = groups
+			.map((group) => group.standings)
 			.flat()
 			.sort(GroupStanding.createComparator([]))
 			.slice(0, DEFAULT_LIMIT);

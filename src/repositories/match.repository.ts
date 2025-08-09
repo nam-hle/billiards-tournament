@@ -6,9 +6,11 @@ import { supabaseClient } from "@/services/supabase/server";
 import { PlayerRepository } from "@/repositories/player.repository";
 import {
 	Match,
+	type BaseMatch,
 	CompletedMatch,
 	type GroupMatch,
 	type MatchDetails,
+	type KnockoutMatch,
 	type WithCompleted,
 	type ScheduledMatch,
 	DefinedPlayersMatch,
@@ -17,27 +19,24 @@ import {
 
 interface MatchQuery {
 	limit?: number;
-	groupId?: string;
 	playerId?: string;
 	ascending?: boolean;
 	completed?: boolean;
 	tournamentId?: string;
+	groupId?: string | null;
 }
 
-type MatchResult<Q extends MatchQuery> = Q["completed"] extends true
-	? Q["groupId"] extends string
-		? WithCompleted<GroupMatch>
-		: CompletedMatch
-	: Q["groupId"] extends string
-		? GroupMatch
-		: Match;
+type MatchResult<
+	Q extends MatchQuery,
+	M extends BaseMatch = Q["groupId"] extends string ? GroupMatch : Q["groupId"] extends null ? KnockoutMatch : Match
+> = Q["completed"] extends true ? WithCompleted<M> : M;
 
 export class MatchRepository {
 	async query<Q extends MatchQuery>(params?: Q): Promise<MatchResult<Q>[]> {
 		let query = supabaseClient.from("matches").select(MATCH_SELECT);
 
-		if (params?.groupId) {
-			query = query.eq("group_id", params.groupId);
+		if (params?.groupId !== undefined) {
+			query = params.groupId === null ? query.is("group_id", null) : query.eq("group_id", params.groupId);
 		}
 
 		if (params?.playerId) {
