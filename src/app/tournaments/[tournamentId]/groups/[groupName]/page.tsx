@@ -19,24 +19,20 @@ export default async function ServerGroupPage({ params }: Props) {
 		return notFound();
 	}
 
-	const [tournament, matches, standings, advancedPlayers] = await Promise.all([
-		new TournamentRepository().getById({ tournamentId }),
-		new MatchRepository().query({ groupId: group.id }),
-		new GroupRepository().getStandings({ prediction: true, groupId: group.id }),
-		new GroupRepository().getAdvancedPlayers({ tournamentId: tournamentId })
-	]);
-
-	const advancedPlayerIds = advancedPlayers.map((standing) => standing.player.id);
+	const advancedPlayers = new GroupRepository().getAdvancedPlayers({ tournamentId: tournamentId });
+	const tournament = new TournamentRepository().getById({ tournamentId });
+	const standings = new GroupRepository().getStandings({ groupId: group.id });
+	const matches = new MatchRepository().query({ groupId: group.id });
 	const prediction = new GroupRepository().getPrediction({ groupId: group.id });
 
 	return (
 		<GroupPage
-			group={group}
 			matches={matches}
+			groupName={groupName}
 			standings={standings}
 			tournament={tournament}
 			predictions={prediction}
-			advancedPlayerIds={advancedPlayerIds}
+			advancedPlayers={advancedPlayers}
 		/>
 	);
 }

@@ -53,8 +53,8 @@ export function TournamentPlayersPage(props: TournamentPlayersPage.Props) {
 		<PageContainer
 			items={[
 				Links.Tournaments.get(),
-				Links.Tournaments.Year.get(tournament.year, tournament.name),
-				Links.Tournaments.Year.Players.get(tournament.year)
+				Links.Tournaments.Tournament.get(tournament.year, tournament.name),
+				Links.Tournaments.Tournament.Players.get(tournament.year)
 			]}>
 			<PageHeader title="Tournament Players" description="Meet the competitors and see who's climbing the ranks this tournament" />
 

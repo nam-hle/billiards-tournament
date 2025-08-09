@@ -150,7 +150,7 @@ export function TournamentPage({ tournament }: { tournament: TournamentSummary }
 	const completionPercentage = (completedMatches.length / matches.length) * 100;
 
 	return (
-		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Year.get(year, tournament.name)]}>
+		<PageContainer items={[Links.Tournaments.get(), Links.Tournaments.Tournament.get(year, tournament.name)]}>
 			{/* Tournament Header */}
 			<div className="space-y-4 text-center">
 				<div className="flex items-center justify-center gap-3">

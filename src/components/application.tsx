@@ -11,7 +11,7 @@ import { NavigationBar } from "@/components/layouts/navigation-bar/navigation-ba
 import { type Container } from "@/types";
 import { type TournamentSummary } from "@/interfaces";
 
-export const Application: React.FC<Container & { tournaments: TournamentSummary[] }> = ({ children, tournaments }) => {
+export const Application: React.FC<Container & { tournaments: Promise<TournamentSummary[]> }> = ({ children, tournaments }) => {
 	const pathname = usePathname();
 
 	if (pathname === "/" || pathname === "/auth") {

@@ -13,21 +13,24 @@ export const Links = {
 	},
 	Tournaments: {
 		get: () => ({ label: `Tournaments`, href: `/tournaments` }),
-		Year: {
+		Tournament: {
 			Players: {
-				get: (year: string) => ({ label: `Players`, href: `/tournaments/${year}/players` })
+				get: (tournamentId: string) => ({ label: `Players`, href: `/tournaments/${tournamentId}/players` })
 			},
-			get: (year: string, tournamentName: string) => ({ label: tournamentName, href: `/tournaments/${year}` }),
+			get: (tournamentId: string, tournamentName: string) => ({ label: tournamentName, href: `/tournaments/${tournamentId}` }),
 			Schedule: {
-				get: (year: string) => ({ label: `Schedule`, href: `/tournaments/${year}/schedule` })
+				get: (tournamentId: string) => ({ label: `Schedule`, href: `/tournaments/${tournamentId}/schedule` })
 			},
 			Knockout: {
-				get: (year: string) => ({ label: `Knockout`, href: `/tournaments/${year}/knockout` })
+				get: (tournamentId: string) => ({ label: `Knockout`, href: `/tournaments/${tournamentId}/knockout` })
 			},
 			Groups: {
-				get: (year: string) => ({ label: `Groups`, href: `/tournaments/${year}/groups` }),
+				get: (tournamentId: string) => ({ label: `Groups`, href: `/tournaments/${tournamentId}/groups` }),
 				Group: {
-					get: (year: string, groupName: string) => ({ label: `Group ${groupName}`, href: `/tournaments/${year}/groups/${groupName}` })
+					get: (tournamentId: string, groupName: string) => ({
+						label: `Group ${groupName}`,
+						href: `/tournaments/${tournamentId}/groups/${groupName}`
+					})
 				}
 			}
 		}

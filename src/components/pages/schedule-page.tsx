@@ -80,8 +80,8 @@ export function SchedulePage({ tournament }: { tournament: TournamentSummary }) 
 		<PageContainer
 			items={[
 				Links.Tournaments.get(),
-				Links.Tournaments.Year.get(tournament.year, tournament.name),
-				Links.Tournaments.Year.Schedule.get(tournament.year)
+				Links.Tournaments.Tournament.get(tournament.year, tournament.name),
+				Links.Tournaments.Tournament.Schedule.get(tournament.year)
 			]}>
 			<PageHeader title="Schedule" description="View the full match schedule, including dates, times, and player pairings" />
 

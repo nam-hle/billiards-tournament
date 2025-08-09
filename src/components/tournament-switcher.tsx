@@ -1,7 +1,7 @@
 "use client";
 
 import { type Route } from "next";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Check, Users, Trophy, ChevronsUpDown } from "lucide-react";
 
@@ -16,12 +16,13 @@ import { extractTournamentId } from "@/utils/paths";
 import { type TournamentSummary } from "@/interfaces";
 import { toLabel, getStatusColor } from "@/utils/strings";
 
-export const TournamentSwitcher: React.FC<{ tournaments: TournamentSummary[] }> = ({ tournaments }) => {
+export const TournamentSwitcher: React.FC<{ tournaments: Promise<TournamentSummary[]> }> = (props) => {
 	const [open, setOpen] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
 	const router = useRouter();
 	const pathname = usePathname();
 
+	const tournaments = use(props.tournaments);
 	const currentTournamentId = extractTournamentId(pathname);
 	const currentTournament = tournaments.find((t) => t.year === currentTournamentId);
 

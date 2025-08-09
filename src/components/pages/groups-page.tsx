@@ -26,7 +26,11 @@ export function GroupsPage({ tournament }: { tournament: TournamentSummary }) {
 
 	return (
 		<PageContainer
-			items={[Links.Tournaments.get(), Links.Tournaments.Year.get(tournament.id, name), Links.Tournaments.Year.Groups.get(tournament.id)]}>
+			items={[
+				Links.Tournaments.get(),
+				Links.Tournaments.Tournament.get(tournament.id, name),
+				Links.Tournaments.Tournament.Groups.get(tournament.id)
+			]}>
 			<PageHeader title="Groups" description="View the current standings and matchups across all tournament groups" />
 
 			{/* Overall Progress */}

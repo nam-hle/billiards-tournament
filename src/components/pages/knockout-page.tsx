@@ -32,8 +32,8 @@ export function KnockoutPage(props: {
 		<PageContainer
 			items={[
 				Links.Tournaments.get(),
-				Links.Tournaments.Year.get(tournament.year, tournament.name),
-				Links.Tournaments.Year.Knockout.get(tournament.year)
+				Links.Tournaments.Tournament.get(tournament.year, tournament.name),
+				Links.Tournaments.Tournament.Knockout.get(tournament.year)
 			]}>
 			<PageHeader title="Knockout Phase" description="Watch as the tournament heats up in the knockout stage" />
 

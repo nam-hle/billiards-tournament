@@ -55,7 +55,7 @@ export class GroupRepository {
 			.single();
 
 		if (error) {
-			throw error;
+			return null;
 		}
 
 		return postProcessGroupResult(data);
@@ -99,12 +99,7 @@ export class GroupRepository {
 		return { ...group, status, matches, completedMatches: completedMatches.length, leader: { ...topPlayer.player, points: topPlayer.points } };
 	}
 
-	async getStandings(params: {
-		group?: Group;
-		groupId: string;
-		prediction?: boolean;
-		matches?: WithCompleted<GroupMatch>[];
-	}): Promise<GroupStanding[]> {
+	async getStandings(params: { group?: Group; groupId: string; matches?: WithCompleted<GroupMatch>[] }): Promise<GroupStanding[]> {
 		const group = params.group ?? (await this.getById(params));
 		const matches = params.matches ?? (await new MatchRepository().query({ ...params, completed: true }));
 
