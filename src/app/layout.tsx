@@ -8,8 +8,6 @@ import { Analytics } from "@vercel/analytics/next";
 
 import { Application } from "@/components/application";
 
-import { TournamentRepository } from "@/repositories/tournament.repository";
-
 export const revalidate = 300;
 
 const interSans = Inter({
@@ -30,10 +28,6 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const tournamentRepo = new TournamentRepository();
-	const tournaments = await tournamentRepo.getAll();
-	const tournamentSummaries = Promise.all(tournaments.map((tournament) => tournamentRepo.getSummary({ tournamentId: tournament.id })));
-
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
@@ -41,7 +35,7 @@ export default async function RootLayout({
 				<title>mgm Billiards Club</title>
 			</head>
 			<body suppressHydrationWarning className={interSans.variable}>
-				<Application tournaments={tournamentSummaries}>{children}</Application>
+				<Application>{children}</Application>
 				<Analytics />
 			</body>
 		</html>

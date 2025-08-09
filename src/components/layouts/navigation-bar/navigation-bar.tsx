@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { type Route } from "next";
-import { match } from "path-to-regexp";
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
+import { match, compile } from "path-to-regexp";
 import { Menu, Users, Trophy, Target, MessageCircleQuestion } from "lucide-react";
 
 import { Button } from "@/components/shadcn/button";
@@ -10,8 +11,6 @@ import { Sheet, SheetTitle, SheetContent, SheetTrigger } from "@/components/shad
 
 import { Logo } from "@/components/layouts/navigation-bar/logo";
 import { Tabs, type Tab } from "@/components/layouts/navigation-bar/tabs";
-
-import { type TournamentSummary } from "@/interfaces";
 
 const mainPages = [
 	{
@@ -36,10 +35,10 @@ const mainPages = [
 	}
 ] as const;
 
-export const NavigationBar: React.FC<{ tournaments: Promise<TournamentSummary[]> }> = () => {
-	// const pathname = usePathname();
+export const NavigationBar = () => {
+	const pathname = usePathname();
 
-	// const inSpecificTournament = match("/tournaments/:year", { end: false })(pathname);
+	const inSpecificTournament = match("/tournaments/:year", { end: false })(pathname);
 
 	return (
 		<header className="sticky top-0 z-50 border-b bg-background">
@@ -49,14 +48,13 @@ export const NavigationBar: React.FC<{ tournaments: Promise<TournamentSummary[]>
 				<Sidebar />
 			</div>
 
-			{/*{inSpecificTournament && (*/}
-			{/*	<div className="flex h-12 w-full items-center gap-3 pb-3">*/}
-			{/*		<div className="border-1 flex flex-row items-center overflow-x-auto overflow-y-hidden">*/}
-			{/*			<TournamentSwitcher tournaments={tournaments} />*/}
-			{/*			<TournamentTabs />*/}
-			{/*		</div>*/}
-			{/*	</div>*/}
-			{/*)}*/}
+			{inSpecificTournament && (
+				<div className="flex h-12 w-full items-center gap-3 pb-3">
+					<div className="border-1 flex flex-row items-center overflow-x-auto overflow-y-hidden">
+						<TournamentTabs />
+					</div>
+				</div>
+			)}
 		</header>
 	);
 };
@@ -97,29 +95,29 @@ const Sidebar = () => {
 	);
 };
 
-// function useTournamentTabs(): Tab[] {
-// 	const pathname = usePathname();
-//
-// 	const matchResult = match("/tournaments/:year", { end: false })(pathname);
-//
-// 	if (!matchResult) {
-// 		return [];
-// 	}
-//
-// 	const year = matchResult.params.year as string;
-//
-// 	return [
-// 		{ label: "Overview", ...createHrefAndMatcher("/tournaments/:year") },
-// 		{ label: "Players", ...createHrefAndMatcher("/tournaments/:year/players") },
-// 		{ label: "Schedule", ...createHrefAndMatcher("/tournaments/:year/schedule") },
-// 		{ label: "Groups", ...createHrefAndMatcher("/tournaments/:year/groups") },
-// 		{ label: "Knockout", ...createHrefAndMatcher("/tournaments/:year/knockout") }
-// 	] as const;
-//
-// 	function createHrefAndMatcher(pattern: string) {
-// 		return { match: (path: string) => !!match(pattern)(path), href: compile(pattern)({ year }) as Route<string> };
-// 	}
-// }
+function useTournamentTabs(): Tab[] {
+	const pathname = usePathname();
+
+	const matchResult = match("/tournaments/:year", { end: false })(pathname);
+
+	if (!matchResult) {
+		return [];
+	}
+
+	const year = matchResult.params.year as string;
+
+	return [
+		{ label: `Tournament ${year}`, ...createHrefAndMatcher("/tournaments/:year") },
+		{ label: "Players", ...createHrefAndMatcher("/tournaments/:year/players") },
+		{ label: "Schedule", ...createHrefAndMatcher("/tournaments/:year/schedule") },
+		{ label: "Groups", ...createHrefAndMatcher("/tournaments/:year/groups") },
+		{ label: "Knockout", ...createHrefAndMatcher("/tournaments/:year/knockout") }
+	] as const;
+
+	function createHrefAndMatcher(pattern: string) {
+		return { match: (path: string) => !!match(pattern)(path), href: compile(pattern)({ year }) as Route<string> };
+	}
+}
 
 const MainTabs = () => {
 	const tabs = useMainTabs();
@@ -144,8 +142,8 @@ function useMainTabs(): Tab[] {
 	}
 }
 
-// const TournamentTabs = () => {
-// 	const tabs = useTournamentTabs();
-//
-// 	return <Tabs tabs={tabs} />;
-// };
+const TournamentTabs = () => {
+	const tabs = useTournamentTabs();
+
+	return <Tabs tabs={tabs} />;
+};
