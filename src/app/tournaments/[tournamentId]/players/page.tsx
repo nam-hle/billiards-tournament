@@ -4,12 +4,6 @@ import { GroupRepository } from "@/repositories/group.repository";
 import { PlayerRepository } from "@/repositories/player.repository";
 import { TournamentRepository } from "@/repositories/tournament.repository";
 
-export async function generateStaticParams() {
-	const tournaments = await new TournamentRepository().getAll();
-
-	return tournaments.map((tournament) => ({ tournamentId: tournament.id }));
-}
-
 interface Props {
 	params: Promise<{ tournamentId: string }>;
 }
