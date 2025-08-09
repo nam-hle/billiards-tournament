@@ -14,7 +14,7 @@ interface Props {
 export default async function Page({ params }: Props) {
 	const { tournamentId } = await params;
 
-	const tournament = new TournamentRepository().getSummary({ tournamentId });
+	const tournament = new TournamentRepository().getById({ tournamentId });
 	const knockoutMatches = new MatchRepository()
 		.query({ tournamentId })
 		.then((matches) => matches.filter(KnockoutMatch.isInstance).sort((a, b) => a.order - b.order));

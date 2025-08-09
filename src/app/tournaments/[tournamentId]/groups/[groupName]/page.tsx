@@ -11,7 +11,7 @@ interface Props {
 	params: Promise<{ groupName: string; tournamentId: string }>;
 }
 
-export default async function ServerGroupPage({ params }: Props) {
+export default async function Page({ params }: Props) {
 	const { groupName, tournamentId } = await params;
 	const group = await new GroupRepository().findByName({ groupName, tournamentId });
 

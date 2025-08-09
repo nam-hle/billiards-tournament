@@ -71,22 +71,6 @@ export class GroupRepository {
 		return postProcessGroupResult(data);
 	}
 
-	async getByPlayer(params: { playerId: string; tournamentId: string }): Promise<Group> {
-		const { data, error } = await supabaseClient.from("group_players").select(`group:groups (${GROUP_SELECT})`).eq("player_id", params.playerId);
-
-		if (error) {
-			throw error;
-		}
-
-		const group = data.find((group) => group.group.tournament_id === params.tournamentId)?.group;
-
-		if (!group) {
-			throw new Error(`Group for player ID ${params.playerId} in tournament ID ${params.tournamentId} not found`);
-		}
-
-		return postProcessGroupResult(group);
-	}
-
 	async getSummary(params: { groupId: string }): Promise<GroupSummary> {
 		const group = await this.getById(params);
 		const matches = await new MatchRepository().query(params);

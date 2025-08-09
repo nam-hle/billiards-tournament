@@ -15,10 +15,10 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { Match, ISOTime, CompletedMatch, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch, type TournamentSummary } from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, type Tournament, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
 
 export function KnockoutPage(props: {
-	tournament: Promise<TournamentSummary>;
+	tournament: Promise<Tournament>;
 	knockoutMatches: Promise<KnockoutMatch[]>;
 	qualifiedPlayers: Promise<(GroupStanding & { knockoutPosition: number })[]>;
 }) {
@@ -37,10 +37,8 @@ export function KnockoutPage(props: {
 
 			<Separator />
 
-			{/* Champion Banner */}
 			<ChampionBanner {...props} />
 
-			{/* Tournament Bracket */}
 			<div>
 				<h2 className="mb-6 text-2xl font-semibold">Tournament Bracket</h2>
 				<TournamentBracket matches={knockoutMatches} />
@@ -48,7 +46,6 @@ export function KnockoutPage(props: {
 
 			<Separator />
 
-			{/* Qualified Players */}
 			<QualifiedPlayersList year={tournament.year} standings={qualifiedPlayers} />
 		</PageContainer>
 	);
@@ -161,8 +158,7 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 }
 
 function MatchCards({ type, matches }: { type: KnockoutMatch["type"]; matches: Promise<KnockoutMatch[]> }) {
-	const matchesData = use(matches);
-	const filteredMatches = matchesData.filter((match) => match.type === type);
+	const filteredMatches = use(matches).filter((match) => match.type === type);
 
 	return (
 		<>
@@ -174,10 +170,6 @@ function MatchCards({ type, matches }: { type: KnockoutMatch["type"]; matches: P
 }
 
 function TournamentBracket({ matches }: { matches: Promise<KnockoutMatch[]> }) {
-	// const quarterFinals = matches.filter((m) => m.type === "quarter-final");
-	// const semiFinals = matches.filter((m) => m.type === "semi-final");
-	// const final = matches.find((m) => m.type === "final");
-
 	return (
 		<div className="space-y-8">
 			{/* Quarter Finals */}
