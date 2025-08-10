@@ -95,67 +95,65 @@ const SkeletonMatchCard = () => <Skeleton className="h-[160px] w-[300px]" />;
 
 function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: KnockoutMatch }) {
 	return (
-		<Link passHref href={`/matches/${match.id}`}>
-			<Card className={`${isFinal ? "ring-2 ring-yellow-400" : ""} transition-shadow hover:shadow-md`}>
-				<CardContent className="p-4">
-					<div className="space-y-3">
-						{/* Match Header */}
-						<div className="flex items-center justify-between">
-							<div className="flex items-center gap-2">
-								<Badge variant="outline" className="text-xs">
-									{Match.formatId(match)}
-								</Badge>
-								<Badge variant="outline" className="text-xs">
-									{toLabel(match.type)} {match.type !== "final" ? match.order + 1 : ""}
-								</Badge>
-							</div>
-							<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
+		<Card className={`${isFinal ? "ring-2 ring-yellow-400" : ""} transition-shadow hover:shadow-md`}>
+			<CardContent className="p-4">
+				<div className="space-y-3">
+					{/* Match Header */}
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-2">
+							<Badge variant="outline" className="text-xs">
+								{Match.formatId(match)}
+							</Badge>
+							<Badge variant="outline" className="text-xs">
+								{toLabel(match.type)} {match.type !== "final" ? match.order + 1 : ""}
+							</Badge>
 						</div>
-
-						{/* Players */}
-						<div className="space-y-2">
-							{/* Player 1 */}
-							<div className="flex items-center justify-between">
-								<PlayerDisplay
-									avatarClassName="h-6 w-6"
-									containerClassName="gap-2"
-									fallbackName={match.placeholder1 ?? undefined}
-									player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined}
-									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1.id) ? "font-semibold text-green-600" : ""}`}
-								/>
-								{CompletedMatch.isInstance(match) && (
-									<span className={`font-bold ${CompletedMatch.isWinner(match, match.player1.id) ? "text-green-600" : ""}`}>{match.score1}</span>
-								)}
-							</div>
-
-							{/* Player 2 */}
-							<div className="flex items-center justify-between">
-								<PlayerDisplay
-									avatarClassName="h-6 w-6"
-									containerClassName="gap-2"
-									fallbackName={match.placeholder2 ?? undefined}
-									player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined}
-									nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2.id) ? "font-semibold text-green-600" : ""}`}
-								/>
-								{CompletedMatch.isInstance(match) && (
-									<span className={`font-bold ${CompletedMatch.isWinner(match, match.player2.id) ? "text-green-600" : ""}`}>{match.score2}</span>
-								)}
-							</div>
-						</div>
-
-						{/* Match Details */}
-						{match.scheduledAt && (
-							<div className="flex items-center gap-4 border-t pt-2 text-xs text-muted-foreground">
-								<div className="flex items-center gap-1">
-									<Calendar className="h-3 w-3" />
-									{ISOTime.formatDateTime(match.scheduledAt)}
-								</div>
-							</div>
-						)}
+						<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>
 					</div>
-				</CardContent>
-			</Card>
-		</Link>
+
+					{/* Players */}
+					<div className="space-y-2">
+						{/* Player 1 */}
+						<div className="flex items-center justify-between">
+							<PlayerDisplay
+								avatarClassName="h-6 w-6"
+								containerClassName="gap-2"
+								fallbackName={match.placeholder1 ?? undefined}
+								player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined}
+								nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1.id) ? "font-semibold text-green-600" : ""}`}
+							/>
+							{CompletedMatch.isInstance(match) && (
+								<span className={`font-bold ${CompletedMatch.isWinner(match, match.player1.id) ? "text-green-600" : ""}`}>{match.score1}</span>
+							)}
+						</div>
+
+						{/* Player 2 */}
+						<div className="flex items-center justify-between">
+							<PlayerDisplay
+								avatarClassName="h-6 w-6"
+								containerClassName="gap-2"
+								fallbackName={match.placeholder2 ?? undefined}
+								player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined}
+								nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2.id) ? "font-semibold text-green-600" : ""}`}
+							/>
+							{CompletedMatch.isInstance(match) && (
+								<span className={`font-bold ${CompletedMatch.isWinner(match, match.player2.id) ? "text-green-600" : ""}`}>{match.score2}</span>
+							)}
+						</div>
+					</div>
+
+					{/* Match Details */}
+					{match.scheduledAt && (
+						<div className="flex items-center gap-4 border-t pt-2 text-xs text-muted-foreground">
+							<div className="flex items-center gap-1">
+								<Calendar className="h-3 w-3" />
+								{ISOTime.formatDateTime(match.scheduledAt)}
+							</div>
+						</div>
+					)}
+				</div>
+			</CardContent>
+		</Card>
 	);
 }
 
@@ -320,6 +318,10 @@ function QualifiedPlayersList(props: {
 
 const PredictionOutput: React.FC<{ playerId: string; predictions: Promise<KnockoutPrediction> }> = (props) => {
 	const predictions = use(props.predictions)[props.playerId];
+
+	if (!predictions) {
+		return "-";
+	}
 
 	if (predictions.ranksRate && Object.keys(predictions.ranksRate).length === 1 && Object.keys(predictions.ranksRate)[0] === "Eliminated") {
 		return "-";
