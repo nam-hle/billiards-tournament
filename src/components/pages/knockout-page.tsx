@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
+import { sumBy } from "es-toolkit";
 import React, { use, Suspense } from "react";
+import { Pie, Cell, Legend, PieChart } from "recharts";
 import { Medal, Crown, Award, Trophy, Calendar } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Separator } from "@/components/shadcn/separator";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/shadcn/tooltip";
 import { Card, CardTitle, CardHeader, CardContent, CardDescription } from "@/components/shadcn/card";
 
 import { PlayerDisplay } from "@/components/player-display";
@@ -299,8 +302,9 @@ function QualifiedPlayersList(props: {
 							dataGetter: ({ row }) => (row.knockoutPosition !== undefined ? <Badge variant="outline">{`#${row.knockoutPosition + 1}`}</Badge> : null)
 						},
 						{
+							width: 300,
 							label: "Rates",
-							alignment: "left",
+							alignment: "center",
 							dataGetter: ({ row }) => (
 								<Suspense fallback={<Skeleton className="h-8 w-full" />}>
 									<PredictionOutput playerId={row.player.id} predictions={props.predictions} />
@@ -317,24 +321,103 @@ function QualifiedPlayersList(props: {
 const PredictionOutput: React.FC<{ playerId: string; predictions: Promise<KnockoutPrediction> }> = (props) => {
 	const predictions = use(props.predictions)[props.playerId];
 
-	if (!predictions) {
+	if (predictions.ranksRate && Object.keys(predictions.ranksRate).length === 1 && Object.keys(predictions.ranksRate)[0] === "Eliminated") {
 		return "-";
 	}
 
-	const expectedOpponent = Object.entries(predictions.opponentsRate).sort((a, b) => b[1] - a[1])[0];
-	const expectedPosition = Object.entries(predictions.positionsRate).sort((a, b) => b[1] - a[1])[0];
+	const sortedExpectedOpponent = Object.entries(predictions.opponentsRate)
+		.sort((a, b) => b[1] - a[1])
+		.slice(0, 5);
+	const [topOpponent] = sortedExpectedOpponent;
+
+	const opponentData = sortedExpectedOpponent.map(([opponent, rate], index) => {
+		return { rate, opponent, fill: `var(--chart-${index + 1})` };
+	});
+
+	const sortedRanks = Object.entries(predictions.ranksRate)
+		.sort((a, b) => b[1] - a[1])
+		.slice(0, 5);
+	const ranksData = sortedRanks.map(([rank, rate], index) => {
+		return { rate, fill: `var(--chart-${index + 1})`, rank: isNaN(+rank) ? rank : `#${+rank + 1}` };
+	});
+
+	const [topRank] = sortedRanks;
 
 	return (
 		<>
 			<div>
-				<span className="font-bold">Qualified rate:</span> {formatRatio(predictions.advancedRate)}
+				<RatePieChart
+					nameKey="rank"
+					data={ranksData}
+					title="Rank Prediction"
+					description="Expected ranks based on simulation"
+					trigger={
+						<>
+							<span className="font-bold">Rank:</span> {!isNaN(+topRank[0]) ? +topRank[0] + 1 : topRank[0]} ({formatRatio(topRank[1])})
+						</>
+					}
+				/>
 			</div>
 			<div>
-				<span className="font-bold">Position:</span> {+expectedPosition[0] + 1} ({formatRatio(expectedPosition[1])})
-			</div>
-			<div>
-				<span className="font-bold">Opponent:</span> {expectedOpponent[0]} ({formatRatio(expectedOpponent[1])})
+				<RatePieChart
+					nameKey="opponent"
+					data={opponentData}
+					title="Opponent Prediction"
+					description="Expected opponents based on simulation"
+					trigger={
+						<>
+							<span className="font-bold">Opponent:</span> {topOpponent[0]} ({formatRatio(topOpponent[1])})
+						</>
+					}
+				/>
 			</div>
 		</>
 	);
 };
+
+function RatePieChart<T extends { fill: string; rate: number }>(props: {
+	data: T[];
+	title: string;
+	nameKey: string;
+	description: string;
+	trigger: React.ReactNode;
+}) {
+	const { data, title, nameKey, trigger, description } = props;
+
+	const remaining = Math.max(0, 1 - sumBy(data, (d) => d.rate));
+	const chartData = remaining > 0 ? [...data, { rate: remaining, [nameKey]: "Other" } as T] : data;
+
+	return (
+		<Tooltip>
+			<TooltipTrigger>{trigger}</TooltipTrigger>
+			<TooltipContent className="p-4 text-muted-foreground">
+				<Card className="flex flex-col">
+					<CardHeader className="items-center pb-0">
+						<CardTitle>{title}</CardTitle>
+						<CardDescription>{description}</CardDescription>
+					</CardHeader>
+					<CardContent className="flex-1 pb-0">
+						<PieChart width={400} height={300}>
+							<Legend />
+							<Pie
+								cx="50%"
+								cy="50%"
+								dataKey="rate"
+								startAngle={90}
+								endAngle={-270}
+								data={chartData}
+								outerRadius={100}
+								nameKey={props.nameKey}
+								isAnimationActive={false}
+								label={({ rate }: { rate: number }) => formatRatio(rate)}>
+								{chartData.map((entry, index) => (
+									<Cell fill={entry.fill} key={`cell-${index}`} />
+								))}
+							</Pie>
+						</PieChart>
+					</CardContent>
+				</Card>
+			</TooltipContent>
+		</Tooltip>
+	);
+}

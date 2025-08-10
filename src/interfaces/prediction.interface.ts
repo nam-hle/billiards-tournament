@@ -4,11 +4,8 @@ export interface GroupPrediction {
 }
 
 export interface KnockoutPrediction {
-	[playerId: string]:
-		| {
-				advancedRate: number;
-				opponentsRate: Record<string, number>;
-				positionsRate: Record<string, number>;
-		  }
-		| undefined;
+	[playerId: string]: {
+		ranksRate: Record<string, number>;
+		opponentsRate: Record<string, number>;
+	};
 }

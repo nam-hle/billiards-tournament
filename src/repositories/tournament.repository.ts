@@ -132,15 +132,14 @@ export class TournamentRepository {
 		const SIMULATION_ITERATIONS = 10_000;
 		const eloRatings = await new PlayerRepository().getEloRatings();
 
-		const updatePrediction = (target: string, opponent: string, position: number) => {
-			predictions[target] ??= { advancedRate: 0, opponentsRate: {}, positionsRate: {} };
-			predictions[target].advancedRate += 1;
+		const updatePrediction = (target: string, opponent: string, position: string) => {
+			predictions[target] ??= { ranksRate: {}, opponentsRate: {} };
 
 			predictions[target].opponentsRate[opponent] ??= 0;
 			predictions[target].opponentsRate[opponent] += 1;
 
-			predictions[target].positionsRate[position] ??= 0;
-			predictions[target].positionsRate[position] += 1;
+			predictions[target].ranksRate[position] ??= 0;
+			predictions[target].ranksRate[position] += 1;
 		};
 
 		for (let iteration = 0; iteration < SIMULATION_ITERATIONS; iteration++) {
@@ -169,20 +168,23 @@ export class TournamentRepository {
 				const [firstPosition, secondPosition] = [index, QUARTER_FINALIST_NUM - 1 - index];
 				const [first, second] = [qualifiedPlayers[firstPosition], qualifiedPlayers[secondPosition]];
 
-				updatePrediction(first.player.id, second.player.name, firstPosition);
-				updatePrediction(second.player.id, first.player.name, secondPosition);
+				updatePrediction(first.player.id, second.player.name, String(firstPosition));
+				updatePrediction(second.player.id, first.player.name, String(secondPosition));
+			});
+
+			groupStandings.flat().forEach((player) => {
+				if (qualifiedPlayers.some((qualifiedPlayer) => qualifiedPlayer.player.id === player.player.id)) {
+					return;
+				}
+
+				updatePrediction(player.player.id, "Eliminated", "Eliminated");
 			});
 		}
 
 		return mapValues(predictions, (prediction) => {
-			if (!prediction) {
-				return undefined;
-			}
-
 			return {
-				advancedRate: prediction.advancedRate / SIMULATION_ITERATIONS,
-				opponentsRate: mapValues(prediction.opponentsRate, (opponentRate) => opponentRate / SIMULATION_ITERATIONS),
-				positionsRate: mapValues(prediction.positionsRate, (positionRate) => positionRate / SIMULATION_ITERATIONS)
+				ranksRate: mapValues(prediction.ranksRate, (positionRate) => positionRate / SIMULATION_ITERATIONS),
+				opponentsRate: mapValues(prediction.opponentsRate, (opponentRate) => opponentRate / SIMULATION_ITERATIONS)
 			};
 		});
 	}

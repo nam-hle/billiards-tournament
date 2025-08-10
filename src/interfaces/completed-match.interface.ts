@@ -1,6 +1,6 @@
 import { type Player } from "@/interfaces/player.interface";
+import { Match, type BaseMatch } from "@/interfaces/match.interface";
 import { type WithScheduled } from "@/interfaces/scheduled-match.interface";
-import { Match, type BaseMatch, type GroupMatch } from "@/interfaces/match.interface";
 import { type WithDefinedPlayers } from "@/interfaces/defined-players-match.interface";
 
 export type WithCompleted<M extends BaseMatch> = M & WithDefinedPlayers<M> & WithScheduled<M> & { score1: number; score2: number };
