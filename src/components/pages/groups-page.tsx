@@ -80,7 +80,7 @@ export function GroupsPage({ tournament }: { tournament: TournamentSummary }) {
 									</div>
 									<div>
 										<p className="text-2xl font-bold">{groups.filter((g) => g.status === "ongoing").length}</p>
-										<p className="text-xs text-muted-foreground">Groups Active</p>
+										<p className="text-xs text-muted-foreground">Groups Ongoing</p>
 									</div>
 								</div>
 							</CardContent>
