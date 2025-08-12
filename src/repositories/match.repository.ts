@@ -1,6 +1,5 @@
 import { assert } from "@/utils";
 import { Elo } from "@/utils/elo";
-import { isArray } from "@/utils/arrays";
 import { MATCH_SELECT } from "@/constants";
 import { supabaseClient } from "@/services/supabase.service";
 import { PlayerRepository } from "@/repositories/player.repository";
@@ -62,6 +61,10 @@ export class MatchRepository {
 		}
 
 		if (data.every(Match.isInstance)) {
+			if (params?.completed) {
+				return data.filter(CompletedMatch.isInstance) as MatchResult<Q>[];
+			}
+
 			return data as MatchResult<Q>[];
 		}
 
@@ -82,11 +85,7 @@ export class MatchRepository {
 			throw error;
 		}
 
-		if (!isArray(data, CompletedMatch.isInstance)) {
-			throw new Error("Incorrect match data: not all matches are completed");
-		}
-
-		return data as CompletedMatch[];
+		return data.filter(CompletedMatch.isInstance) as CompletedMatch[];
 	}
 
 	async getById(params: { matchId: string }): Promise<Match> {

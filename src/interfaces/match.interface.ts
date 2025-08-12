@@ -109,6 +109,10 @@ export namespace Match {
 				const threeHours = 3 * 60 * 60 * 1000;
 
 				if (now > matchTime + threeHours) {
+					if (match.score1 !== null || match.score2 !== null) {
+						return "ongoing";
+					}
+
 					return "postpone";
 				}
 
