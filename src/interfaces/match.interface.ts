@@ -60,7 +60,7 @@ export namespace KnockoutMatch {
 
 export type Match = GroupMatch | KnockoutMatch;
 
-export type MatchStatus = "scheduling" | "scheduled" | "upcoming" | "waiting" | "ongoing" | "completed";
+export type MatchStatus = "scheduling" | "scheduled" | "upcoming" | "waiting" | "ongoing" | "completed" | "postpone";
 export namespace Match {
 	export function isInstance(match: BaseMatch): match is Match {
 		return GroupMatch.isInstance(match) || KnockoutMatch.isInstance(match);
@@ -104,7 +104,15 @@ export namespace Match {
 			}
 
 			if (ScheduledMatch.isInstance(match)) {
-				if (new Date(match.scheduledAt).getTime() < new Date().getTime()) {
+				const matchTime = new Date(match.scheduledAt).getTime();
+				const now = Date.now();
+				const threeHours = 3 * 60 * 60 * 1000;
+
+				if (now > matchTime + threeHours) {
+					return "postpone";
+				}
+
+				if (now > matchTime) {
 					return "ongoing";
 				}
 
