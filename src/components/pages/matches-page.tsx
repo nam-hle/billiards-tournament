@@ -148,7 +148,7 @@ function MatchesTable({ matches }: { matches: (Match & { tournament: Tournament 
 										</div>
 									</TableCell>
 									<TableCell>
-										<PlayerDisplay player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined} />
+										<PlayerDisplay player={match.player1} />
 									</TableCell>
 									<TableCell className="text-center">
 										{CompletedMatch.isInstance(match) ? (
@@ -160,7 +160,7 @@ function MatchesTable({ matches }: { matches: (Match & { tournament: Tournament 
 										)}
 									</TableCell>
 									<TableCell>
-										<PlayerDisplay player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined} />
+										<PlayerDisplay player={match.player2} />
 									</TableCell>
 									<TableCell className="text-center">
 										<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>

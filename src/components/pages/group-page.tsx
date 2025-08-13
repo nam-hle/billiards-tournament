@@ -234,8 +234,8 @@ export function GroupPage(props: {
 								dataGetter: ({ row }) => (
 									<PlayerDisplay
 										showAvatar={false}
+										player={row.player1}
 										containerClassName="justify-end"
-										player={DefinedPlayersMatch.isInstance(row) ? row.player1 : undefined}
 										highlight={CompletedMatch.isInstance(row) && CompletedMatch.isWinner(row, row.player1.id)}
 									/>
 								)
@@ -257,7 +257,7 @@ export function GroupPage(props: {
 								dataGetter: ({ row }) => (
 									<PlayerDisplay
 										showAvatar={false}
-										player={DefinedPlayersMatch.isInstance(row) ? row.player2 : undefined}
+										player={row.player2}
 										highlight={CompletedMatch.isInstance(row) && CompletedMatch.isWinner(row, row.player2.id)}
 									/>
 								)

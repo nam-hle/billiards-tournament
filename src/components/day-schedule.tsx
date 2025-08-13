@@ -8,7 +8,7 @@ import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from "@
 import { PlayerDisplay } from "@/components/player-display";
 
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { Match, ISOTime, type Group, CompletedMatch, ScheduledMatch, DefinedPlayersMatch } from "@/interfaces";
+import { Match, ISOTime, type Group, CompletedMatch, ScheduledMatch } from "@/interfaces";
 
 export function DaySchedule({ date, matches }: { date: string; matches: Match[]; groups: Pick<Group, "id" | "name">[] }) {
 	const router = useRouter();
@@ -69,12 +69,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 											</div>
 										</TableCell>
 										<TableCell className="text-right">
-											<PlayerDisplay
-												showAvatar={false}
-												highlight={winner === "player1"}
-												containerClassName="justify-end"
-												player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined}
-											/>
+											<PlayerDisplay showAvatar={false} player={match.player1} highlight={winner === "player1"} containerClassName="justify-end" />
 										</TableCell>
 										<TableCell className="text-center">
 											{match.score1 != null && match.score2 != null ? (
@@ -86,11 +81,7 @@ export function DaySchedule({ date, matches }: { date: string; matches: Match[];
 											)}
 										</TableCell>
 										<TableCell>
-											<PlayerDisplay
-												showAvatar={false}
-												highlight={winner === "player2"}
-												player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined}
-											/>
+											<PlayerDisplay showAvatar={false} player={match.player2} highlight={winner === "player2"} />
 										</TableCell>
 										<TableCell className="text-center">
 											<Badge className={getStatusColor(Match.getStatus(match))}>{toLabel(Match.getStatus(match))}</Badge>

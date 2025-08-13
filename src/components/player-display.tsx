@@ -9,10 +9,10 @@ import { getAbbrName } from "@/utils/strings";
 
 export namespace PlayerDisplay {
 	export interface Props {
-		readonly player?: { id: string; name: string };
+		readonly player?: { id: string; name: string } | null;
 
 		readonly highlight?: boolean;
-		readonly fallbackName?: string;
+		readonly fallbackName?: string | null;
 
 		readonly showLink?: boolean;
 		readonly showAvatar?: boolean;

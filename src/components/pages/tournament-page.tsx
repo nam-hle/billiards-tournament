@@ -16,7 +16,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 
 import { Links } from "@/utils/links";
 import { toLabel, getStatusColor } from "@/utils/strings";
-import { Match, ISOTime, CompletedMatch, DefinedPlayersMatch, type TournamentSummary } from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, type TournamentSummary } from "@/interfaces";
 
 function NavigationCards({ year }: { year: string }) {
 	const navigationItems = [
@@ -412,9 +412,9 @@ export function TournamentPage({ tournament }: { tournament: TournamentSummary }
 												<span className="text-xs text-muted-foreground">{ISOTime.formatDateTime(match.scheduledAt)}</span>
 											</div>
 											<div className="flex items-center gap-2">
-												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player1.name : "TBD"}</span>
+												<span className="font-medium">{match.player1?.name ?? "TBD"}</span>
 												<span className="text-muted-foreground">vs</span>
-												<span className="font-medium">{DefinedPlayersMatch.isInstance(match) ? match.player2.name : "TBD"}</span>
+												<span className="font-medium">{match.player2?.name ?? "TBD"}</span>
 											</div>
 										</div>
 									</Link>

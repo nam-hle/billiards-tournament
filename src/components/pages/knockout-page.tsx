@@ -19,7 +19,7 @@ import { PageContainer } from "@/components/layouts/page-container";
 import { Links } from "@/utils/links";
 import { toLabel, formatRatio, getStatusColor } from "@/utils/strings";
 import { type KnockoutPrediction } from "@/interfaces/prediction.interface";
-import { Match, ISOTime, CompletedMatch, type Tournament, type GroupStanding, type KnockoutMatch, DefinedPlayersMatch } from "@/interfaces";
+import { Match, ISOTime, CompletedMatch, type Tournament, type GroupStanding, type KnockoutMatch } from "@/interfaces";
 
 export function KnockoutPage(props: {
 	tournament: Promise<Tournament>;
@@ -116,10 +116,10 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 						{/* Player 1 */}
 						<div className="flex items-center justify-between">
 							<PlayerDisplay
+								player={match.player1}
 								avatarClassName="h-6 w-6"
 								containerClassName="gap-2"
-								fallbackName={match.placeholder1 ?? undefined}
-								player={DefinedPlayersMatch.isInstance(match) ? match.player1 : undefined}
+								fallbackName={match.placeholder1}
 								nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player1.id) ? "font-semibold text-green-600" : ""}`}
 							/>
 							{CompletedMatch.isInstance(match) && (
@@ -130,10 +130,10 @@ function MatchCard({ match, isFinal = false }: { isFinal?: boolean; match: Knock
 						{/* Player 2 */}
 						<div className="flex items-center justify-between">
 							<PlayerDisplay
+								player={match.player2}
 								avatarClassName="h-6 w-6"
 								containerClassName="gap-2"
-								fallbackName={match.placeholder2 ?? undefined}
-								player={DefinedPlayersMatch.isInstance(match) ? match.player2 : undefined}
+								fallbackName={match.placeholder2}
 								nameClassName={`text-sm ${CompletedMatch.isInstance(match) && CompletedMatch.isWinner(match, match.player2.id) ? "font-semibold text-green-600" : ""}`}
 							/>
 							{CompletedMatch.isInstance(match) && (
